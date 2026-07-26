@@ -1,0 +1,706 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:clipToPadding="false"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Screen header -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CRS SCHEDULER"
+            android:textColor="@color/ink"
+            android:textSize="17sp"
+            android:letterSpacing="0.05"
+            android:textStyle="bold"
+            android:fontFamily="@font/jetbrains_mono_bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="18dp"
+            android:text="Load your schedule below, then tap Done to add the widget. Everything else is optional."
+            android:textColor="@color/ink_dim"
+            android:textSize="11.5sp"
+            android:lineSpacingMultiplier="1.3"
+            android:fontFamily="@font/jetbrains_mono" />
+
+        <!-- ============ CARD: Load schedule (primary, always open) ============ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg"
+            android:padding="18dp"
+            android:layout_marginBottom="14dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="LOAD YOUR CRS SCHEDULE"
+                android:textColor="@color/red"
+                android:textSize="12sp"
+                android:letterSpacing="0.15"
+                android:textStyle="bold"
+                android:fontFamily="@font/jetbrains_mono_bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:lineSpacingMultiplier="1.4"
+                android:text="1. Open your CRS Schedule page (the one with the Enlisted Classes table).\n2. Save it: Ctrl+S -&gt; \u201cWebpage, HTML only\u201d -&gt; pick a file. Or view source with Ctrl+U, select all, copy.\n3. Either pick the saved .html file below, or paste the copied source into the box.\n\nHave a .ics calendar file instead (e.g. exported from here previously)? Pick it the same way below \u2014 it's imported automatically."
+                android:textColor="@color/ink_dim"
+                android:textSize="12.5sp"
+                android:fontFamily="@font/jetbrains_mono" />
+
+            <Button
+                android:id="@+id/btn_pick_file"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:minHeight="48dp"
+                android:text="CHOOSE .HTML / .ICS FILE"
+                android:textColor="@color/ink"
+                android:textSize="11sp"
+                android:letterSpacing="0.1"
+                android:background="@drawable/row_bg"
+                android:foreground="@drawable/ripple_rounded_14dp"
+                android:fontFamily="@font/jetbrains_mono_bold" />
+
+            <EditText
+                android:id="@+id/html_input"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/row_bg"
+                android:gravity="top|start"
+                android:hint="...or paste the page source here"
+                android:textColorHint="@color/ink_dim"
+                android:inputType="textMultiLine"
+                android:padding="12dp"
+                android:textColor="@color/ink"
+                android:textSize="11sp"
+                android:fontFamily="@font/jetbrains_mono" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp">
+
+                <Button
+                    android:id="@+id/btn_parse"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="48dp"
+                    android:text="PARSE &amp; SAVE"
+                    android:textColor="@color/bg"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.1"
+                    android:background="@drawable/btn_bg"
+                    android:backgroundTint="@color/red"
+                    android:foreground="@drawable/ripple_rounded_12dp"
+                    android:fontFamily="@font/jetbrains_mono_bold" />
+
+                <Button
+                    android:id="@+id/btn_clear"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:minHeight="48dp"
+                    android:text="CLEAR"
+                    android:textColor="@color/ink"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.1"
+                    android:background="@drawable/row_bg"
+                    android:foreground="@drawable/ripple_rounded_14dp"
+                    android:fontFamily="@font/jetbrains_mono_bold" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_view_history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:minHeight="44dp"
+                android:text="SAVED SCHEDULES"
+                android:textColor="@color/ink_dim"
+                android:textSize="10.5sp"
+                android:letterSpacing="0.1"
+                android:background="@drawable/row_bg"
+                android:foreground="@drawable/ripple_rounded_14dp"
+                android:fontFamily="@font/jetbrains_mono" />
+
+            <TextView
+                android:id="@+id/status_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:padding="10dp"
+                android:background="@drawable/row_bg"
+                android:textColor="@color/ink_dim"
+                android:textSize="11sp"
+                android:lineSpacingMultiplier="1.3"
+                android:fontFamily="@font/jetbrains_mono" />
+        </LinearLayout>
+
+        <!-- ============ CARD: Maps search context (collapsible) ============ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg"
+            android:layout_marginBottom="14dp">
+
+            <LinearLayout
+                android:id="@+id/header_maps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="@drawable/ripple_rounded_22dp"
+                android:padding="18dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="MAPS SEARCH CONTEXT"
+                        android:textColor="@color/red"
+                        android:textSize="12sp"
+                        android:letterSpacing="0.15"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/summary_maps"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:text="Not set"
+                        android:textColor="@color/ink_dim"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/jetbrains_mono" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/chevron_maps"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="12dp"
+                    android:src="@drawable/ic_chevron_down" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/body_maps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:paddingBottom="18dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Optional. Added to the search when you tap a class and choose \u201cOpen Maps\u201d, so a room number like \u201cSS 301\u201d resolves to the right campus instead of a random result."
+                    android:textColor="@color/ink_dim"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/jetbrains_mono" />
+
+                <EditText
+                    android:id="@+id/input_campus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/row_bg"
+                    android:hint="Campus / school name (e.g. UP Diliman)"
+                    android:textColorHint="@color/ink_dim"
+                    android:textColor="@color/ink"
+                    android:textSize="11sp"
+                    android:padding="12dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/jetbrains_mono" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/maps_room_disclaimer"
+                    android:textColor="@color/red"
+                    android:textSize="10.5sp"
+                    android:lineSpacingMultiplier="1.3"
+                    android:fontFamily="@font/jetbrains_mono" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ============ CARD: Semester dates (collapsible) ============ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg"
+            android:layout_marginBottom="14dp">
+
+            <LinearLayout
+                android:id="@+id/header_semester"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="@drawable/ripple_rounded_22dp"
+                android:padding="18dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="SEMESTER DATES"
+                        android:textColor="@color/red"
+                        android:textSize="12sp"
+                        android:letterSpacing="0.15"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/summary_semester"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:text="Not set"
+                        android:textColor="@color/ink_dim"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/jetbrains_mono" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/chevron_semester"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="12dp"
+                    android:src="@drawable/ic_chevron_down" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/body_semester"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:paddingBottom="18dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Optional. Set when this schedule actually applies, so the widgets and full schedule show a \u201cnot in session\u201d state outside these dates instead of always treating today as a normal school day."
+                    android:textColor="@color/ink_dim"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/jetbrains_mono" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="14dp">
+
+                    <TextView
+                        android:layout_width="56dp"
+                        android:layout_height="wrap_content"
+                        android:text="STARTS"
+                        android:textColor="@color/ink_dim"
+                        android:textSize="10sp"
+                        android:letterSpacing="0.1"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <Button
+                        android:id="@+id/btn_semester_start"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="44dp"
+                        android:text="Not set"
+                        android:textColor="@color/ink"
+                        android:textSize="11sp"
+                        android:letterSpacing="0.05"
+                        android:background="@drawable/row_bg"
+                        android:foreground="@drawable/ripple_rounded_14dp"
+                        android:fontFamily="@font/jetbrains_mono" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:layout_width="56dp"
+                        android:layout_height="wrap_content"
+                        android:text="ENDS"
+                        android:textColor="@color/ink_dim"
+                        android:textSize="10sp"
+                        android:letterSpacing="0.1"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <Button
+                        android:id="@+id/btn_semester_end"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="44dp"
+                        android:text="Ongoing"
+                        android:textColor="@color/ink"
+                        android:textSize="11sp"
+                        android:letterSpacing="0.05"
+                        android:background="@drawable/row_bg"
+                        android:foreground="@drawable/ripple_rounded_14dp"
+                        android:fontFamily="@font/jetbrains_mono" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="No end date yet (still ongoing)"
+                        android:textColor="@color/ink_dim"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/jetbrains_mono" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_semester_ongoing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_semester_clear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:minHeight="40dp"
+                    android:text="CLEAR DATES"
+                    android:textColor="@color/ink_dim"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.1"
+                    android:background="@drawable/row_bg"
+                    android:foreground="@drawable/ripple_rounded_14dp"
+                    android:fontFamily="@font/jetbrains_mono" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ============ CARD: Class reminders (collapsible) ============ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg"
+            android:layout_marginBottom="14dp">
+
+            <LinearLayout
+                android:id="@+id/header_reminders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="@drawable/ripple_rounded_22dp"
+                android:padding="18dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="CLASS REMINDERS"
+                        android:textColor="@color/red"
+                        android:textSize="12sp"
+                        android:letterSpacing="0.15"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/summary_reminders"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:text="Off"
+                        android:textColor="@color/ink_dim"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/jetbrains_mono" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/chevron_reminders"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="12dp"
+                    android:src="@drawable/ic_chevron_down" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/body_reminders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:paddingBottom="18dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Optional. Get a notification a few minutes before each class starts. Off by default."
+                    android:textColor="@color/ink_dim"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/jetbrains_mono" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="14dp">
+
+                    <TextView
+                        android:id="@+id/chip_reminder_off"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        android:minHeight="44dp"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="OFF"
+                        android:textSize="10.5sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05"
+                        android:background="@drawable/chip_filled_bg"
+                        android:foreground="@drawable/ripple_rounded_10dp"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/chip_reminder_5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        android:minHeight="44dp"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="5M"
+                        android:textSize="10.5sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05"
+                        android:background="@drawable/chip_outline_bg"
+                        android:foreground="@drawable/ripple_rounded_10dp"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/chip_reminder_10"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        android:minHeight="44dp"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="10M"
+                        android:textSize="10.5sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05"
+                        android:background="@drawable/chip_outline_bg"
+                        android:foreground="@drawable/ripple_rounded_10dp"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/chip_reminder_15"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        android:minHeight="44dp"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="15M"
+                        android:textSize="10.5sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05"
+                        android:background="@drawable/chip_outline_bg"
+                        android:foreground="@drawable/ripple_rounded_10dp"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/chip_reminder_30"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="44dp"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="30M"
+                        android:textSize="10.5sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05"
+                        android:background="@drawable/chip_outline_bg"
+                        android:foreground="@drawable/ripple_rounded_10dp"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ============ CARD: Edit class info (switch-controlled) ============ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg"
+            android:padding="18dp"
+            android:layout_marginBottom="18dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="EDIT CLASS INFO"
+                    android:textColor="@color/red"
+                    android:textSize="12sp"
+                    android:letterSpacing="0.15"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/jetbrains_mono_bold" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch_edit_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Tap a class below to manually set or correct its room, instructor, or units, any time."
+                android:textColor="@color/ink_dim"
+                android:textSize="12sp"
+                android:fontFamily="@font/jetbrains_mono" />
+
+            <LinearLayout
+                android:id="@+id/edit_class_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="12dp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- Done -->
+        <Button
+            android:id="@+id/btn_done"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="52dp"
+            android:text="DONE"
+            android:textColor="@color/bg"
+            android:textSize="12sp"
+            android:letterSpacing="0.12"
+            android:background="@drawable/btn_bg"
+            android:backgroundTint="@color/red"
+            android:foreground="@drawable/ripple_rounded_12dp"
+            android:fontFamily="@font/jetbrains_mono_bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Tap Done to drop the widget on your home screen (or to close after re-loading a schedule)."
+            android:textColor="@color/ink_dim"
+            android:textSize="10.5sp"
+            android:gravity="center"
+            android:fontFamily="@font/jetbrains_mono" />
+
+        <!-- Fine-print credits / disclaimer -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/footer_credits"
+            android:textColor="@color/ink_dim"
+            android:textSize="8.5sp"
+            android:gravity="center"
+            android:fontFamily="@font/jetbrains_mono" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/footer_disclaimer"
+            android:textColor="@color/ink_dim"
+            android:textSize="8.5sp"
+            android:gravity="center"
+            android:fontFamily="@font/jetbrains_mono" />
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_marginStart="6dp"
+    android:layout_marginEnd="6dp">
+
+    <ImageView
+        android:id="@+id/week_dot"
+        android:layout_width="7dp"
+        android:layout_height="7dp"
+        android:src="@drawable/dot_dim" />
+
+    <TextView
+        android:id="@+id/week_dot_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/ink_dim"
+        android:textSize="8.5sp"
+        android:fontFamily="@font/jetbrains_mono" />
+
+</LinearLayout>

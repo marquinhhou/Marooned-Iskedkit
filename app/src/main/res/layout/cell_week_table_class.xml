@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Day cell in a data row. Shows the class's abbreviated subject+number
+     (e.g. "KAS 1") when one occupies this slot; otherwise falls back to the
+     dim dot used elsewhere in the app, rather than leaving the cell blank.
+     Exactly one of the two children is made VISIBLE at bind time
+     (WidgetRenderer.buildWeekTable()); both start GONE here.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:minHeight="18dp">
+
+    <TextView
+        android:id="@+id/cell_class_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone"
+        android:maxLines="2"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:textColor="@color/ink"
+        android:textSize="7sp"
+        android:includeFontPadding="false"
+        android:fontFamily="@font/jetbrains_mono_bold" />
+
+    <ImageView
+        android:id="@+id/cell_dot_image"
+        android:layout_width="5dp"
+        android:layout_height="5dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:src="@drawable/dot_dim" />
+</FrameLayout>
