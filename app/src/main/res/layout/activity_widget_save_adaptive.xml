@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:padding="32dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="22dp"
+        android:background="@drawable/card_bg_now_adaptive">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SAVE SCHEDULE"
+            android:textColor="@color/adaptive_accent"
+            android:textSize="10sp"
+            android:letterSpacing="0.2"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Save this week's schedule as..."
+            android:textColor="@color/adaptive_ink"
+            android:textStyle="bold"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btn_save_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:minHeight="48dp"
+            android:text="IMAGE"
+            android:textColor="@color/adaptive_bg"
+            android:textSize="11.5sp"
+            android:letterSpacing="0.1"
+            android:background="@drawable/btn_bg_adaptive"
+            android:backgroundTint="@color/adaptive_accent"
+            android:foreground="@drawable/ripple_rounded_12dp_adaptive"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_save_ics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:minHeight="48dp"
+            android:text=".ICS FILE"
+            android:textColor="@color/adaptive_ink"
+            android:textSize="11.5sp"
+            android:letterSpacing="0.1"
+            android:background="@drawable/row_bg_adaptive"
+            android:foreground="@drawable/ripple_rounded_14dp_adaptive"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/btn_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:minHeight="32dp"
+            android:gravity="center"
+            android:text="Cancel"
+            android:textColor="@color/adaptive_ink_dim"
+            android:textSize="11.5sp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="@drawable/ripple_rounded_10dp_adaptive" />
+    </LinearLayout>
+</FrameLayout>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Three independent palettes, picked at runtime by SettingsStore's theme
+        family setting (see Theming.java), not by resource qualifiers; that
+        axis is reserved for each family's own light/dark adaptation below.
+        GE is the default.
+    -->
+
+    <!-- GE: UP Maroon accent, adaptive light/dark (values-night overrides below). -->
+    <color name="ge_bg">#F6F6F3</color>
+    <color name="ge_surface">#FFFFFF</color>
+    <color name="ge_surface2">#EEEEEA</color>
+    <color name="ge_line">#1A000000</color>
+    <color name="ge_line_strong">#33000000</color>
+    <color name="ge_ink">#17181A</color>
+    <color name="ge_ink_dim">#6B6D70</color>
+    <color name="ge_accent">#7B1113</color>
+    <color name="ge_accent_dim">#337B1113</color>
+    <color name="ge_green">#1E8E4F</color>
+    <color name="ge_error">#C4342A</color>
+
+    <!-- NE: Nothing-OS-inspired, fixed dark red-on-black, never adapts to
+         the system setting. No values-night override exists for these on
+         purpose. -->
+    <color name="ne_bg">#000000</color>
+    <color name="ne_surface">#0D0D0D</color>
+    <color name="ne_surface2">#141414</color>
+    <color name="ne_line">#1AFFFFFF</color>
+    <color name="ne_line_strong">#38FFFFFF</color>
+    <color name="ne_ink">#F3F2ED</color>
+    <color name="ne_ink_dim">#8B8B86</color>
+    <color name="ne_accent">#FF2E17</color>
+    <color name="ne_accent_dim">#40FF2E17</color>
+    <color name="ne_green">#2ED573</color>
+    <color name="ne_error">#FF2E17</color>
+
+    <!--
+        Adaptive: aliases into Android 12+'s wallpaper-derived system palette
+        (android.R.color.system_*), so the app matches whatever Material You
+        colors the rest of the phone is using. Only ever selected on API 31+
+        (see Theming.supportsAdaptive()); these names still need to exist
+        in the default `values/` set (unqualified) because Theming resolves
+        them by plain resource id; they're simply never looked up on older
+        devices where they wouldn't resolve.
+    -->
+    <color name="adaptive_bg">@android:color/system_neutral1_10</color>
+    <color name="adaptive_surface">@android:color/system_neutral1_50</color>
+    <color name="adaptive_surface2">@android:color/system_neutral1_100</color>
+    <color name="adaptive_line">@android:color/system_neutral1_200</color>
+    <color name="adaptive_line_strong">@android:color/system_neutral1_300</color>
+    <color name="adaptive_ink">@android:color/system_neutral1_900</color>
+    <color name="adaptive_ink_dim">@android:color/system_neutral2_500</color>
+    <color name="adaptive_accent">@android:color/system_accent1_600</color>
+    <color name="adaptive_accent_dim">@android:color/system_accent1_100</color>
+    <color name="adaptive_green">#1E8E4F</color>
+    <color name="adaptive_error">#C4342A</color>
+
+    <!-- Launcher icon: one fixed icon regardless of in-app theme choice. -->
+    <color name="ic_background">#1B1114</color>
+    <color name="ic_foreground">#F6F6F3</color>
+    <color name="ic_accent">#C4444A</color>
+</resources>

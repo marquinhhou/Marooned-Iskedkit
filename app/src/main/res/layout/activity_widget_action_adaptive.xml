@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:padding="32dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="22dp"
+        android:background="@drawable/card_bg_now_adaptive">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="LOCATE CLASS"
+            android:textColor="@color/adaptive_accent"
+            android:textSize="10sp"
+            android:letterSpacing="0.2"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/dialog_class_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:textColor="@color/adaptive_ink"
+            android:textStyle="bold"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/dialog_room"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/adaptive_ink_dim"
+            android:textSize="12.5sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="Open this location in a maps app?"
+            android:textColor="@color/adaptive_ink_dim"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/maps_room_disclaimer_short"
+            android:textColor="@color/adaptive_accent"
+            android:textSize="10.5sp"
+            android:lineSpacingMultiplier="1.3" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="18dp">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="48dp"
+                android:text="CANCEL"
+                android:textColor="@color/adaptive_ink"
+                android:textSize="11sp"
+                android:letterSpacing="0.1"
+                android:background="@drawable/row_bg_adaptive"
+                android:foreground="@drawable/ripple_rounded_14dp_adaptive"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_open_maps"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:minHeight="48dp"
+                android:text="OPEN MAPS"
+                android:textColor="@color/adaptive_bg"
+                android:textSize="11sp"
+                android:letterSpacing="0.1"
+                android:background="@drawable/btn_bg_adaptive"
+                android:backgroundTint="@color/adaptive_accent"
+                android:foreground="@drawable/ripple_rounded_12dp_adaptive"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

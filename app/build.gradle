@@ -1,0 +1,68 @@
+plugins {
+    id 'com.android.application'
+}
+
+// A transitive dependency (androidx.activity, which is Kotlin-based) pulls in
+// the modern merged kotlin-stdlib, while something else in the graph pulls the
+// old split kotlin-stdlib-jdk7/jdk8 artifacts. Since Kotlin 1.8 those jdk7/jdk8
+// extension classes live inside kotlin-stdlib itself, so having both causes
+// "Duplicate class kotlin.collections.jdk8.CollectionsJDK8Kt" etc. Excluding
+// the legacy split artifacts project-wide is the standard fix.
+configurations.all {
+    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+}
+
+def keystorePropsFile = rootProject.file('keystore.properties')
+def keystoreProps = new Properties()
+def hasReleaseSigning = keystorePropsFile.exists()
+if (hasReleaseSigning) {
+    keystoreProps.load(new FileInputStream(keystorePropsFile))
+}
+
+android {
+    namespace 'dev.marquinhhou.crsscheduler'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "dev.marquinhhou.crsscheduler"
+        minSdk 26
+        targetSdk 34
+        versionCode 3
+        versionName "2.1"
+    }
+
+    signingConfigs {
+        release {
+            if (hasReleaseSigning) {
+                storeFile file(keystoreProps['storeFile'])
+                storePassword keystoreProps['storePassword']
+                keyAlias keystoreProps['keyAlias']
+                keyPassword keystoreProps['keyPassword']
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.activity:activity:1.9.0'
+    // HTML table parsing for the CRS schedule page source
+    implementation 'org.jsoup:jsoup:1.17.2'
+}

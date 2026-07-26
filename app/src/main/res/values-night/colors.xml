@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Dark-mode overrides for GE and Adaptive; the system picks this
+        automatically (Configuration.UI_MODE_NIGHT_YES), including for
+        widgets, since RemoteViews resolve color resources the same way
+        normal views do. NE isn't overridden here; it doesn't change with
+        the system setting.
+    -->
+    <color name="ge_bg">#000000</color>
+    <color name="ge_surface">#121212</color>
+    <color name="ge_surface2">#1C1C1C</color>
+    <color name="ge_line">#1AFFFFFF</color>
+    <color name="ge_line_strong">#38FFFFFF</color>
+    <color name="ge_ink">#F2F2F0</color>
+    <color name="ge_ink_dim">#9A9A96</color>
+    <color name="ge_accent">#C4444A</color>
+    <color name="ge_accent_dim">#40C4444A</color>
+    <color name="ge_green">#35D07F</color>
+    <color name="ge_error">#FF6B5E</color>
+
+    <color name="adaptive_bg">@android:color/system_neutral1_900</color>
+    <color name="adaptive_surface">@android:color/system_neutral1_800</color>
+    <color name="adaptive_surface2">@android:color/system_neutral1_700</color>
+    <color name="adaptive_line">@android:color/system_neutral1_700</color>
+    <color name="adaptive_line_strong">@android:color/system_neutral1_600</color>
+    <color name="adaptive_ink">@android:color/system_neutral1_10</color>
+    <color name="adaptive_ink_dim">@android:color/system_neutral2_300</color>
+    <color name="adaptive_accent">@android:color/system_accent1_200</color>
+    <color name="adaptive_accent_dim">@android:color/system_accent1_700</color>
+    <color name="adaptive_green">#35D07F</color>
+    <color name="adaptive_error">#FF6B5E</color>
+</resources>

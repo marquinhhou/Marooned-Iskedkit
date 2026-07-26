@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bottom-edge scrim: fades transparent (top) into ne_bg, reaching full
+     opacity by the halfway point and staying solid the rest of the way
+     down. This guarantees a fully-blended (invisible) buffer at the very
+     bottom regardless of exactly how much of a clipped row peeks through,
+     so the cut never reads as a hard edge. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:type="linear"
+        android:angle="270"
+        android:startColor="#00000000"
+        android:centerColor="@color/ne_bg"
+        android:centerY="0.5"
+        android:endColor="@color/ne_bg" />
+</shape>

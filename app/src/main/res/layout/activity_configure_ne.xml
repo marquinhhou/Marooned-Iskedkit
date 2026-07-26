@@ -1,0 +1,1288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ne_bg"
+    android:clipToPadding="false"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:id="@+id/configure_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+                <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CRS SCHEDULER"
+            android:textColor="@color/ne_ink"
+            android:textSize="17sp"
+            android:letterSpacing="0.05"
+            android:textStyle="bold"
+            android:fontFamily="@font/jetbrains_mono_bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="18dp"
+            android:text="Load your schedule below, then tap Done to add the widget. Everything else is optional."
+            android:textColor="@color/ne_ink_dim"
+            android:textSize="11.5sp"
+            android:lineSpacingMultiplier="1.3"
+            android:fontFamily="@font/jetbrains_mono" />
+
+        <LinearLayout
+            android:id="@+id/wizard_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="18dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/wizard_step_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/ne_accent"
+                android:textSize="10.5sp"
+                android:letterSpacing="0.15"
+                android:textStyle="bold"
+                android:fontFamily="@font/jetbrains_mono_bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <View
+                    android:id="@+id/wizard_dot_1"
+                    android:layout_width="0dp"
+                    android:layout_height="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/dot_accent_ne" />
+
+                <View
+                    android:layout_width="6dp"
+                    android:layout_height="1dp" />
+
+                <View
+                    android:id="@+id/wizard_dot_2"
+                    android:layout_width="0dp"
+                    android:layout_height="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/dot_dim_ne" />
+
+                <View
+                    android:layout_width="6dp"
+                    android:layout_height="1dp" />
+
+                <View
+                    android:id="@+id/wizard_dot_3"
+                    android:layout_width="0dp"
+                    android:layout_height="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/dot_dim_ne" />
+            </LinearLayout>
+        </LinearLayout>
+
+                <LinearLayout
+            android:id="@+id/card_import"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg_ne"
+            android:padding="18dp"
+            android:layout_marginBottom="14dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="LOAD YOUR CRS SCHEDULE"
+                android:textColor="@color/ne_accent"
+                android:textSize="12sp"
+                android:letterSpacing="0.15"
+                android:textStyle="bold"
+                android:fontFamily="@font/jetbrains_mono_bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:lineSpacingMultiplier="1.4"
+                android:text="1. Open your CRS Schedule page (the one with the Enlisted Classes table).\n2. Save it: Ctrl+S -&gt; \u201cWebpage, HTML only\u201d -&gt; pick a file. Or view source with Ctrl+U, select all, copy.\n3. Either pick the saved .html file below, or paste the copied source into the box.\n\nHave a .ics calendar file instead (e.g. exported from here previously)? Pick it the same way below \u2014 it's imported automatically.\n\nNo CRS access or .ics file yet? Scroll down to add your classes by hand instead."
+                android:textColor="@color/ne_ink_dim"
+                android:textSize="12.5sp"
+                android:fontFamily="@font/jetbrains_mono" />
+
+            <Button
+                android:id="@+id/btn_pick_file"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:minHeight="48dp"
+                android:text="CHOOSE .HTML / .ICS FILE"
+                android:textColor="@color/ne_ink"
+                android:textSize="11sp"
+                android:letterSpacing="0.1"
+                android:background="@drawable/row_bg_ne"
+                android:foreground="@drawable/ripple_rounded_14dp_ne"
+                android:fontFamily="@font/jetbrains_mono_bold" />
+
+            <EditText
+                android:id="@+id/html_input"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/row_bg_ne"
+                android:gravity="top|start"
+                android:hint="...or paste the page source here"
+                android:textColorHint="@color/ne_ink_dim"
+                android:inputType="textMultiLine"
+                android:padding="12dp"
+                android:textColor="@color/ne_ink"
+                android:textSize="11sp"
+                android:fontFamily="@font/jetbrains_mono" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp">
+
+                <Button
+                    android:id="@+id/btn_parse"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="48dp"
+                    android:text="PARSE &amp; SAVE"
+                    android:textColor="@color/ne_bg"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.1"
+                    android:background="@drawable/btn_bg_ne"
+                    android:backgroundTint="@color/ne_accent"
+                    android:foreground="@drawable/ripple_rounded_12dp_ne"
+                    android:fontFamily="@font/jetbrains_mono_bold" />
+
+                <Button
+                    android:id="@+id/btn_clear"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:minHeight="48dp"
+                    android:text="CLEAR"
+                    android:textColor="@color/ne_ink"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.1"
+                    android:background="@drawable/row_bg_ne"
+                    android:foreground="@drawable/ripple_rounded_14dp_ne"
+                    android:fontFamily="@font/jetbrains_mono_bold" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_view_history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:minHeight="44dp"
+                android:text="SAVED SCHEDULES"
+                android:textColor="@color/ne_ink_dim"
+                android:textSize="10.5sp"
+                android:letterSpacing="0.1"
+                android:background="@drawable/row_bg_ne"
+                android:foreground="@drawable/ripple_rounded_14dp_ne"
+                android:fontFamily="@font/jetbrains_mono" />
+
+            <TextView
+                android:id="@+id/status_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:padding="10dp"
+                android:background="@drawable/row_bg_ne"
+                android:textColor="@color/ne_ink_dim"
+                android:textSize="11sp"
+                android:lineSpacingMultiplier="1.3"
+                android:fontFamily="@font/jetbrains_mono" />
+        </LinearLayout>
+
+                <LinearLayout
+            android:id="@+id/card_maps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg_ne"
+            android:layout_marginBottom="14dp">
+
+            <LinearLayout
+                android:id="@+id/header_maps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="@drawable/ripple_rounded_22dp_ne"
+                android:padding="18dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="MAPS SEARCH CONTEXT"
+                        android:textColor="@color/ne_accent"
+                        android:textSize="12sp"
+                        android:letterSpacing="0.15"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/summary_maps"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:text="Not set"
+                        android:textColor="@color/ne_ink_dim"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/jetbrains_mono" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/chevron_maps"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="12dp"
+                    android:src="@drawable/ic_chevron_down_ne" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/body_maps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:paddingBottom="18dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Optional. Added to the search when you tap a class and choose \u201cOpen Maps\u201d, so a room number like \u201cSS 301\u201d resolves to the right campus instead of a random result."
+                    android:textColor="@color/ne_ink_dim"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/jetbrains_mono" />
+
+                <EditText
+                    android:id="@+id/input_campus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/row_bg_ne"
+                    android:hint="Campus / school name (e.g. UP Diliman)"
+                    android:textColorHint="@color/ne_ink_dim"
+                    android:textColor="@color/ne_ink"
+                    android:textSize="11sp"
+                    android:padding="12dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/jetbrains_mono" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/maps_room_disclaimer"
+                    android:textColor="@color/ne_accent"
+                    android:textSize="10.5sp"
+                    android:lineSpacingMultiplier="1.3"
+                    android:fontFamily="@font/jetbrains_mono" />
+            </LinearLayout>
+        </LinearLayout>
+
+                <LinearLayout
+            android:id="@+id/card_semester"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg_ne"
+            android:layout_marginBottom="14dp">
+
+            <LinearLayout
+                android:id="@+id/header_semester"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="@drawable/ripple_rounded_22dp_ne"
+                android:padding="18dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="SEMESTER DATES"
+                        android:textColor="@color/ne_accent"
+                        android:textSize="12sp"
+                        android:letterSpacing="0.15"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/summary_semester"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:text="Not set"
+                        android:textColor="@color/ne_ink_dim"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/jetbrains_mono" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/chevron_semester"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="12dp"
+                    android:src="@drawable/ic_chevron_down_ne" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/body_semester"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:paddingBottom="18dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Optional. Set when this schedule actually applies, so the widgets and full schedule show a \u201cnot in session\u201d state outside these dates instead of always treating today as a normal school day."
+                    android:textColor="@color/ne_ink_dim"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/jetbrains_mono" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="14dp">
+
+                    <TextView
+                        android:layout_width="56dp"
+                        android:layout_height="wrap_content"
+                        android:text="STARTS"
+                        android:textColor="@color/ne_ink_dim"
+                        android:textSize="10sp"
+                        android:letterSpacing="0.1"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <Button
+                        android:id="@+id/btn_semester_start"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="44dp"
+                        android:text="Not set"
+                        android:textColor="@color/ne_ink"
+                        android:textSize="11sp"
+                        android:letterSpacing="0.05"
+                        android:background="@drawable/row_bg_ne"
+                        android:foreground="@drawable/ripple_rounded_14dp_ne"
+                        android:fontFamily="@font/jetbrains_mono" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:layout_width="56dp"
+                        android:layout_height="wrap_content"
+                        android:text="ENDS"
+                        android:textColor="@color/ne_ink_dim"
+                        android:textSize="10sp"
+                        android:letterSpacing="0.1"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <Button
+                        android:id="@+id/btn_semester_end"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="44dp"
+                        android:text="Ongoing"
+                        android:textColor="@color/ne_ink"
+                        android:textSize="11sp"
+                        android:letterSpacing="0.05"
+                        android:background="@drawable/row_bg_ne"
+                        android:foreground="@drawable/ripple_rounded_14dp_ne"
+                        android:fontFamily="@font/jetbrains_mono" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="No end date yet (still ongoing)"
+                        android:textColor="@color/ne_ink_dim"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/jetbrains_mono" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_semester_ongoing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_semester_clear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:minHeight="40dp"
+                    android:text="CLEAR DATES"
+                    android:textColor="@color/ne_ink_dim"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.1"
+                    android:background="@drawable/row_bg_ne"
+                    android:foreground="@drawable/ripple_rounded_14dp_ne"
+                    android:fontFamily="@font/jetbrains_mono" />
+            </LinearLayout>
+        </LinearLayout>
+
+                <LinearLayout
+            android:id="@+id/card_reminders"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg_ne"
+            android:layout_marginBottom="14dp">
+
+            <LinearLayout
+                android:id="@+id/header_reminders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="@drawable/ripple_rounded_22dp_ne"
+                android:padding="18dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="CLASS REMINDERS"
+                        android:textColor="@color/ne_accent"
+                        android:textSize="12sp"
+                        android:letterSpacing="0.15"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/summary_reminders"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:text="Off"
+                        android:textColor="@color/ne_ink_dim"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/jetbrains_mono" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/chevron_reminders"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="12dp"
+                    android:src="@drawable/ic_chevron_down_ne" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/body_reminders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:paddingBottom="18dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Optional. Get a notification a few minutes before each class starts. Off by default."
+                    android:textColor="@color/ne_ink_dim"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/jetbrains_mono" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="14dp">
+
+                    <TextView
+                        android:id="@+id/chip_reminder_off"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        android:minHeight="44dp"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="OFF"
+                        android:textSize="10.5sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05"
+                        android:background="@drawable/chip_filled_bg_ne"
+                        android:foreground="@drawable/ripple_rounded_10dp_ne"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/chip_reminder_5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        android:minHeight="44dp"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="5M"
+                        android:textSize="10.5sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05"
+                        android:background="@drawable/chip_outline_bg_ne"
+                        android:foreground="@drawable/ripple_rounded_10dp_ne"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/chip_reminder_10"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        android:minHeight="44dp"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="10M"
+                        android:textSize="10.5sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05"
+                        android:background="@drawable/chip_outline_bg_ne"
+                        android:foreground="@drawable/ripple_rounded_10dp_ne"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/chip_reminder_15"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        android:minHeight="44dp"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="15M"
+                        android:textSize="10.5sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05"
+                        android:background="@drawable/chip_outline_bg_ne"
+                        android:foreground="@drawable/ripple_rounded_10dp_ne"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/chip_reminder_30"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="44dp"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="30M"
+                        android:textSize="10.5sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05"
+                        android:background="@drawable/chip_outline_bg_ne"
+                        android:foreground="@drawable/ripple_rounded_10dp_ne"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/card_theme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg_ne"
+            android:padding="18dp"
+            android:layout_marginBottom="14dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="APP THEME"
+                android:textColor="@color/ne_accent"
+                android:textSize="12sp"
+                android:letterSpacing="0.15"
+                android:textStyle="bold"
+                    android:fontFamily="@font/jetbrains_mono_bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="14dp"
+                android:text="GE: maroon accent, follows your system light/dark setting. NE: fixed dark, Nothing-OS-inspired. Adaptive: matches your phone's wallpaper colors (Android 12+)."
+                android:textColor="@color/ne_ink_dim"
+                android:textSize="11sp"
+                android:lineSpacingMultiplier="1.3"
+                android:fontFamily="@font/jetbrains_mono" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/chip_theme_ge"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="6dp"
+                    android:minHeight="44dp"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="GE"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.05"
+                    android:background="@drawable/chip_filled_bg_ne"
+                    android:foreground="@drawable/ripple_rounded_10dp_ne"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                <TextView
+                    android:id="@+id/chip_theme_ne"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="6dp"
+                    android:minHeight="44dp"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="NE"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.05"
+                    android:background="@drawable/chip_outline_bg_ne"
+                    android:foreground="@drawable/ripple_rounded_10dp_ne"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                <TextView
+                    android:id="@+id/chip_theme_adaptive"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="44dp"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="ADAPTIVE"
+                    android:textSize="9.5sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.05"
+                    android:background="@drawable/chip_outline_bg_ne"
+                    android:foreground="@drawable/ripple_rounded_10dp_ne"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/card_notes_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg_ne"
+            android:padding="18dp"
+            android:layout_marginBottom="14dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="NOTES WIDGET"
+                android:textColor="@color/ne_accent"
+                android:textSize="12sp"
+                android:letterSpacing="0.15"
+                android:textStyle="bold"
+                android:fontFamily="@font/jetbrains_mono_bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Tap empty space in the widget to add a note"
+                    android:textColor="@color/ne_ink_dim"
+                    android:textSize="11sp"
+                    android:fontFamily="@font/jetbrains_mono" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch_notes_tap_empty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/card_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg_ne"
+            android:layout_marginBottom="14dp">
+
+            <LinearLayout
+                android:id="@+id/header_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="@drawable/ripple_rounded_22dp_ne"
+                android:padding="18dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="PROFILE"
+                        android:textColor="@color/ne_accent"
+                        android:textSize="12sp"
+                        android:letterSpacing="0.15"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/summary_profile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:text="Not set"
+                        android:textColor="@color/ne_ink_dim"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/jetbrains_mono" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/chevron_profile"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="12dp"
+                    android:src="@drawable/ic_chevron_down_ne" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/body_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:paddingBottom="18dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Optional. Only appears on the exported schedule image, and only for whichever fields you switch on below."
+                    android:textColor="@color/ne_ink_dim"
+                    android:textSize="12sp"
+                    android:lineSpacingMultiplier="1.3"
+                    android:fontFamily="@font/jetbrains_mono" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="14dp">
+
+                    <EditText
+                        android:id="@+id/input_profile_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="44dp"
+                        android:background="@drawable/row_bg_ne"
+                        android:hint="Full name"
+                        android:textColorHint="@color/ne_ink_dim"
+                        android:inputType="textPersonName|textCapWords"
+                        android:maxLines="1"
+                        android:padding="12dp"
+                        android:textColor="@color/ne_ink"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/jetbrains_mono" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_export_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp">
+
+                    <EditText
+                        android:id="@+id/input_profile_student_no"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="44dp"
+                        android:background="@drawable/row_bg_ne"
+                        android:hint="Student number"
+                        android:textColorHint="@color/ne_ink_dim"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:padding="12dp"
+                        android:textColor="@color/ne_ink"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/jetbrains_mono" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_export_student_no"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp">
+
+                    <EditText
+                        android:id="@+id/input_profile_course"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="44dp"
+                        android:background="@drawable/row_bg_ne"
+                        android:hint="Degree Program"
+                        android:textColorHint="@color/ne_ink_dim"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:padding="12dp"
+                        android:textColor="@color/ne_ink"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/jetbrains_mono" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_export_course"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp">
+
+                    <EditText
+                        android:id="@+id/input_profile_year_standing"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="44dp"
+                        android:background="@drawable/row_bg_ne"
+                        android:hint="Year &amp; standing, e.g. 3rd Year"
+                        android:textColorHint="@color/ne_ink_dim"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:padding="12dp"
+                        android:textColor="@color/ne_ink"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/jetbrains_mono" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_export_year_standing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/card_form5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg_ne"
+            android:layout_marginBottom="14dp">
+
+            <LinearLayout
+                android:id="@+id/header_form5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="@drawable/ripple_rounded_22dp_ne"
+                android:padding="18dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="FORM 5"
+                        android:textColor="@color/ne_accent"
+                        android:textSize="12sp"
+                        android:letterSpacing="0.15"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/summary_form5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:text="Not uploaded"
+                        android:textColor="@color/ne_ink_dim"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/jetbrains_mono" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/chevron_form5"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="12dp"
+                    android:src="@drawable/ic_chevron_down_ne" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/body_form5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:paddingBottom="18dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Optional. Keep a copy of your Form 5 (official study load) attached for quick access -- stored only on this device, never uploaded anywhere."
+                    android:textColor="@color/ne_ink_dim"
+                    android:textSize="12sp"
+                    android:lineSpacingMultiplier="1.3"
+                    android:fontFamily="@font/jetbrains_mono" />
+
+                <TextView
+                    android:id="@+id/text_form5_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:maxLines="1"
+                    android:ellipsize="middle"
+                    android:text="No file uploaded yet."
+                    android:textColor="@color/ne_ink"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/jetbrains_mono" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="12dp">
+
+                    <Button
+                        android:id="@+id/btn_form5_primary"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="44dp"
+                        android:text="UPLOAD FORM 5 PDF"
+                        android:textColor="@color/ne_ink"
+                        android:textSize="10.5sp"
+                        android:letterSpacing="0.05"
+                        android:textStyle="bold"
+                        android:background="@drawable/row_bg_ne"
+                        android:foreground="@drawable/ripple_rounded_14dp_ne"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <Button
+                        android:id="@+id/btn_form5_replace"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:minHeight="44dp"
+                        android:text="REPLACE"
+                        android:textColor="@color/ne_ink"
+                        android:textSize="10.5sp"
+                        android:letterSpacing="0.05"
+                        android:textStyle="bold"
+                        android:background="@drawable/row_bg_ne"
+                        android:foreground="@drawable/ripple_rounded_14dp_ne"
+                        android:visibility="gone"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/text_form5_remove"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:minHeight="32dp"
+                    android:gravity="center"
+                    android:text="Remove"
+                    android:textColor="@color/ne_ink_dim"
+                    android:textSize="11sp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="@drawable/ripple_rounded_10dp_ne"
+                    android:visibility="gone"
+                    android:fontFamily="@font/jetbrains_mono" />
+            </LinearLayout>
+        </LinearLayout>
+
+                        <LinearLayout
+            android:id="@+id/card_edit_class_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg_ne"
+            android:padding="18dp"
+            android:layout_marginBottom="18dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="EDIT CLASS INFO"
+                    android:textColor="@color/ne_accent"
+                    android:textSize="12sp"
+                    android:letterSpacing="0.15"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/jetbrains_mono_bold" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch_edit_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Tap a class below to manually set or correct its room, instructor, or units, any time -- or add a new one from scratch."
+                android:textColor="@color/ne_ink_dim"
+                android:textSize="12sp"
+                android:fontFamily="@font/jetbrains_mono" />
+
+            <Button
+                android:id="@+id/btn_add_class"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:minHeight="44dp"
+                android:text="+ ADD CLASS"
+                android:textColor="@color/ne_ink"
+                android:textSize="11sp"
+                android:letterSpacing="0.08"
+                android:textStyle="bold"
+                android:fontFamily="@font/jetbrains_mono_bold"
+                android:background="@drawable/row_bg_ne"
+                android:foreground="@drawable/ripple_rounded_14dp_ne" />
+
+            <LinearLayout
+                android:id="@+id/edit_class_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="12dp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+                <Button
+            android:id="@+id/btn_done"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="52dp"
+            android:text="DONE"
+            android:textColor="@color/ne_bg"
+            android:textSize="12sp"
+            android:letterSpacing="0.12"
+            android:background="@drawable/btn_bg_ne"
+            android:backgroundTint="@color/ne_accent"
+            android:foreground="@drawable/ripple_rounded_12dp_ne"
+            android:fontFamily="@font/jetbrains_mono_bold" />
+
+        <LinearLayout
+            android:id="@+id/wizard_nav_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/btn_wizard_back"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="52dp"
+                android:text="BACK"
+                android:textColor="@color/ne_ink"
+                android:textSize="12sp"
+                android:letterSpacing="0.12"
+                android:background="@drawable/row_bg_ne"
+                android:foreground="@drawable/ripple_rounded_14dp_ne"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:fontFamily="@font/jetbrains_mono_bold" />
+
+            <Button
+                android:id="@+id/btn_wizard_next"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:layout_marginStart="10dp"
+                android:minHeight="52dp"
+                android:text="NEXT"
+                android:textColor="@color/ne_bg"
+                android:textSize="12sp"
+                android:letterSpacing="0.12"
+                android:background="@drawable/btn_bg_ne"
+                android:backgroundTint="@color/ne_accent"
+                android:foreground="@drawable/ripple_rounded_12dp_ne"
+                android:textStyle="bold"
+                android:fontFamily="@font/jetbrains_mono_bold" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Tap Done to drop the widget on your home screen (or to close after re-loading a schedule)."
+            android:textColor="@color/ne_ink_dim"
+            android:textSize="10.5sp"
+            android:gravity="center"
+            android:fontFamily="@font/jetbrains_mono" />
+
+                <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/ne_line"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/footer_credits"
+            android:textColor="@color/ne_ink_dim"
+            android:textSize="8.5sp"
+            android:gravity="center"
+            android:fontFamily="@font/jetbrains_mono" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/footer_disclaimer"
+            android:textColor="@color/ne_ink_dim"
+            android:textSize="8.5sp"
+            android:gravity="center"
+            android:fontFamily="@font/jetbrains_mono" />
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_bg_ne"
+    android:clipToOutline="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingStart="14dp"
+        android:paddingTop="14dp"
+        android:paddingEnd="14dp"
+        android:paddingBottom="14dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="7dp"
+                android:layout_height="7dp"
+                android:src="@drawable/dot_accent_ne" />
+
+            <TextView
+                android:id="@+id/header_brand_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:paddingStart="7dp"
+                android:paddingEnd="7dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:text="NOTES"
+                android:textColor="@color/ne_ink_dim"
+                android:textSize="12sp"
+                android:letterSpacing="0.2"
+                android:fontFamily="@font/jetbrains_mono" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/btn_settings"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_settings_ne" />
+
+            <ImageView
+                android:id="@+id/btn_archive"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_archive_ne" />
+
+            <ImageView
+                android:id="@+id/btn_copy_all"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_copy_ne" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="26dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:id="@+id/notes_count_label"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:textColor="@color/ne_ink_dim"
+                android:textSize="9.5sp"
+                android:letterSpacing="0.1"
+                android:maxLines="1"
+                android:fontFamily="@font/jetbrains_mono" />
+
+            <TextView
+                android:id="@+id/btn_view_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:gravity="center"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="LIST"
+                android:textColor="@color/ne_ink_dim"
+                android:textStyle="bold"
+                android:textSize="8sp"
+                android:letterSpacing="0.06"
+                android:background="@drawable/chip_outline_bg_ne"
+                android:fontFamily="@font/jetbrains_mono_bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:id="@+id/btn_add_note"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:background="@drawable/chip_filled_bg_ne">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="+ NOTE"
+                    android:textColor="@color/ne_bg"
+                    android:textStyle="bold"
+                    android:textSize="8.5sp"
+                    android:letterSpacing="0.08"
+                android:fontFamily="@font/jetbrains_mono_bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/notes_list_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <ListView
+                android:id="@+id/notes_list_listview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null"
+                android:dividerHeight="0dp"
+                android:scrollbars="none"
+                android:listSelector="@android:color/transparent"
+                android:clipToPadding="false" />
+
+            <LinearLayout
+                android:id="@+id/notes_list_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="No notes yet."
+                    android:textColor="@color/ne_ink"
+                    android:textStyle="bold"
+                    android:textSize="13.5sp"
+                    android:fontFamily="@font/jetbrains_mono_bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Tap + NOTE for a subject note, deadline, or to-do."
+                    android:textColor="@color/ne_ink_dim"
+                    android:textSize="11sp"
+                    android:maxLines="3"
+                    android:layout_marginTop="4dp"
+                android:fontFamily="@font/jetbrains_mono" />
+            </LinearLayout>
+        </FrameLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

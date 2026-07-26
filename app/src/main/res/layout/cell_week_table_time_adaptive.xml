@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cell_time_text"
+    android:layout_width="44dp"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:paddingTop="3dp"
+    android:paddingBottom="3dp"
+    android:textColor="@color/adaptive_ink_dim"
+    android:textSize="8sp" />

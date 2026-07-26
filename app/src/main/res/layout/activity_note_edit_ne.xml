@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/ne_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:id="@+id/btn_back"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:gravity="center"
+            android:text="\u2190"
+            android:textColor="@color/ne_ink"
+            android:textSize="20sp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless" />
+
+        <TextView
+            android:id="@+id/edit_title_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:text="ADD NOTE"
+            android:textColor="@color/ne_ink_dim"
+            android:textSize="12sp"
+            android:letterSpacing="0.2"
+                android:fontFamily="@font/jetbrains_mono" />
+
+        <TextView
+            android:id="@+id/btn_copy"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:minWidth="36dp"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="COPY"
+            android:textColor="@color/ne_ink_dim"
+            android:textStyle="bold"
+            android:textSize="9.5sp"
+            android:letterSpacing="0.06"
+            android:background="@drawable/chip_outline_bg_ne"
+                android:fontFamily="@font/jetbrains_mono_bold" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SUBJECT"
+                android:textColor="@color/ne_ink_dim"
+                android:textSize="10sp"
+                android:letterSpacing="0.15"
+                android:fontFamily="@font/jetbrains_mono" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:id="@+id/subject_chip_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+            </HorizontalScrollView>
+
+            <LinearLayout
+                android:id="@+id/subject_info_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/row_bg_ne"
+                android:padding="10dp"
+                android:layout_marginTop="8dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/subject_info_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/ne_ink"
+                    android:textStyle="bold"
+                    android:textSize="11.5sp"
+                    android:fontFamily="@font/jetbrains_mono_bold" />
+
+                <TextView
+                    android:id="@+id/subject_info_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:textColor="@color/ne_ink_dim"
+                    android:textSize="9.5sp"
+                    android:fontFamily="@font/jetbrains_mono" />
+
+                <TextView
+                    android:id="@+id/subject_info_schedule"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:textColor="@color/ne_ink_dim"
+                    android:textSize="10sp"
+                    android:fontFamily="@font/jetbrains_mono" />
+
+                <TextView
+                    android:id="@+id/subject_info_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/ne_ink_dim"
+                    android:textSize="10sp"
+                    android:fontFamily="@font/jetbrains_mono" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="TITLE"
+                android:textColor="@color/ne_ink_dim"
+                android:textSize="10sp"
+                android:letterSpacing="0.15"
+                android:fontFamily="@font/jetbrains_mono" />
+
+            <EditText
+                android:id="@+id/input_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/row_bg_ne"
+                android:padding="12dp"
+                android:hint="e.g. Problem Set 3"
+                android:textColorHint="@color/ne_ink_dim"
+                android:textColor="@color/ne_ink"
+                android:textSize="13sp"
+                android:maxLines="1"
+                android:imeOptions="actionNext"
+                android:fontFamily="@font/jetbrains_mono" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="DETAILS"
+                android:textColor="@color/ne_ink_dim"
+                android:textSize="10sp"
+                android:letterSpacing="0.15"
+                android:fontFamily="@font/jetbrains_mono" />
+
+            <EditText
+                android:id="@+id/input_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:minLines="3"
+                android:gravity="top"
+                android:background="@drawable/row_bg_ne"
+                android:padding="12dp"
+                android:hint="Optional -- links, reminders, anything else (optional)"
+                android:textColorHint="@color/ne_ink_dim"
+                android:textColor="@color/ne_ink"
+                android:textSize="13sp"
+                android:inputType="textMultiLine|textCapSentences"
+                android:imeOptions="actionDone"
+                android:fontFamily="@font/jetbrains_mono" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="DEADLINE"
+                android:textColor="@color/ne_ink_dim"
+                android:textSize="10sp"
+                android:letterSpacing="0.15"
+                android:fontFamily="@font/jetbrains_mono" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="6dp">
+
+                <TextView
+                    android:id="@+id/btn_set_deadline"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="44dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="SET DEADLINE"
+                    android:textColor="@color/ne_ink_dim"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.05"
+                    android:background="@drawable/row_bg_ne"
+                    android:foreground="@drawable/ripple_rounded_14dp_ne"
+                android:fontFamily="@font/jetbrains_mono" />
+
+                <TextView
+                    android:id="@+id/btn_clear_deadline"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center"
+                    android:text="\u2715"
+                    android:textColor="@color/ne_ink_dim"
+                    android:textSize="15sp"
+                    android:background="@drawable/row_bg_ne"
+                    android:foreground="@drawable/ripple_rounded_14dp_ne"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/btn_set_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="44dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="SET TIME"
+                    android:textColor="@color/ne_ink_dim"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.05"
+                    android:background="@drawable/row_bg_ne"
+                    android:foreground="@drawable/ripple_rounded_14dp_ne"
+                    android:visibility="gone"
+                android:fontFamily="@font/jetbrains_mono" />
+
+                <TextView
+                    android:id="@+id/btn_clear_time"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center"
+                    android:text="\u2715"
+                    android:textColor="@color/ne_ink_dim"
+                    android:textSize="15sp"
+                    android:background="@drawable/row_bg_ne"
+                    android:foreground="@drawable/ripple_rounded_14dp_ne"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/reminder_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="REMIND ME"
+                    android:textColor="@color/ne_ink_dim"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.15"
+                    android:fontFamily="@font/jetbrains_mono" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="6dp">
+
+                    <TextView
+                        android:id="@+id/chip_reminder_off"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        android:minHeight="40dp"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:text="OFF"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05"
+                        android:background="@drawable/chip_filled_bg_ne"
+                        android:foreground="@drawable/ripple_rounded_10dp_ne"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/chip_reminder_1h"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        android:minHeight="40dp"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:text="1H"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05"
+                        android:background="@drawable/chip_outline_bg_ne"
+                        android:foreground="@drawable/ripple_rounded_10dp_ne"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/chip_reminder_3h"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        android:minHeight="40dp"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:text="3H"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05"
+                        android:background="@drawable/chip_outline_bg_ne"
+                        android:foreground="@drawable/ripple_rounded_10dp_ne"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/chip_reminder_1d"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        android:minHeight="40dp"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:text="1D"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05"
+                        android:background="@drawable/chip_outline_bg_ne"
+                        android:foreground="@drawable/ripple_rounded_10dp_ne"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+
+                    <TextView
+                        android:id="@+id/chip_reminder_3d"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="40dp"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:text="3D"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05"
+                        android:background="@drawable/chip_outline_bg_ne"
+                        android:foreground="@drawable/ripple_rounded_10dp_ne"
+                        android:fontFamily="@font/jetbrains_mono_bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:id="@+id/chip_mark_done"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="36dp"
+                    android:gravity="center"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="MARK AS DONE"
+                    android:textColor="@color/ne_ink_dim"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.04"
+                    android:background="@drawable/chip_outline_bg_ne"
+                    android:fontFamily="@font/jetbrains_mono_bold" />
+
+                <TextView
+                    android:id="@+id/chip_urgent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:minHeight="36dp"
+                    android:gravity="center"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="MARK AS URGENT"
+                    android:textColor="@color/ne_error"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.04"
+                    android:background="@drawable/chip_outline_bg_ne"
+                    android:fontFamily="@font/jetbrains_mono_bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="28dp">
+
+                <TextView
+                    android:id="@+id/btn_delete"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:minHeight="48dp"
+                    android:gravity="center"
+                    android:text="DELETE"
+                    android:textColor="@color/ne_error"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:letterSpacing="0.06"
+                    android:background="@drawable/chip_outline_bg_ne"
+                    android:foreground="@drawable/ripple_rounded_14dp_ne"
+                android:fontFamily="@font/jetbrains_mono_bold" />
+
+                <TextView
+                    android:id="@+id/btn_save"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="48dp"
+                    android:gravity="center"
+                    android:text="SAVE"
+                    android:textColor="@color/ne_bg"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:letterSpacing="0.06"
+                    android:background="@drawable/chip_filled_bg_ne"
+                    android:foreground="@drawable/ripple_rounded_14dp_ne"
+                android:fontFamily="@font/jetbrains_mono_bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

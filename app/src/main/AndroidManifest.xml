@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Only needed pre-scoped-storage (API <=28) to save the exported schedule
+         image into the shared Pictures gallery via MediaStore. On API 29+, an
+         app can insert into MediaStore's own collection without this permission. -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
+    <!-- Back the optional, off-by-default class and deadline reminder
+         settings. POST_NOTIFICATIONS (33+) and SCHEDULE_EXACT_ALARM (31+) are
+         requested from ConfigureActivity only once either is turned on.
+         RECEIVE_BOOT_COMPLETED puts alarms back after a reboot. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.CRSScheduler.GE"
+        android:supportsRtl="true">
+
+        <!-- Tier 1 smart-stack card: today's classes. No launcher activity on
+             purpose — this app is added to the home screen only through the
+             widget picker (long-press home screen -> Widgets -> CRS Scheduler). -->
+        <receiver
+            android:name=".widget.TodayWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="dev.marquinhhou.crsscheduler.TODAY_TICK" />
+                <action android:name="dev.marquinhhou.crsscheduler.TODAY_TOGGLE_PREVIEW" />
+                <action android:name="dev.marquinhhou.crsscheduler.TODAY_TOGGLE_TOMORROW" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/today_widget_info" />
+        </receiver>
+
+        <!-- Tier 2 smart-stack card: this week's summary. Same footprint as the
+             Today widget so a launcher's native widget-stacking (drag one on top
+             of the other) can combine them into a single swipeable stack. -->
+        <receiver
+            android:name=".widget.WeekWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="dev.marquinhhou.crsscheduler.WEEK_TICK" />
+                <action android:name="dev.marquinhhou.crsscheduler.WEEK_TOGGLE_PREVIEW" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/week_widget_info" />
+        </receiver>
+
+        <!-- Tier 3: subject notes and to-dos, its own widget. -->
+        <receiver
+            android:name=".widget.NotesWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="dev.marquinhhou.crsscheduler.NOTES_TICK" />
+                <action android:name="dev.marquinhhou.crsscheduler.NOTES_ROW_TAP" />
+                <action android:name="dev.marquinhhou.crsscheduler.NOTES_TOGGLE_VIEW" />
+                <action android:name="dev.marquinhhou.crsscheduler.NOTES_COPY_ALL" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/notes_widget_info" />
+        </receiver>
+
+        <!-- Required config screen: shown once when the Today widget is dropped
+             on the home screen, and reused whenever the user taps the gear icon
+             on either widget to re-paste a schedule or edit class info. Also
+             where the GE/NE/Adaptive theme picker lives. -->
+        <activity
+            android:name=".ui.ConfigureActivity"
+            android:exported="true"
+            android:theme="@style/Theme.CRSScheduler.GE"
+            android:label="@string/configure_title">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <!-- The "entire schedule" in-app feature, reached from either widget's
+             "View Full Schedule" row. -->
+        <activity
+            android:name=".ui.WeekScheduleActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CRSScheduler.GE"
+            android:label="@string/week_schedule_title" />
+
+        <!-- Browse/reactivate/delete previously-active schedules, reached from
+             the "SAVED SCHEDULES" button on the config screen. -->
+        <activity
+            android:name=".ui.ScheduleHistoryActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CRSScheduler.GE"
+            android:label="Saved Schedules" />
+
+        <!-- Add/edit screen for a note. Not exported. -->
+        <activity
+            android:name=".ui.NoteEditActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CRSScheduler.GE"
+            android:label="Note"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Browse/restore/delete archived notes. -->
+        <activity
+            android:name=".ui.ArchivedNotesActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CRSScheduler.GE"
+            android:label="Archived Notes" />
+
+        <!-- Small dialog-themed popup asking whether to open a maps app, shown
+             when a class row is tapped on either widget. Not exported: it's only
+             ever launched via our own widgets' PendingIntents. -->
+        <activity
+            android:name=".ui.WidgetActionActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CRSScheduler.GE.Dialog" />
+
+        <!-- The widget's Save button: a small dialog-themed popup choosing Image or .ics.
+             Not exported: only ever launched via our own widgets' PendingIntents. -->
+        <activity
+            android:name=".ui.WidgetSaveActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CRSScheduler.GE.Dialog" />
+
+        <!-- The widget's Form 5 button when nothing's uploaded yet: a small dialog-themed
+             popup prompting for the PDF right there. Not exported: only ever launched via
+             our own widgets' PendingIntents. -->
+        <activity
+            android:name=".ui.WidgetForm5PromptActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CRSScheduler.GE.Dialog" />
+
+        <!-- Backs the scrollable class list inside the Today widget. RemoteViews
+             has no plain scroll container; real in-widget scrolling only exists
+             through a collection view (ListView here) backed by a service like
+             this, and the OS requires BIND_REMOTEVIEWS so only the system/launcher
+             can bind to it. -->
+        <service
+            android:name=".widget.TodayClassesRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <!-- Backs the scrollable notes list. -->
+        <service
+            android:name=".widget.NotesRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <!-- Fires the actual class-reminder notification when a scheduled
+             AlarmManager alarm goes off. Not exported: only our own alarms
+             target it, via an explicit intent. -->
+        <receiver
+            android:name=".reminders.ClassReminderReceiver"
+            android:exported="false" />
+
+        <!-- Same, for a single note's deadline reminder. Not exported. -->
+        <receiver
+            android:name=".reminders.DeadlineReminderReceiver"
+            android:exported="false" />
+
+        <!-- AlarmManager alarms don't survive a reboot — this puts class
+             reminders back afterwards. -->
+        <receiver
+            android:name=".reminders.BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Re-anchors reminder/tick alarms when the wall clock jumps (manual clock or
+             timezone change) or the day rolls over, so nothing fires at the wrong moment. -->
+        <receiver
+            android:name=".reminders.TimeChangeReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+</manifest>

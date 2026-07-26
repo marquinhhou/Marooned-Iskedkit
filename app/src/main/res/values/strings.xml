@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CRS Scheduler</string>
+    <string name="widget_description_today">Today\'s classes at a glance.</string>
+    <string name="widget_description_week">This week\'s summary -- tap for the full schedule. Stack it with the Today widget for a smart-stack-style pair.</string>
+    <string name="widget_description_notes">Subject notes, deadlines, and to-dos -- plus a Miscellaneous spot for anything not tied to a class.</string>
+    <string name="configure_title">Load Schedule</string>
+    <string name="week_schedule_title">Full Schedule</string>
+
+    <string name="terms_title">Terms of Use</string>
+    <string name="terms_body">This app is an independent, unofficial student project. It is not affiliated with, endorsed by, or connected to the University of the Philippines Diliman, the UP School of Statistics, or the UP Computerized Registration System (CRS).\n\nWHERE YOUR DATA COMES FROM\nYou paste or upload a saved copy of your own CRS schedule page, or import a .ics calendar file instead (e.g. one exported from here previously, or from another calendar/university system). The app does not log into CRS, does not verify your enlistment, and won\'t know about changes you make in CRS afterward -- re-load the page (or re-import) here whenever your schedule changes.\n\nCLASS INFO EDITS\nRoom, instructor, and units are shown exactly as CRS (or your imported .ics file) reported them. Any of these can be manually corrected at any time under Edit Class Info, not just for TBA rows or blank fields. Manually entered info is never verified by the app -- please confirm it against an official source before relying on it.\n\nMAPS FEATURE\nTapping a class and choosing \"Open Maps\" hands off a text search to whichever maps app is on your device. Results aren\'t guaranteed to point to the right building or room, especially for anything you typed in yourself. Don\'t rely on it for exams, first-day classes, or anything time-sensitive without double-checking.\n\nCLASS &amp; DEADLINE REMINDERS\nIf you turn on class or deadline reminders, the app schedules local notifications a few minutes before each class starts, or before a note\'s deadline arrives. These are set entirely on-device using Android\'s alarm and notification systems -- no data leaves your phone to make this work.\n\nYOUR DATA STAYS ON YOUR DEVICE\nYour schedule and settings are stored locally on this device only. Nothing is uploaded, transmitted, or shared with any server or third party. Exporting your schedule (as an image or a .ics file) writes a file to your own device for you to share or open however you choose -- the app itself doesn\'t send it anywhere.\n\nNO WARRANTY\nThis app is provided as-is, with no guarantee of accuracy or fitness for any particular purpose. You\'re responsible for verifying your official schedule and enlistment directly through CRS.\n\nBy tapping \u201cI Understand &amp; Agree\u201d you accept these terms.</string>
+    <string name="terms_agree">I UNDERSTAND &amp; AGREE</string>
+    <string name="terms_decline">DECLINE</string>
+
+    <string name="footer_credits">Built by marquinhhou (GitHub) \u00B7 Credits: Marc Dizon, BS Statistics</string>
+    <string name="footer_disclaimer">Independent student project. Not affiliated with the University of the Philippines Diliman or the UP School of Statistics.</string>
+
+    <string name="maps_room_disclaimer">CRS only lists the room (e.g. \u201cSE AUDI\u201d), not the building, so the map result may point to the wrong place. Correct it any time under Edit Class Info below.</string>
+    <string name="maps_room_disclaimer_short">CRS only gives the room, not the building \u2014 if this opens the wrong spot, fix it under Edit Class Info in Settings.</string>
+</resources>

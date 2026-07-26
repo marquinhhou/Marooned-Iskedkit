@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:maxHeight="560dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ADD CLASS"
+            android:textColor="@color/ge_ink"
+            android:textStyle="bold"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="NAME"
+            android:textColor="@color/ge_ink_dim"
+            android:textSize="10sp"
+            android:letterSpacing="0.15" />
+
+        <EditText
+            android:id="@+id/dialog_add_input_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/row_bg_ge"
+            android:padding="12dp"
+            android:hint="e.g. Math 17 THY-1"
+            android:textColorHint="@color/ge_ink_dim"
+            android:textColor="@color/ge_ink"
+            android:textSize="13sp"
+            android:imeOptions="actionNext" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="DAYS"
+            android:textColor="@color/ge_ink_dim"
+            android:textSize="10sp"
+            android:letterSpacing="0.15" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="6dp">
+
+            <TextView
+                android:id="@+id/chip_add_day_0"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:minHeight="36dp"
+                android:gravity="center"
+                android:text="Su"
+                android:textSize="10.5sp"
+                android:textStyle="bold"
+                android:background="@drawable/chip_outline_bg_ge"
+                android:foreground="@drawable/ripple_rounded_10dp_ge" />
+
+            <TextView
+                android:id="@+id/chip_add_day_1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:minHeight="36dp"
+                android:gravity="center"
+                android:text="M"
+                android:textSize="10.5sp"
+                android:textStyle="bold"
+                android:background="@drawable/chip_outline_bg_ge"
+                android:foreground="@drawable/ripple_rounded_10dp_ge" />
+
+            <TextView
+                android:id="@+id/chip_add_day_2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:minHeight="36dp"
+                android:gravity="center"
+                android:text="T"
+                android:textSize="10.5sp"
+                android:textStyle="bold"
+                android:background="@drawable/chip_outline_bg_ge"
+                android:foreground="@drawable/ripple_rounded_10dp_ge" />
+
+            <TextView
+                android:id="@+id/chip_add_day_3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:minHeight="36dp"
+                android:gravity="center"
+                android:text="W"
+                android:textSize="10.5sp"
+                android:textStyle="bold"
+                android:background="@drawable/chip_outline_bg_ge"
+                android:foreground="@drawable/ripple_rounded_10dp_ge" />
+
+            <TextView
+                android:id="@+id/chip_add_day_4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:minHeight="36dp"
+                android:gravity="center"
+                android:text="Th"
+                android:textSize="10.5sp"
+                android:textStyle="bold"
+                android:background="@drawable/chip_outline_bg_ge"
+                android:foreground="@drawable/ripple_rounded_10dp_ge" />
+
+            <TextView
+                android:id="@+id/chip_add_day_5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:minHeight="36dp"
+                android:gravity="center"
+                android:text="F"
+                android:textSize="10.5sp"
+                android:textStyle="bold"
+                android:background="@drawable/chip_outline_bg_ge"
+                android:foreground="@drawable/ripple_rounded_10dp_ge" />
+
+            <TextView
+                android:id="@+id/chip_add_day_6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="36dp"
+                android:gravity="center"
+                android:text="S"
+                android:textSize="10.5sp"
+                android:textStyle="bold"
+                android:background="@drawable/chip_outline_bg_ge"
+                android:foreground="@drawable/ripple_rounded_10dp_ge" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="STARTS"
+                    android:textColor="@color/ge_ink_dim"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.15" />
+
+                <Button
+                    android:id="@+id/btn_add_start_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:minHeight="44dp"
+                    android:text="Set"
+                    android:textColor="@color/ge_ink"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.05"
+                    android:background="@drawable/row_bg_ge"
+                    android:foreground="@drawable/ripple_rounded_14dp_ge" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ENDS"
+                    android:textColor="@color/ge_ink_dim"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.15" />
+
+                <Button
+                    android:id="@+id/btn_add_end_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:minHeight="44dp"
+                    android:text="Set"
+                    android:textColor="@color/ge_ink"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.05"
+                    android:background="@drawable/row_bg_ge"
+                    android:foreground="@drawable/ripple_rounded_14dp_ge" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="ROOM / LOCATION"
+            android:textColor="@color/ge_ink_dim"
+            android:textSize="10sp"
+            android:letterSpacing="0.15" />
+
+        <EditText
+            android:id="@+id/dialog_add_input_room"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/row_bg_ge"
+            android:padding="12dp"
+            android:hint="e.g. SS 301 (optional)"
+            android:textColorHint="@color/ge_ink_dim"
+            android:textColor="@color/ge_ink"
+            android:textSize="13sp"
+            android:imeOptions="actionNext" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="INSTRUCTOR"
+            android:textColor="@color/ge_ink_dim"
+            android:textSize="10sp"
+            android:letterSpacing="0.15" />
+
+        <EditText
+            android:id="@+id/dialog_add_input_instructor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/row_bg_ge"
+            android:padding="12dp"
+            android:hint="e.g. Dela Cruz, J. (optional)"
+            android:textColorHint="@color/ge_ink_dim"
+            android:textColor="@color/ge_ink"
+            android:textSize="13sp"
+            android:imeOptions="actionNext" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="UNITS"
+            android:textColor="@color/ge_ink_dim"
+            android:textSize="10sp"
+            android:letterSpacing="0.15" />
+
+        <EditText
+            android:id="@+id/dialog_add_input_units"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/row_bg_ge"
+            android:padding="12dp"
+            android:hint="e.g. 3.0"
+            android:textColorHint="@color/ge_ink_dim"
+            android:textColor="@color/ge_ink"
+            android:textSize="13sp"
+            android:inputType="numberDecimal"
+            android:imeOptions="actionDone" />
+
+    </LinearLayout>
+</ScrollView>

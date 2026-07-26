@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Not theme-tripled: colors set in code via Theming, not XML. -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    android:minHeight="36dp"
+    android:minWidth="56dp"
+    android:gravity="center"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
+    android:textSize="10.5sp"
+    android:textStyle="bold"
+    android:letterSpacing="0.04"
+    android:maxLines="1"
+    android:ellipsize="end" />

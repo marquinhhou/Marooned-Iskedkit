@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:padding="32dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="22dp"
+        android:background="@drawable/card_bg_now_ge">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="FORM 5"
+            android:textColor="@color/ge_accent"
+            android:textSize="10sp"
+            android:letterSpacing="0.2"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="No Form 5 uploaded yet."
+            android:textColor="@color/ge_ink"
+            android:textStyle="bold"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Attach a copy of your official study load for quick access -- stored only on this device."
+            android:textColor="@color/ge_ink_dim"
+            android:textSize="11.5sp" />
+
+        <Button
+            android:id="@+id/btn_upload_form5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:minHeight="48dp"
+            android:text="UPLOAD FORM 5 PDF"
+            android:textColor="@color/ge_bg"
+            android:textSize="11.5sp"
+            android:letterSpacing="0.1"
+            android:background="@drawable/btn_bg_ge"
+            android:backgroundTint="@color/ge_accent"
+            android:foreground="@drawable/ripple_rounded_12dp_ge"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/btn_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:minHeight="32dp"
+            android:gravity="center"
+            android:text="Cancel"
+            android:textColor="@color/ge_ink_dim"
+            android:textSize="11.5sp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="@drawable/ripple_rounded_10dp_ge" />
+    </LinearLayout>
+</FrameLayout>

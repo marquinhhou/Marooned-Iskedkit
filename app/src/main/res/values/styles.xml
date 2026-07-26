@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- DayNight parent + values-night/colors.xml means GE follows the
+         device's light/dark setting automatically. Default theme family. -->
+    <style name="Theme.CRSScheduler.GE" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/ge_bg</item>
+        <item name="colorPrimary">@color/ge_accent</item>
+        <item name="colorPrimaryDark">@color/ge_bg</item>
+        <item name="colorAccent">@color/ge_accent</item>
+    </style>
+
+    <style name="Theme.CRSScheduler.GE.Dialog" parent="Theme.AppCompat.DayNight.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="colorAccent">@color/ge_accent</item>
+    </style>
+
+    <!-- Fixed dark, not DayNight; NE never follows the system setting. -->
+    <style name="Theme.CRSScheduler.NE" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@color/ne_bg</item>
+        <item name="colorPrimary">@color/ne_accent</item>
+        <item name="colorPrimaryDark">@color/ne_bg</item>
+        <item name="colorAccent">@color/ne_accent</item>
+    </style>
+
+    <style name="Theme.CRSScheduler.NE.Dialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="colorAccent">@color/ne_accent</item>
+    </style>
+
+    <!-- DayNight parent; colors themselves alias the system's wallpaper
+         palette (see colors.xml) rather than a fixed hue. -->
+    <style name="Theme.CRSScheduler.Adaptive" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/adaptive_bg</item>
+        <item name="colorPrimary">@color/adaptive_accent</item>
+        <item name="colorPrimaryDark">@color/adaptive_bg</item>
+        <item name="colorAccent">@color/adaptive_accent</item>
+    </style>
+
+    <style name="Theme.CRSScheduler.Adaptive.Dialog" parent="Theme.AppCompat.DayNight.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="colorAccent">@color/adaptive_accent</item>
+    </style>
+</resources>
