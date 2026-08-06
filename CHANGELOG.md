@@ -1,3 +1,14 @@
+# Changelog: CRS Scheduler v2.1.1
+
+## Fixed
+
+- **Importing a CRS schedule page no longer comes back empty.** The "My Enlisted Classes" table parser was reading the wrong columns — thrown off by a Status column CRS adds to that table — so every class row was silently dropped during import. All enlisted classes now import correctly.
+
+## Improved
+
+- **Schedule import is more resilient to CRS layout changes** — column positions are now detected from the table's own header labels instead of assumed fixed positions, so a future column reorder won't silently break import again.
+- **Cross-listed classes (two class codes sharing one CRS row) now import as two separate classes** instead of getting merged into one garbled entry.
+
 # Changelog: CRS Scheduler v2.1
 
 ## New

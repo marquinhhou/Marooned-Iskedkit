@@ -30,4 +30,13 @@
     <color name="adaptive_accent_dim">@android:color/system_accent1_700</color>
     <color name="adaptive_green">#35D07F</color>
     <color name="adaptive_error">#FF6B5E</color>
+
+    <!-- Dark-mode overrides for the back-compat plain aliases, see values/colors.xml. -->
+    <color name="bg">@color/ge_bg</color>
+    <color name="surface">@color/ge_surface</color>
+    <color name="line">@color/ge_line</color>
+    <color name="line_strong">@color/ge_line_strong</color>
+    <color name="ink">@color/ge_ink</color>
+    <color name="ink_dim">@color/ge_ink_dim</color>
+    <color name="red">@color/ge_accent</color>
 </resources>

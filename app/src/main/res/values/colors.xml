@@ -60,4 +60,20 @@
     <color name="ic_background">#1B1114</color>
     <color name="ic_foreground">#F6F6F3</color>
     <color name="ic_accent">#C4444A</color>
+
+    <!--
+        Back-compat plain aliases for widget/legacy layouts (row_class,
+        week_widget, today_widget, activity_configure, dialog_edit_class,
+        card_bg/chip/dot drawables, etc.) that predate the GE/NE/Adaptive
+        split and are not routed through Theming.pick(). These always
+        resolve to the GE palette (the default family); overridden again
+        in values-night for dark mode.
+    -->
+    <color name="bg">@color/ge_bg</color>
+    <color name="surface">@color/ge_surface</color>
+    <color name="line">@color/ge_line</color>
+    <color name="line_strong">@color/ge_line_strong</color>
+    <color name="ink">@color/ge_ink</color>
+    <color name="ink_dim">@color/ge_ink_dim</color>
+    <color name="red">@color/ge_accent</color>
 </resources>

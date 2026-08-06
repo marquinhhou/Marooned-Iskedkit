@@ -41,6 +41,8 @@ public final class ScheduleParser {
     private static final Pattern HEADER_CODE = Pattern.compile("class\\s*code", Pattern.CASE_INSENSITIVE);
     private static final Pattern HEADER_CREDITS = Pattern.compile("credits", Pattern.CASE_INSENSITIVE);
     private static final Pattern HEADER_INSTRUCTOR = Pattern.compile("instructor", Pattern.CASE_INSENSITIVE);
+    private static final Pattern HEADER_SCHEDULE = Pattern.compile("schedule", Pattern.CASE_INSENSITIVE);
+    private static final Pattern ENLISTED_HEADING = Pattern.compile("enlisted", Pattern.CASE_INSENSITIVE);
 
     private static final Pattern SCHEDULE_LINE = Pattern.compile(
             "^([A-Za-z]+)\\s+([\\d:apmAPM-]+)\\s*(lec|lab|rec|disc|pe)?\\s*(.*)$",
@@ -71,52 +73,78 @@ public final class ScheduleParser {
         Element table = findEnlistedTable(doc);
         if (table == null) throw new ParseException(ParseException.Reason.NO_TABLE);
 
+        Columns cols = detectColumns(table);
+        if (cols == null) throw new ParseException(ParseException.Reason.NO_TABLE);
+
         Elements rows = table.select("tr");
         List<ClassSession> classes = new ArrayList<>();
         int skipped = 0;
+        int maxIdx = Math.max(Math.max(cols.code, cols.className), Math.max(cols.credits, cols.schedule));
 
         for (int i = 1; i < rows.size(); i++) {
             Element row = rows.get(i);
             Elements cells = row.select("> td");
-            if (cells.size() < 4) continue;
+            if (cells.size() <= maxIdx) { skipped++; continue; }
 
-            String code = cells.get(0).text().trim();
-            String name = cells.get(1).text().trim();
-            String creditsRaw = cells.get(2).text().trim();
-            boolean creditsExcluded = creditsRaw.matches("^\\(.*\\)$");
-            double credits;
-            try {
-                credits = Double.parseDouble(creditsRaw.replaceAll("[()]", ""));
-            } catch (NumberFormatException e) {
-                credits = 0;
+            // Each of these cells can hold more than one class stacked with a blank-line
+            // separator (cross-listed rows, e.g. two class codes sharing one CRS row).
+            List<List<String>> codeBlocks = extractBlocks(cells.get(cols.code));
+            List<List<String>> classBlocks = extractBlocks(cells.get(cols.className));
+            List<List<String>> creditsBlocks = extractBlocks(cells.get(cols.credits));
+            List<List<String>> scheduleBlocks = extractBlocks(cells.get(cols.schedule));
+
+            if (codeBlocks.isEmpty() || classBlocks.isEmpty()
+                    || creditsBlocks.isEmpty() || scheduleBlocks.isEmpty()) {
+                skipped++;
+                continue;
             }
-            if (code.isEmpty() || name.isEmpty()) continue;
 
-            List<String> lines = cellLines(cells.get(3));
-            if (lines.isEmpty()) { skipped++; continue; }
+            int blockCount = codeBlocks.size();
+            boolean aligned = classBlocks.size() == blockCount
+                    && creditsBlocks.size() == blockCount
+                    && scheduleBlocks.size() == blockCount;
+            // If the cells disagree on how many classes are packed into the row, don't
+            // guess how to pair them up -- just read the first (and usually only) one.
+            if (!aligned) blockCount = 1;
 
-            Matcher m = SCHEDULE_LINE.matcher(lines.get(0));
-            if (!m.matches()) { skipped++; continue; }
+            for (int b = 0; b < blockCount; b++) {
+                String code = codeBlocks.get(b).get(0).trim();
+                String name = classBlocks.get(b).get(0).trim();
+                String creditsRaw = creditsBlocks.get(b).get(0).trim();
+                if (code.isEmpty() || name.isEmpty()) { skipped++; continue; }
 
-            String dayStr = m.group(1);
-            String timeStr = m.group(2);
-            String type = m.group(3) == null ? "" : m.group(3).toLowerCase(Locale.US);
-            String room = m.group(4) == null ? "" : m.group(4).trim();
-
-            List<Integer> days = parseDays(dayStr);
-            TimeRange time = parseTimeRange(timeStr);
-            if (time == null || days.isEmpty()) { skipped++; continue; }
-
-            String instructor = "";
-            for (int li = 1; li < lines.size(); li++) {
-                if (!MODE_PATTERN.matcher(lines.get(li)).find()) {
-                    instructor = lines.get(li);
-                    break;
+                boolean creditsExcluded = creditsRaw.matches("^\\(.*\\)$");
+                double credits;
+                try {
+                    credits = Double.parseDouble(creditsRaw.replaceAll("[()]", ""));
+                } catch (NumberFormatException e) {
+                    credits = 0;
                 }
-            }
 
-            classes.add(new ClassSession(code, name, credits, creditsExcluded,
-                    days, time.start, time.end, type, room, instructor));
+                List<String> lines = scheduleBlocks.get(b);
+                Matcher m = SCHEDULE_LINE.matcher(lines.get(0));
+                if (!m.matches()) { skipped++; continue; }
+
+                String dayStr = m.group(1);
+                String timeStr = m.group(2);
+                String type = m.group(3) == null ? "" : m.group(3).toLowerCase(Locale.US);
+                String room = m.group(4) == null ? "" : m.group(4).trim();
+
+                List<Integer> days = parseDays(dayStr);
+                TimeRange time = parseTimeRange(timeStr);
+                if (time == null || days.isEmpty()) { skipped++; continue; }
+
+                String instructor = "";
+                for (int li = 1; li < lines.size(); li++) {
+                    if (!MODE_PATTERN.matcher(lines.get(li)).find()) {
+                        instructor = lines.get(li);
+                        break;
+                    }
+                }
+
+                classes.add(new ClassSession(code, name, credits, creditsExcluded,
+                        days, time.start, time.end, type, room, instructor));
+            }
         }
 
         if (classes.isEmpty()) throw new ParseException(ParseException.Reason.NO_ROWS);
@@ -125,7 +153,33 @@ public final class ScheduleParser {
 
     // Table discovery
 
+    /**
+     * Finds the "My Enlisted Classes" table. The CRS page has several tables that share a
+     * near-identical header (Waitlisted, Canceled, etc.), and a "Status" column that some CRS
+     * versions add/remove shifts every other column over -- so we anchor on the heading text
+     * first (most reliable), and only fall back to guessing from header keywords alone.
+     */
     private static Element findEnlistedTable(Document doc) {
+        Element byHeading = findTableAfterHeading(doc);
+        if (byHeading != null) return byHeading;
+        return findTableByHeaderRow(doc);
+    }
+
+    private static Element findTableAfterHeading(Document doc) {
+        Elements markers = doc.select("h1, h2, h3, h4, h5, legend, caption, table");
+        boolean afterEnlistedHeading = false;
+        for (Element el : markers) {
+            if (el.tagName().equalsIgnoreCase("table")) {
+                if (afterEnlistedHeading) return el;
+            } else {
+                String text = el.text().trim();
+                afterEnlistedHeading = ENLISTED_HEADING.matcher(text).find();
+            }
+        }
+        return null;
+    }
+
+    private static Element findTableByHeaderRow(Document doc) {
         Elements tables = doc.select("table");
         for (Element t : tables) {
             Elements rows = t.select("tr");
@@ -140,8 +194,56 @@ public final class ScheduleParser {
         return null;
     }
 
-    /** Splits a cell's &lt;br&gt;-separated lines; Jsoup's .text() alone collapses them. */
-    private static List<String> cellLines(Element cell) {
+    // Column discovery
+
+    private static final class Columns {
+        final int code, className, credits, schedule;
+        Columns(int code, int className, int credits, int schedule) {
+            this.code = code;
+            this.className = className;
+            this.credits = credits;
+            this.schedule = schedule;
+        }
+    }
+
+    /**
+     * Reads the header row to find which cell holds what, instead of assuming fixed positions.
+     * The real "My Enlisted Classes" table is: Status, Class Code, Class, Credits,
+     * Schedule/Instructor/Mode, Remarks, Restrictions, Action -- note the leading Status column,
+     * which the old hardcoded cells.get(0..3) mapping didn't account for.
+     */
+    private static Columns detectColumns(Element table) {
+        Elements rows = table.select("tr");
+        if (rows.isEmpty()) return null;
+        Elements headerCells = rows.get(0).select("> th, > td");
+
+        int codeIdx = -1, classIdx = -1, creditsIdx = -1, scheduleIdx = -1;
+        for (int i = 0; i < headerCells.size(); i++) {
+            String text = headerCells.get(i).text();
+            if (codeIdx == -1 && HEADER_CODE.matcher(text).find()) {
+                codeIdx = i;
+            } else if (creditsIdx == -1 && HEADER_CREDITS.matcher(text).find()) {
+                creditsIdx = i;
+            } else if (scheduleIdx == -1 && HEADER_SCHEDULE.matcher(text).find()) {
+                scheduleIdx = i;
+            } else if (classIdx == -1 && text.toLowerCase(Locale.US).contains("class")
+                    && !HEADER_CODE.matcher(text).find()) {
+                classIdx = i;
+            }
+        }
+
+        if (codeIdx == -1 || classIdx == -1 || creditsIdx == -1 || scheduleIdx == -1) return null;
+        return new Columns(codeIdx, classIdx, creditsIdx, scheduleIdx);
+    }
+
+    /**
+     * Splits a cell's &lt;br&gt;-separated lines into blocks, starting a new block on a blank
+     * line (a "&lt;br&gt;&lt;br&gt;"). A cross-listed CRS row packs two classes into one row this
+     * way -- e.g. the Class Code cell holds "66661&lt;br&gt;&lt;br&gt;66655" for two sections
+     * sharing a row, and the Schedule cell holds the matching two schedule/instructor groups.
+     * A normal single-class cell just comes back as one block.
+     */
+    private static List<List<String>> extractBlocks(Element cell) {
         List<String> rawLines = new ArrayList<>();
         StringBuilder current = new StringBuilder();
 
@@ -162,15 +264,23 @@ public final class ScheduleParser {
             @Override
             public void tail(Node node, int depth) { }
         }, cell);
+        rawLines.add(current.toString());
 
-        if (current.length() > 0) rawLines.add(current.toString());
-
-        List<String> out = new ArrayList<>();
-        for (String l : rawLines) {
-            String t = l.trim().replaceAll("\\s+", " ");
-            if (!t.isEmpty()) out.add(t);
+        List<List<String>> blocks = new ArrayList<>();
+        List<String> currentBlock = new ArrayList<>();
+        for (String raw : rawLines) {
+            String t = raw.trim().replaceAll("\\s+", " ");
+            if (t.isEmpty()) {
+                if (!currentBlock.isEmpty()) {
+                    blocks.add(currentBlock);
+                    currentBlock = new ArrayList<>();
+                }
+            } else {
+                currentBlock.add(t);
+            }
         }
-        return out;
+        if (!currentBlock.isEmpty()) blocks.add(currentBlock);
+        return blocks;
     }
 
     // Day / time parsing
