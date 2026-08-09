@@ -18,6 +18,7 @@ public final class SettingsStore {
     private static final String PREFS = "nothing_schedule_settings";
     private static final String KEY_CAMPUS = "campus_hint";
     private static final String KEY_MAPS_ENABLED = "maps_enabled";
+    private static final String KEY_CAMPUS_AUTODETECT = "campus_autodetect_enabled";
     private static final String KEY_TERMS_ACCEPTED = "terms_accepted";
     private static final String KEY_SEMESTER_START = "semester_start_epoch_day";
     private static final String KEY_SEMESTER_END = "semester_end_epoch_day";
@@ -57,6 +58,15 @@ public final class SettingsStore {
 
     public static void setMapsEnabled(Context context, boolean enabled) {
         prefs(context).edit().putBoolean(KEY_MAPS_ENABLED, enabled).apply();
+    }
+
+    /** On by default -- whether importing a CRS HTML file may auto-fill the campus hint. */
+    public static boolean isCampusAutoDetectEnabled(Context context) {
+        return prefs(context).getBoolean(KEY_CAMPUS_AUTODETECT, true);
+    }
+
+    public static void setCampusAutoDetectEnabled(Context context, boolean enabled) {
+        prefs(context).edit().putBoolean(KEY_CAMPUS_AUTODETECT, enabled).apply();
     }
 
     public static boolean hasAcceptedTerms(Context context) {

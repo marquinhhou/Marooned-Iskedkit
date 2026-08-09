@@ -76,6 +76,7 @@ public class ConfigureActivity extends AppCompatActivity {
     private TextView statusText;
     private EditText inputCampus;
     private SwitchCompat switchMapsEnabled;
+    private SwitchCompat switchCampusAutoDetect;
     private View groupCampusHint;
     private SwitchCompat switchEditMode;
     private LinearLayout editClassList;
@@ -235,14 +236,18 @@ public class ConfigureActivity extends AppCompatActivity {
             @Override public void afterTextChanged(Editable s) {}
         });
         switchMapsEnabled = findViewById(R.id.switch_maps_enabled);
+        switchCampusAutoDetect = findViewById(R.id.switch_campus_autodetect);
         groupCampusHint = findViewById(R.id.group_campus_hint);
         switchMapsEnabled.setChecked(SettingsStore.isMapsEnabled(this));
+        switchCampusAutoDetect.setChecked(SettingsStore.isCampusAutoDetectEnabled(this));
         applyMapsEnabledState(SettingsStore.isMapsEnabled(this));
         switchMapsEnabled.setOnCheckedChangeListener((btn, checked) -> {
             SettingsStore.setMapsEnabled(this, checked);
             applyMapsEnabledState(checked);
             updateMapsSummary();
         });
+        switchCampusAutoDetect.setOnCheckedChangeListener((btn, checked) ->
+                SettingsStore.setCampusAutoDetectEnabled(this, checked));
         updateMapsSummary();
 
         pickFileBtn.setOnClickListener(v -> filePicker.launch(new String[]{"text/html", "text/calendar", "*/*"}));
@@ -593,6 +598,7 @@ public class ConfigureActivity extends AppCompatActivity {
     private void applyMapsEnabledState(boolean enabled) {
         groupCampusHint.setAlpha(enabled ? 1f : 0.4f);
         inputCampus.setEnabled(enabled);
+        switchCampusAutoDetect.setEnabled(enabled);
     }
 
     // Notes
@@ -862,7 +868,8 @@ public class ConfigureActivity extends AppCompatActivity {
             ScheduleStore.save(this, result.classes);
 
             // auto-fill the campus field the first time, if we can sniff one out
-            if (inputCampus.getText().toString().trim().isEmpty()) {
+            if (SettingsStore.isCampusAutoDetectEnabled(this)
+                    && inputCampus.getText().toString().trim().isEmpty()) {
                 String detected = ScheduleParser.detectCampusHint(html);
                 if (detected != null) {
                     inputCampus.setText(detected);

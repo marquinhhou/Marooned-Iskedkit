@@ -1,3 +1,9 @@
+# Changelog: CRS Scheduler v2.2.1
+
+## Changed
+
+- **Campus auto-fill can be turned off separately from Maps.** Importing a CRS HTML file used to always auto-fill the campus hint the first time (if it was empty) from whatever campus it could detect in the page. A new switch in Settings → Maps Search Context, right under the campus field, controls just that auto-fill; turning it off means the campus field is only ever set by typing into it yourself. On by default, and only actionable while the main Maps switch is on.
+
 # Changelog: CRS Scheduler v2.2.0
 
 ## Fixed

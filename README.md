@@ -118,7 +118,10 @@ open your phone's maps app for that room, if a room is set.
   field (config screen) gets appended to the search to help disambiguate
   (e.g. "SS 301 UP Diliman" instead of just "SS 301"). A switch in the same
   Maps section turns the whole prompt off, everywhere it appears -- on by
-  default.
+  default. A second switch controls, separately, whether importing a CRS
+  HTML file is allowed to auto-fill that campus field the first time --
+  also on by default, though it's only actionable while Maps itself is on
+  (with Maps off, the campus hint has nothing to feed into).
 - **Notes widget** -- its own home-screen widget for notes tied to a
   specific subject (picked from whatever's currently loaded, whether that
   came in via CRS HTML or `.ics`) or filed under a standing Miscellaneous
