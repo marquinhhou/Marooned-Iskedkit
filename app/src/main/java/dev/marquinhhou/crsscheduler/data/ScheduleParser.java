@@ -10,14 +10,20 @@ import org.jsoup.select.NodeTraversor;
 import org.jsoup.select.NodeVisitor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import dev.marquinhhou.crsscheduler.model.ClassSession;
 
-/** Extracts the "Enlisted Classes" table from a saved CRS page into ClassSessions. */
+/**
+ * Extracts a class-list table from a saved CRS page into ClassSessions.
+ * Handles both "My Enlisted Classes" (Registration) and "My Desired Classes"
+ * (Preenlistment) -- see buildGrid() for why the latter needs special care.
+ */
 public final class ScheduleParser {
 
     public static final class ParseException extends Exception {
@@ -42,7 +48,15 @@ public final class ScheduleParser {
     private static final Pattern HEADER_CREDITS = Pattern.compile("credits", Pattern.CASE_INSENSITIVE);
     private static final Pattern HEADER_INSTRUCTOR = Pattern.compile("instructor", Pattern.CASE_INSENSITIVE);
     private static final Pattern HEADER_SCHEDULE = Pattern.compile("schedule", Pattern.CASE_INSENSITIVE);
-    private static final Pattern ENLISTED_HEADING = Pattern.compile("enlisted", Pattern.CASE_INSENSITIVE);
+    private static final Pattern HEADER_STATUS = Pattern.compile("status", Pattern.CASE_INSENSITIVE);
+
+    // Matches both Registration's "My Enlisted Classes" and Preenlistment's "My Desired Classes".
+    private static final Pattern SECTION_HEADING = Pattern.compile(
+            "enlisted|desired\\s*classes", Pattern.CASE_INSENSITIVE);
+
+    // Preenlistment rows carry a status icon (enlisted / desired / with conflict); only
+    // "enlisted" rows are a locked-in schedule -- the rest are just ranked hopes.
+    private static final Pattern STATUS_ENLISTED = Pattern.compile("enlisted", Pattern.CASE_INSENSITIVE);
 
     private static final Pattern SCHEDULE_LINE = Pattern.compile(
             "^([A-Za-z]+)\\s+([\\d:apmAPM-]+)\\s*(lec|lab|rec|disc|pe)?\\s*(.*)$",
@@ -73,25 +87,27 @@ public final class ScheduleParser {
         Element table = findEnlistedTable(doc);
         if (table == null) throw new ParseException(ParseException.Reason.NO_TABLE);
 
-        Columns cols = detectColumns(table);
+        List<List<Element>> grid = buildGrid(table);
+        Columns cols = detectColumns(grid);
         if (cols == null) throw new ParseException(ParseException.Reason.NO_TABLE);
 
-        Elements rows = table.select("tr");
         List<ClassSession> classes = new ArrayList<>();
         int skipped = 0;
-        int maxIdx = Math.max(Math.max(cols.code, cols.className), Math.max(cols.credits, cols.schedule));
 
-        for (int i = 1; i < rows.size(); i++) {
-            Element row = rows.get(i);
-            Elements cells = row.select("> td");
-            if (cells.size() <= maxIdx) { skipped++; continue; }
+        for (int i = 1; i < grid.size(); i++) {
+            List<Element> row = grid.get(i);
+
+            if (cols.status != -1 && !statusAllowsEnlist(cellAt(row, cols.status))) {
+                skipped++;
+                continue;
+            }
 
             // Each of these cells can hold more than one class stacked with a blank-line
             // separator (cross-listed rows, e.g. two class codes sharing one CRS row).
-            List<List<String>> codeBlocks = extractBlocks(cells.get(cols.code));
-            List<List<String>> classBlocks = extractBlocks(cells.get(cols.className));
-            List<List<String>> creditsBlocks = extractBlocks(cells.get(cols.credits));
-            List<List<String>> scheduleBlocks = extractBlocks(cells.get(cols.schedule));
+            List<List<String>> codeBlocks = extractBlocks(cellAt(row, cols.code));
+            List<List<String>> classBlocks = extractBlocks(cellAt(row, cols.className));
+            List<List<String>> creditsBlocks = extractBlocks(cellAt(row, cols.credits));
+            List<List<String>> scheduleBlocks = extractBlocks(cellAt(row, cols.schedule));
 
             if (codeBlocks.isEmpty() || classBlocks.isEmpty()
                     || creditsBlocks.isEmpty() || scheduleBlocks.isEmpty()) {
@@ -151,13 +167,17 @@ public final class ScheduleParser {
         return new Result(classes, skipped);
     }
 
+    private static Element cellAt(List<Element> row, int idx) {
+        return idx >= 0 && idx < row.size() ? row.get(idx) : null;
+    }
+
     // Table discovery
 
     /**
-     * Finds the "My Enlisted Classes" table. The CRS page has several tables that share a
-     * near-identical header (Waitlisted, Canceled, etc.), and a "Status" column that some CRS
-     * versions add/remove shifts every other column over -- so we anchor on the heading text
-     * first (most reliable), and only fall back to guessing from header keywords alone.
+     * Finds the class-list table: "My Enlisted Classes" on Registration, "My Desired
+     * Classes" on Preenlistment. The page has several tables that share a near-identical
+     * header (Waitlisted, Canceled, etc.), so we anchor on the section heading first
+     * (most reliable), and only fall back to guessing from header keywords alone.
      */
     private static Element findEnlistedTable(Document doc) {
         Element byHeading = findTableAfterHeading(doc);
@@ -167,13 +187,15 @@ public final class ScheduleParser {
 
     private static Element findTableAfterHeading(Document doc) {
         Elements markers = doc.select("h1, h2, h3, h4, h5, legend, caption, table");
-        boolean afterEnlistedHeading = false;
+        boolean latched = false;
         for (Element el : markers) {
             if (el.tagName().equalsIgnoreCase("table")) {
-                if (afterEnlistedHeading) return el;
+                if (latched) return el;
             } else {
-                String text = el.text().trim();
-                afterEnlistedHeading = ENLISTED_HEADING.matcher(text).find();
+                // Sticky on purpose: CRS sometimes inserts an unrelated aside (e.g. a
+                // "Notes" legend) between the section heading and its table, and that
+                // shouldn't cancel a real match -- only the next table does.
+                if (SECTION_HEADING.matcher(el.text().trim()).find()) latched = true;
             }
         }
         return null;
@@ -194,32 +216,122 @@ public final class ScheduleParser {
         return null;
     }
 
+    // Grid construction
+
+    /**
+     * Resolves a table's rows into a rectangular grid of cells, accounting for rowspan
+     * and colspan. Needed because CRS's Preenlistment "My Desired Classes" table rowspans
+     * the Rank/Status/Restrictions columns across a whole group when a course has more than
+     * one component (lecture + discussion each need their own class code) -- so a component
+     * row's physical &lt;td&gt; list is shorter than the header's, and reading cells by a
+     * flat header-derived index silently misaligns onto the wrong columns. This rebuilds
+     * each row to its full logical width first, so column lookups always land correctly.
+     */
+    private static List<List<Element>> buildGrid(Element table) {
+        Elements rows = table.select("tr");
+        List<List<Element>> grid = new ArrayList<>();
+
+        Map<Integer, Element> carryElement = new HashMap<>();
+        Map<Integer, Integer> carryRemaining = new HashMap<>();
+
+        for (Element row : rows) {
+            Elements cells = row.select("> td, > th");
+
+            // Snapshot carries that were already active coming into this row -- only
+            // these get decremented once consumed, not any rowspan this row itself starts.
+            Map<Integer, Element> carriedCols = new HashMap<>();
+            for (Map.Entry<Integer, Integer> e : carryRemaining.entrySet()) {
+                if (e.getValue() > 0) carriedCols.put(e.getKey(), carryElement.get(e.getKey()));
+            }
+
+            Map<Integer, Element> rowOut = new HashMap<>();
+            int col = 0;
+            int ci = 0;
+            while (ci < cells.size() || anyCarriedAtOrAfter(carriedCols, col)) {
+                if (carriedCols.containsKey(col)) {
+                    rowOut.put(col, carriedCols.get(col));
+                    col++;
+                    continue;
+                }
+                if (ci >= cells.size()) break;
+                Element cell = cells.get(ci);
+                int colspan = parseSpan(cell.attr("colspan"));
+                int rowspan = parseSpan(cell.attr("rowspan"));
+                for (int k = 0; k < colspan; k++) {
+                    rowOut.put(col + k, cell);
+                    if (rowspan > 1) {
+                        carryElement.put(col + k, cell);
+                        carryRemaining.put(col + k, rowspan - 1);
+                    }
+                }
+                col += colspan;
+                ci++;
+            }
+
+            for (Integer c : carriedCols.keySet()) {
+                carryRemaining.put(c, carryRemaining.get(c) - 1);
+            }
+
+            int width = -1;
+            for (Integer c : rowOut.keySet()) width = Math.max(width, c);
+            List<Element> rowList = new ArrayList<>();
+            for (int c = 0; c <= width; c++) rowList.add(rowOut.get(c));
+            grid.add(rowList);
+        }
+
+        int gridWidth = 0;
+        for (List<Element> r : grid) gridWidth = Math.max(gridWidth, r.size());
+        for (List<Element> r : grid) while (r.size() < gridWidth) r.add(null);
+        return grid;
+    }
+
+    private static boolean anyCarriedAtOrAfter(Map<Integer, Element> carriedCols, int col) {
+        for (Integer c : carriedCols.keySet()) if (c >= col) return true;
+        return false;
+    }
+
+    private static int parseSpan(String raw) {
+        if (raw == null || raw.trim().isEmpty()) return 1;
+        try {
+            int n = Integer.parseInt(raw.trim());
+            return n > 0 ? n : 1;
+        } catch (NumberFormatException e) {
+            return 1;
+        }
+    }
+
     // Column discovery
 
     private static final class Columns {
-        final int code, className, credits, schedule;
-        Columns(int code, int className, int credits, int schedule) {
+        final int code, className, credits, schedule, status;
+        Columns(int code, int className, int credits, int schedule, int status) {
             this.code = code;
             this.className = className;
             this.credits = credits;
             this.schedule = schedule;
+            this.status = status;
         }
     }
 
     /**
-     * Reads the header row to find which cell holds what, instead of assuming fixed positions.
-     * The real "My Enlisted Classes" table is: Status, Class Code, Class, Credits,
-     * Schedule/Instructor/Mode, Remarks, Restrictions, Action -- note the leading Status column,
-     * which the old hardcoded cells.get(0..3) mapping didn't account for.
+     * Reads the header row to find which cell holds what, instead of assuming fixed
+     * positions -- both target tables put Status first, but not every CRS variant does.
+     * Status is optional (-1 if absent); the other four are required.
      */
-    private static Columns detectColumns(Element table) {
-        Elements rows = table.select("tr");
-        if (rows.isEmpty()) return null;
-        Elements headerCells = rows.get(0).select("> th, > td");
+    private static Columns detectColumns(List<List<Element>> grid) {
+        if (grid.isEmpty()) return null;
+        List<Element> header = grid.get(0);
 
-        int codeIdx = -1, classIdx = -1, creditsIdx = -1, scheduleIdx = -1;
-        for (int i = 0; i < headerCells.size(); i++) {
-            String text = headerCells.get(i).text();
+        int codeIdx = -1, classIdx = -1, creditsIdx = -1, scheduleIdx = -1, statusIdx = -1;
+        for (int i = 0; i < header.size(); i++) {
+            Element cell = header.get(i);
+            if (cell == null) continue;
+            String text = cell.text();
+
+            if (statusIdx == -1 && HEADER_STATUS.matcher(text).find()
+                    && !HEADER_CODE.matcher(text).find()) {
+                statusIdx = i;
+            }
             if (codeIdx == -1 && HEADER_CODE.matcher(text).find()) {
                 codeIdx = i;
             } else if (creditsIdx == -1 && HEADER_CREDITS.matcher(text).find()) {
@@ -233,7 +345,17 @@ public final class ScheduleParser {
         }
 
         if (codeIdx == -1 || classIdx == -1 || creditsIdx == -1 || scheduleIdx == -1) return null;
-        return new Columns(codeIdx, classIdx, creditsIdx, scheduleIdx);
+        return new Columns(codeIdx, classIdx, creditsIdx, scheduleIdx, statusIdx);
+    }
+
+    /** True unless the status cell's icon clearly says this row isn't actually enlisted. */
+    private static boolean statusAllowsEnlist(Element statusCell) {
+        if (statusCell == null) return true;
+        Element img = statusCell.selectFirst("img");
+        if (img == null) return true;
+        String label = (img.attr("alt") + " " + img.attr("title")).trim();
+        if (label.isEmpty()) return true;
+        return STATUS_ENLISTED.matcher(label).find();
     }
 
     /**
@@ -244,6 +366,9 @@ public final class ScheduleParser {
      * A normal single-class cell just comes back as one block.
      */
     private static List<List<String>> extractBlocks(Element cell) {
+        List<List<String>> blocks = new ArrayList<>();
+        if (cell == null) return blocks;
+
         List<String> rawLines = new ArrayList<>();
         StringBuilder current = new StringBuilder();
 
@@ -266,7 +391,6 @@ public final class ScheduleParser {
         }, cell);
         rawLines.add(current.toString());
 
-        List<List<String>> blocks = new ArrayList<>();
         List<String> currentBlock = new ArrayList<>();
         for (String raw : rawLines) {
             String t = raw.trim().replaceAll("\\s+", " ");

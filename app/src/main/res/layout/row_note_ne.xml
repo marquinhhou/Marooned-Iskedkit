@@ -86,19 +86,20 @@
                     android:textSize="9sp"
                     android:letterSpacing="0.04"
                 android:fontFamily="@font/jetbrains_mono_bold" />
-            </LinearLayout>
 
-            <TextView
-                android:id="@+id/row_note_deadline_absolute"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
-                android:textColor="@color/ne_ink_dim"
-                android:textSize="8.5sp"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:visibility="gone"
-                android:fontFamily="@font/jetbrains_mono" />
+                <TextView
+                    android:id="@+id/row_note_deadline_absolute"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="5dp"
+                    android:textColor="@color/ne_ink_dim"
+                    android:textSize="8.5sp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:visibility="gone"
+                    android:fontFamily="@font/jetbrains_mono" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/row_note_title"

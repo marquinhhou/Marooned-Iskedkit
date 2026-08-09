@@ -5,45 +5,56 @@
     android:paddingBottom="4dp">
 
     <LinearLayout
-        android:id="@+id/row_group_header_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@drawable/chip_outline_bg_ne"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:paddingTop="7dp"
-        android:paddingBottom="7dp">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/row_group_label"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/row_group_header_root"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/ne_ink"
-            android:textStyle="bold"
-            android:textSize="11sp"
-            android:letterSpacing="0.04"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:fontFamily="@font/jetbrains_mono_bold" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="6dp">
 
-        <TextView
-            android:id="@+id/row_group_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:textColor="@color/ne_ink_dim"
-            android:textSize="10sp"
-            android:fontFamily="@font/jetbrains_mono" />
+            <TextView
+                android:id="@+id/row_group_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/ne_ink_dim"
+                android:textStyle="bold"
+                android:textSize="10sp"
+                android:letterSpacing="0.1"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:fontFamily="@font/jetbrains_mono_bold" />
 
-        <ImageView
-            android:id="@+id/row_group_chevron"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_marginStart="6dp"
-            android:src="@drawable/ic_chevron_down_ne" />
+            <TextView
+                android:id="@+id/row_group_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:textColor="@color/ne_ink_dim"
+                android:textSize="10sp"
+                android:fontFamily="@font/jetbrains_mono" />
+
+            <ImageView
+                android:id="@+id/row_group_chevron"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginStart="6dp"
+                android:src="@drawable/ic_chevron_down_ne" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="6dp"
+            android:background="@color/ne_line" />
     </LinearLayout>
 
 </FrameLayout>

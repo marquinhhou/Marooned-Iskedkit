@@ -175,6 +175,11 @@ public class WeekScheduleActivity extends AppCompatActivity {
     }
 
     private void maybeOfferMaps(ClassSession c) {
+        if (!SettingsStore.isMapsEnabled(this)) {
+            Toast.makeText(this, "Maps is turned off. Enable it under Settings \u2192 Maps Search Context.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         String mapQuery = (c.room != null && !c.room.trim().isEmpty() && !c.room.equalsIgnoreCase("TBA"))
                 ? c.room
                 : null;

@@ -1,3 +1,21 @@
+# Changelog: CRS Scheduler v2.2.0
+
+## Fixed
+
+- **Preenlistment schedule pages now import correctly.** UP CRS spreads a multi-component course (e.g. a lecture + discussion pair) across several table rows using `rowspan`, so the Rank/Status columns only appear once per group. The parser was reading columns by a flat header-index and silently misaligned on every row after the first in a group — on a real Preenlistment page this dropped 6 of 7 classes. The parser now rebuilds each table into its full logical grid (accounting for rowspan/colspan) before reading columns, so every row lines up correctly regardless of which rows carry the shared cells.
+- **Preenlistment's "My Desired Classes" table is now found reliably.** CRS sometimes inserts an unrelated "Notes" aside between that section's heading and its table; the previous heading search reset on any non-matching heading in between and missed it. Section detection is now sticky (latches on a match, ignores anything unrelated in between) and recognizes both "…Enlisted…" and "…Desired Classes…" headings.
+- **Only actually-enlisted rows are imported from Preenlistment.** A ranked class can be "Desired" or "With Conflict" rather than secured; those are now skipped so the imported schedule reflects classes you're actually in, not just ranked for.
+
+## Changed
+
+- **Registration and Preenlistment are both explicitly supported now** — the in-app import instructions, and the "couldn't find a table" error message, mention both page types (and either the All or Enlisted schedule tab works, whichever CRS happened to save).
+- **Maps prompts can be turned off.** A new switch in Settings → Maps Search Context disables the "Open Maps" prompt everywhere it appears (widget tap, full week view, campus-hint field dims along with it). On by default, so no change unless you turn it off.
+
+## Notes widget
+
+- **Each note card is one line shorter.** The relative due-badge ("DUE IN 7D") and the absolute date ("Aug 15, 8:30 AM") used to sit on their own stacked lines; they're now one line, so cards take noticeably less vertical space.
+- **Group headers ("MISCELLANEOUS", etc.) no longer look like note cards.** They previously used the same boxed pill as a note row, so sections and notes blended together at a glance. Headers are now a plain label with a thin rule underneath, clearly separate from the cards below them.
+
 # Changelog: CRS Scheduler v2.1.1
 
 ## Fixed

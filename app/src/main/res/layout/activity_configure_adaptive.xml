@@ -109,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:lineSpacingMultiplier="1.4"
-                android:text="1. Open your CRS Schedule page (the one with the Enlisted Classes table).\n2. Save it: Ctrl+S -&gt; \u201cWebpage, HTML only\u201d -&gt; pick a file. Or view source with Ctrl+U, select all, copy.\n3. Either pick the saved .html file below, or paste the copied source into the box.\n\nHave a .ics calendar file instead (e.g. exported from here previously)? Pick it the same way below \u2014 it's imported automatically.\n\nNo CRS access or .ics file yet? Scroll down to add your classes by hand instead."
+                android:text="1. Open your CRS Registration or Preenlistment page (the one showing your Enlisted or Desired Classes table \u2014 either the All or Enlisted schedule tab is fine).\n2. Save it: Ctrl+S -&gt; \u201cWebpage, HTML only\u201d -&gt; pick a file. Or view source with Ctrl+U, select all, copy.\n3. Either pick the saved .html file below, or paste the copied source into the box.\n\nHave a .ics calendar file instead (e.g. exported from here previously)? Pick it the same way below \u2014 it's imported automatically.\n\nNo CRS access or .ics file yet? Scroll down to add your classes by hand instead."
                 android:textColor="@color/adaptive_ink_dim"
                 android:textSize="12.5sp" />
 
@@ -268,33 +268,62 @@
                 android:paddingBottom="18dp"
                 android:visibility="gone">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Optional. Added to the search when you tap a class and choose \u201cOpen Maps\u201d, so a room number like \u201cSS 301\u201d resolves to the right campus instead of a random result."
-                    android:textColor="@color/adaptive_ink_dim"
-                    android:textSize="12sp" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-                <EditText
-                    android:id="@+id/input_campus"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/row_bg_adaptive"
-                    android:hint="Campus / school name (e.g. UP Diliman)"
-                    android:textColorHint="@color/adaptive_ink_dim"
-                    android:textColor="@color/adaptive_ink"
-                    android:textSize="11sp"
-                    android:padding="12dp"
-                    android:layout_marginTop="10dp" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Show \u201cOpen Maps\u201d when a class is tapped"
+                        android:textColor="@color/adaptive_ink_dim"
+                        android:textSize="11sp" />
 
-                <TextView
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_maps_enabled"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/group_campus_hint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/maps_room_disclaimer"
-                    android:textColor="@color/adaptive_accent"
-                    android:textSize="10.5sp"
-                    android:lineSpacingMultiplier="1.3" />
+                    android:orientation="vertical"
+                    android:layout_marginTop="14dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Optional. Added to the search when you tap a class and choose \u201cOpen Maps\u201d, so a room number like \u201cSS 301\u201d resolves to the right campus instead of a random result."
+                        android:textColor="@color/adaptive_ink_dim"
+                        android:textSize="12sp" />
+
+                    <EditText
+                        android:id="@+id/input_campus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/row_bg_adaptive"
+                        android:hint="Campus / school name (e.g. UP Diliman)"
+                        android:textColorHint="@color/adaptive_ink_dim"
+                        android:textColor="@color/adaptive_ink"
+                        android:textSize="11sp"
+                        android:padding="12dp"
+                        android:layout_marginTop="10dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/maps_room_disclaimer"
+                        android:textColor="@color/adaptive_accent"
+                        android:textSize="10.5sp"
+                        android:lineSpacingMultiplier="1.3" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 

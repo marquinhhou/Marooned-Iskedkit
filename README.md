@@ -58,9 +58,18 @@ open your phone's maps app for that room, if a room is set.
 ## Features
 
 - **CRS HTML parsing** -- paste the saved page source (or pick a saved
-  `.html` file) of your CRS Schedule page in the config screen; the app finds
-  the "Enlisted Classes" table and extracts code, name, credits, days,
-  times, type, room, and instructor. This is a Java/Jsoup port of the
+  `.html` file) of your CRS Registration ("My Enlisted Classes") or
+  Preenlistment ("My Desired Classes") page in the config screen; the app
+  finds the right table and extracts code, name, credits, days, times, type,
+  room, and instructor. Either the All or Enlisted schedule tab works --
+  both are present in a saved page regardless of which was active. Column
+  positions are detected from the table's own header labels rather than
+  assumed, and rowspan-grouped rows (CRS splits a multi-component course,
+  e.g. lecture + discussion, across several rows sharing one Rank/Status)
+  are resolved to their full logical columns before reading, so those rows
+  import correctly instead of silently misaligning. On Preenlistment, only
+  rows actually marked Enlisted are imported -- merely Desired or
+  With-Conflict ranks are skipped. This is a Java/Jsoup port of the
   original web widget's parser, so both stay in sync on what counts as a
   valid row.
 - **.ics import** -- the same "choose a file" picker also accepts a
@@ -107,7 +116,9 @@ open your phone's maps app for that room, if a room is set.
   X?" and, if you say yes, launches a `geo:` search intent so whichever maps
   app you have installed can handle it. An optional "Campus / school name"
   field (config screen) gets appended to the search to help disambiguate
-  (e.g. "SS 301 UP Diliman" instead of just "SS 301").
+  (e.g. "SS 301 UP Diliman" instead of just "SS 301"). A switch in the same
+  Maps section turns the whole prompt off, everywhere it appears -- on by
+  default.
 - **Notes widget** -- its own home-screen widget for notes tied to a
   specific subject (picked from whatever's currently loaded, whether that
   came in via CRS HTML or `.ics`) or filed under a standing Miscellaneous
@@ -204,8 +215,9 @@ since RemoteViews (the widgets) can't apply a runtime Activity theme --
 
 ### Getting your CRS schedule into the app
 
-1. Open your CRS Schedule page (the one with the Enlisted Classes table) in
-   a desktop browser.
+1. Open your CRS Registration or Preenlistment page (the one showing your
+   Enlisted or Desired Classes table) in a desktop browser. Either the All
+   or Enlisted schedule tab is fine -- both get saved either way.
 2. Save it (`Ctrl+S` -> "Webpage, HTML only") or view source (`Ctrl+U`,
    select all, copy).
 3. In the widget's setup screen, either pick the saved `.html` file or paste

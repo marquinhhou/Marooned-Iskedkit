@@ -24,6 +24,10 @@ public class WidgetActionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Theming.applyDialogTheme(this);
+        if (!SettingsStore.isMapsEnabled(this)) {
+            finish();
+            return;
+        }
         setContentView(Theming.pick(this,
                 R.layout.activity_widget_action_ge, R.layout.activity_widget_action_ne, R.layout.activity_widget_action_adaptive));
 

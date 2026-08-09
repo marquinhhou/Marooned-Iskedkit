@@ -680,7 +680,7 @@ public final class WidgetRenderer {
         String mapQuery = (c.room != null && !c.room.trim().isEmpty() && !c.room.equalsIgnoreCase("TBA"))
                 ? c.room
                 : null;
-        if (mapQuery != null) {
+        if (mapQuery != null && SettingsStore.isMapsEnabled(context)) {
             Intent fillIn = new Intent();
             fillIn.putExtra(WidgetActionActivity.EXTRA_ROOM, mapQuery);
             fillIn.putExtra(WidgetActionActivity.EXTRA_CLASS_NAME, c.name);
@@ -994,7 +994,7 @@ public final class WidgetRenderer {
         }
         row.setViewVisibility(R.id.row_note_deadline_label, View.VISIBLE);
         row.setViewVisibility(R.id.row_note_deadline_absolute, View.VISIBLE);
-        row.setTextViewText(R.id.row_note_deadline_absolute, absoluteDeadlineText(note));
+        row.setTextViewText(R.id.row_note_deadline_absolute, "\u00b7 " + absoluteDeadlineText(note));
 
         if (note.completed) {
             row.setTextViewText(R.id.row_note_deadline_label, "DONE");

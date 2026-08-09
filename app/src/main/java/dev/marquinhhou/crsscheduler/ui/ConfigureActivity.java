@@ -75,6 +75,8 @@ public class ConfigureActivity extends AppCompatActivity {
     private EditText htmlInput;
     private TextView statusText;
     private EditText inputCampus;
+    private SwitchCompat switchMapsEnabled;
+    private View groupCampusHint;
     private SwitchCompat switchEditMode;
     private LinearLayout editClassList;
     private Button btnSemesterStart;
@@ -232,6 +234,15 @@ public class ConfigureActivity extends AppCompatActivity {
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) { updateMapsSummary(); }
             @Override public void afterTextChanged(Editable s) {}
         });
+        switchMapsEnabled = findViewById(R.id.switch_maps_enabled);
+        groupCampusHint = findViewById(R.id.group_campus_hint);
+        switchMapsEnabled.setChecked(SettingsStore.isMapsEnabled(this));
+        applyMapsEnabledState(SettingsStore.isMapsEnabled(this));
+        switchMapsEnabled.setOnCheckedChangeListener((btn, checked) -> {
+            SettingsStore.setMapsEnabled(this, checked);
+            applyMapsEnabledState(checked);
+            updateMapsSummary();
+        });
         updateMapsSummary();
 
         pickFileBtn.setOnClickListener(v -> filePicker.launch(new String[]{"text/html", "text/calendar", "*/*"}));
@@ -275,7 +286,7 @@ public class ConfigureActivity extends AppCompatActivity {
 
         doneBtn.setOnClickListener(v -> completeAndClose());
 
-        boolean expandMaps = !SettingsStore.getCampusHint(this).trim().isEmpty();
+        boolean expandMaps = !SettingsStore.getCampusHint(this).trim().isEmpty() || !SettingsStore.isMapsEnabled(this);
         boolean expandSemester = SettingsStore.getSemesterStart(this) != null || SettingsStore.getSemesterEnd(this) != null;
         boolean expandReminders = SettingsStore.getReminderLeadMinutes(this) > 0;
         boolean expandProfile = !SettingsStore.getProfileName(this).isEmpty()
@@ -570,8 +581,18 @@ public class ConfigureActivity extends AppCompatActivity {
     }
 
     private void updateMapsSummary() {
+        if (!SettingsStore.isMapsEnabled(this)) {
+            summaryMaps.setText("Off");
+            return;
+        }
         String v = inputCampus.getText().toString().trim();
         summaryMaps.setText(v.isEmpty() ? "Not set" : v);
+    }
+
+    /** Dims the campus-hint fields when Maps is turned off; they're moot either way. */
+    private void applyMapsEnabledState(boolean enabled) {
+        groupCampusHint.setAlpha(enabled ? 1f : 0.4f);
+        inputCampus.setEnabled(enabled);
     }
 
     // Notes
@@ -861,7 +882,7 @@ public class ConfigureActivity extends AppCompatActivity {
             updateWizardNextEnabled();
         } catch (ScheduleParser.ParseException e) {
             if (e.reason == ScheduleParser.ParseException.Reason.NO_TABLE) {
-                showStatus("Couldn't find the Enlisted Classes table \u2014 make sure you copied the schedule page, not another CRS page.", false);
+                showStatus("Couldn't find a class schedule table \u2014 make sure you copied a Registration (\u201cMy Enlisted Classes\u201d) or Preenlistment (\u201cMy Desired Classes\u201d) page.", false);
             } else {
                 showStatus("Found the table but couldn't read any class rows.", false);
             }

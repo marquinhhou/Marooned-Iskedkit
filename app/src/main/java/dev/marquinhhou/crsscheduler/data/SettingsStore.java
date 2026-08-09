@@ -17,6 +17,7 @@ public final class SettingsStore {
 
     private static final String PREFS = "nothing_schedule_settings";
     private static final String KEY_CAMPUS = "campus_hint";
+    private static final String KEY_MAPS_ENABLED = "maps_enabled";
     private static final String KEY_TERMS_ACCEPTED = "terms_accepted";
     private static final String KEY_SEMESTER_START = "semester_start_epoch_day";
     private static final String KEY_SEMESTER_END = "semester_end_epoch_day";
@@ -47,6 +48,15 @@ public final class SettingsStore {
 
     public static void setCampusHint(Context context, String campus) {
         prefs(context).edit().putString(KEY_CAMPUS, campus).apply();
+    }
+
+    /** On by default -- existing users keep the "Open Maps" prompt until they turn it off. */
+    public static boolean isMapsEnabled(Context context) {
+        return prefs(context).getBoolean(KEY_MAPS_ENABLED, true);
+    }
+
+    public static void setMapsEnabled(Context context, boolean enabled) {
+        prefs(context).edit().putBoolean(KEY_MAPS_ENABLED, enabled).apply();
     }
 
     public static boolean hasAcceptedTerms(Context context) {

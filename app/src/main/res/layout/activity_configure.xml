@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:lineSpacingMultiplier="1.4"
-                android:text="1. Open your CRS Schedule page (the one with the Enlisted Classes table).\n2. Save it: Ctrl+S -&gt; \u201cWebpage, HTML only\u201d -&gt; pick a file. Or view source with Ctrl+U, select all, copy.\n3. Either pick the saved .html file below, or paste the copied source into the box.\n\nHave a .ics calendar file instead (e.g. exported from here previously)? Pick it the same way below \u2014 it's imported automatically."
+                android:text="1. Open your CRS Registration or Preenlistment page (the one showing your Enlisted or Desired Classes table \u2014 either the All or Enlisted schedule tab is fine).\n2. Save it: Ctrl+S -&gt; \u201cWebpage, HTML only\u201d -&gt; pick a file. Or view source with Ctrl+U, select all, copy.\n3. Either pick the saved .html file below, or paste the copied source into the box.\n\nHave a .ics calendar file instead (e.g. exported from here previously)? Pick it the same way below \u2014 it's imported automatically."
                 android:textColor="@color/ink_dim"
                 android:textSize="12.5sp"
                 android:fontFamily="@font/jetbrains_mono" />
