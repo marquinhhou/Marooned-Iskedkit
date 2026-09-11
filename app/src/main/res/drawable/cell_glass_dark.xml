@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Week-table occupied-cell tile: a whisper of neutral ink over the backdrop.
+     Deliberately NOT theme/accent-tinted,just a light or dark step relative
+     to whatever the widget background is (see Theming.isDarkUi). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#0AFFFFFF" />
+    <corners android:radius="5dp" />
+</shape>

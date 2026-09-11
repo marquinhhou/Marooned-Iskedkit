@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import dev.marquinhhou.crsscheduler.R;
@@ -30,6 +31,8 @@ public class NotesWidgetProvider extends AppWidgetProvider {
     public static final String SUB_ACTION_TOGGLE = "toggle";
     public static final String SUB_ACTION_ARCHIVE = "archive";
     public static final String SUB_ACTION_TOGGLE_GROUP = "toggle_group";
+    public static final String SUB_ACTION_OPEN_ATTACHMENT = "open_attachment";
+    public static final String EXTRA_ATTACHMENT_URI = "attachment_uri";
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -62,7 +65,7 @@ public class NotesWidgetProvider extends AppWidgetProvider {
                 Toast.makeText(context, "No notes to copy yet.", Toast.LENGTH_SHORT).show();
             } else {
                 ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                if (cm != null) cm.setPrimaryClip(ClipData.newPlainText("CRS Scheduler notes", text));
+                if (cm != null) cm.setPrimaryClip(ClipData.newPlainText("Marooned IskedKit notes", text));
                 Toast.makeText(context, "Notes copied to clipboard.", Toast.LENGTH_SHORT).show();
             }
         }
@@ -104,6 +107,21 @@ public class NotesWidgetProvider extends AppWidgetProvider {
                 context.startActivity(edit);
                 break;
             }
+            case SUB_ACTION_OPEN_ATTACHMENT: {
+                String uriString = intent.getStringExtra(EXTRA_ATTACHMENT_URI);
+                if (uriString == null) return;
+                android.net.Uri fileUri = android.net.Uri.parse(uriString);
+                String type = context.getContentResolver().getType(fileUri);
+                Intent view = new Intent(Intent.ACTION_VIEW);
+                view.setDataAndType(fileUri, type != null ? type : "*/*");
+                view.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+                try {
+                    context.startActivity(view);
+                } catch (android.content.ActivityNotFoundException | SecurityException e) {
+                    Toast.makeText(context, "Can't open that attachment right now.", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            }
         }
     }
 
@@ -114,8 +132,16 @@ public class NotesWidgetProvider extends AppWidgetProvider {
     }
 
     private void updateOne(Context context, AppWidgetManager appWidgetManager, int id) {
-        Bundle options = appWidgetManager.getAppWidgetOptions(id);
-        appWidgetManager.updateAppWidget(id, WidgetRenderer.buildNotes(context, options, id));
+        RemoteViews rv;
+        try {
+            Bundle options = appWidgetManager.getAppWidgetOptions(id);
+            rv = WidgetRenderer.buildNotes(context, options, id);
+        } catch (Exception e) {
+            // Anything thrown here is uncaught all the way up to the widget host, which is
+            // exactly what surfaces as "Couldn't add widget." -- always bind *something*.
+            rv = WidgetRenderer.buildMinimalErrorWidget(context, "Notes widget hit a snag -- open the app and it'll refresh itself.");
+        }
+        appWidgetManager.updateAppWidget(id, rv);
         appWidgetManager.notifyAppWidgetViewDataChanged(id, R.id.notes_list_listview);
     }
 

@@ -28,8 +28,7 @@ public class TodayWidgetProvider extends AppWidgetProvider {
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager,
                                            int appWidgetId, Bundle newOptions) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
-        appWidgetManager.updateAppWidget(appWidgetId, WidgetRenderer.buildToday(context, newOptions, appWidgetId));
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.today_list_listview);
+        updateOne(context, appWidgetManager, appWidgetId);
     }
 
     @Override
@@ -53,7 +52,15 @@ public class TodayWidgetProvider extends AppWidgetProvider {
 
     private void updateOne(Context context, AppWidgetManager appWidgetManager, int id) {
         Bundle options = appWidgetManager.getAppWidgetOptions(id);
-        appWidgetManager.updateAppWidget(id, WidgetRenderer.buildToday(context, options, id));
+        android.widget.RemoteViews rv;
+        try {
+            rv = WidgetRenderer.buildToday(context, options, id);
+        } catch (Throwable t) {
+            android.util.Log.e("TodayWidget", "build failed", t);
+            rv = WidgetRenderer.buildMinimalErrorWidget(context,
+                    "Today widget hit a snag. It'll recover on its next refresh.");
+        }
+        appWidgetManager.updateAppWidget(id, rv);
         appWidgetManager.notifyAppWidgetViewDataChanged(id, R.id.today_list_listview);
     }
 

@@ -57,11 +57,21 @@ public class ScheduleHistoryActivity extends AppCompatActivity {
         for (ScheduleSnapshot snap : all) {
             View row = inflater.inflate(layoutRowHistoryEntry, container, false);
             ((TextView) row.findViewById(R.id.history_row_label)).setText(snap.displayName());
-            row.findViewById(R.id.history_row_reactivate).setOnClickListener(v -> confirmReactivate(snap));
-            row.findViewById(R.id.history_row_rename).setOnClickListener(v -> promptRename(snap));
-            row.findViewById(R.id.history_row_delete).setOnClickListener(v -> confirmDelete(snap));
+            View reactivate = row.findViewById(R.id.history_row_reactivate);
+            View rename = row.findViewById(R.id.history_row_rename);
+            View delete = row.findViewById(R.id.history_row_delete);
+            reactivate.setOnClickListener(v -> confirmReactivate(snap));
+            rename.setOnClickListener(v -> promptRename(snap));
+            delete.setOnClickListener(v -> confirmDelete(snap));
+            // rename/delete were sampling to the SAME SURFACE tone as the row they sit inside
+            // (both use row_bg_adaptive) and visually disappearing into it -- same issue as
+            // Setup's CLEAR/CHOOSE/SAVED SCHEDULES, same fix: step them to SURFACE_2.
+            CustomThemeBackground.styleControl(this, reactivate, CustomThemeBackground.ControlTier.PRIMARY);
+            CustomThemeBackground.styleControl(this, rename, CustomThemeBackground.ControlTier.SECONDARY);
+            CustomThemeBackground.styleControl(this, delete, CustomThemeBackground.ControlTier.SECONDARY);
             container.addView(row);
         }
+        CustomThemeBackground.apply(this);
     }
 
     private void promptRename(ScheduleSnapshot snap) {
@@ -72,7 +82,7 @@ public class ScheduleHistoryActivity extends AppCompatActivity {
         int pad = (int) (20 * getResources().getDisplayMetrics().density);
         input.setPadding(pad, pad / 2, pad, pad / 2);
 
-        new AlertDialog.Builder(this)
+        AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("Rename this saved schedule")
                 .setView(input)
                 .setPositiveButton("Save", (d, w) -> {
@@ -81,15 +91,19 @@ public class ScheduleHistoryActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
+        CustomThemeBackground.applyToDialog(dialog);
+        CustomThemeBackground.styleDialogButtons(this, dialog);
     }
 
     private void confirmReactivate(ScheduleSnapshot snap) {
-        new AlertDialog.Builder(this)
+        AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("Reactivate this schedule?")
                 .setMessage("This replaces your currently active schedule. The one it replaces gets saved here too, so nothing is lost.")
                 .setPositiveButton("Reactivate", (d, w) -> reactivate(snap))
                 .setNegativeButton("Cancel", null)
                 .show();
+        CustomThemeBackground.applyToDialog(dialog);
+        CustomThemeBackground.styleDialogButtons(this, dialog);
     }
 
     private void reactivate(ScheduleSnapshot snap) {
@@ -105,7 +119,7 @@ public class ScheduleHistoryActivity extends AppCompatActivity {
     }
 
     private void confirmDelete(ScheduleSnapshot snap) {
-        new AlertDialog.Builder(this)
+        AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("Delete this saved schedule?")
                 .setMessage("This can't be undone.")
                 .setPositiveButton("Delete", (d, w) -> {
@@ -115,5 +129,7 @@ public class ScheduleHistoryActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
+        CustomThemeBackground.applyToDialog(dialog);
+        CustomThemeBackground.styleDialogButtons(this, dialog);
     }
 }

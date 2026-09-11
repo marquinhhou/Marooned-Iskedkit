@@ -84,6 +84,7 @@ public final class NotesStore {
         if (idx < 0) return;
         all.remove(idx);
         persist(context, all);
+        AttachmentStore.clear(context, AttachmentStore.NAMESPACE_NOTE, String.valueOf(id));
     }
 
     public static Note find(Context context, long id) {
@@ -109,7 +110,7 @@ public final class NotesStore {
     /** Plain text of every active note, for copy-all. */
     public static String formatAllAsText(Context context) {
         List<Note> all = load(context);
-        StringBuilder sb = new StringBuilder("CRS SCHEDULER NOTES\n\n");
+        StringBuilder sb = new StringBuilder("MAROONED ISKEDKIT NOTES\n\n");
         boolean any = false;
         for (Note n : all) {
             if (n.archived) continue;

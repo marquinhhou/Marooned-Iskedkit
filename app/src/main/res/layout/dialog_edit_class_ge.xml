@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:maxHeight="480dp">
+    android:maxHeight="560dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,6 +17,184 @@
             android:textColor="@color/ge_ink"
             android:textStyle="bold"
             android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="DAYS"
+            android:textColor="@color/ge_ink_dim"
+            android:textSize="10sp"
+            android:letterSpacing="0.15" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="6dp">
+
+            <TextView
+                android:id="@+id/chip_edit_day_0"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:minHeight="36dp"
+                android:gravity="center"
+                android:text="Su"
+                android:textSize="10.5sp"
+                android:textStyle="bold"
+                android:background="@drawable/chip_outline_bg_ge"
+                android:foreground="@drawable/ripple_rounded_10dp_ge" />
+
+            <TextView
+                android:id="@+id/chip_edit_day_1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:minHeight="36dp"
+                android:gravity="center"
+                android:text="M"
+                android:textSize="10.5sp"
+                android:textStyle="bold"
+                android:background="@drawable/chip_outline_bg_ge"
+                android:foreground="@drawable/ripple_rounded_10dp_ge" />
+
+            <TextView
+                android:id="@+id/chip_edit_day_2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:minHeight="36dp"
+                android:gravity="center"
+                android:text="T"
+                android:textSize="10.5sp"
+                android:textStyle="bold"
+                android:background="@drawable/chip_outline_bg_ge"
+                android:foreground="@drawable/ripple_rounded_10dp_ge" />
+
+            <TextView
+                android:id="@+id/chip_edit_day_3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:minHeight="36dp"
+                android:gravity="center"
+                android:text="W"
+                android:textSize="10.5sp"
+                android:textStyle="bold"
+                android:background="@drawable/chip_outline_bg_ge"
+                android:foreground="@drawable/ripple_rounded_10dp_ge" />
+
+            <TextView
+                android:id="@+id/chip_edit_day_4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:minHeight="36dp"
+                android:gravity="center"
+                android:text="Th"
+                android:textSize="10.5sp"
+                android:textStyle="bold"
+                android:background="@drawable/chip_outline_bg_ge"
+                android:foreground="@drawable/ripple_rounded_10dp_ge" />
+
+            <TextView
+                android:id="@+id/chip_edit_day_5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:minHeight="36dp"
+                android:gravity="center"
+                android:text="F"
+                android:textSize="10.5sp"
+                android:textStyle="bold"
+                android:background="@drawable/chip_outline_bg_ge"
+                android:foreground="@drawable/ripple_rounded_10dp_ge" />
+
+            <TextView
+                android:id="@+id/chip_edit_day_6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="36dp"
+                android:gravity="center"
+                android:text="S"
+                android:textSize="10.5sp"
+                android:textStyle="bold"
+                android:background="@drawable/chip_outline_bg_ge"
+                android:foreground="@drawable/ripple_rounded_10dp_ge" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="STARTS"
+                    android:textColor="@color/ge_ink_dim"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.15" />
+
+                <Button
+                    android:id="@+id/btn_edit_start_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:minHeight="44dp"
+                    android:text="Set"
+                    android:textColor="@color/ge_ink"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.05"
+                    android:background="@drawable/row_bg_ge"
+                    android:foreground="@drawable/ripple_rounded_14dp_ge" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ENDS"
+                    android:textColor="@color/ge_ink_dim"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.15" />
+
+                <Button
+                    android:id="@+id/btn_edit_end_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:minHeight="44dp"
+                    android:text="Set"
+                    android:textColor="@color/ge_ink"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.05"
+                    android:background="@drawable/row_bg_ge"
+                    android:foreground="@drawable/ripple_rounded_14dp_ge" />
+            </LinearLayout>
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
@@ -84,6 +262,41 @@
             android:textSize="13sp"
             android:inputType="numberDecimal"
             android:imeOptions="actionDone" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="SYLLABUS"
+            android:textColor="@color/ge_ink_dim"
+            android:textSize="10sp"
+            android:letterSpacing="0.15" />
+
+        <LinearLayout
+            android:id="@+id/syllabus_attachments_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="vertical" />
+
+        <TextView
+            android:id="@+id/btn_attach_syllabus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:minHeight="48dp"
+            android:background="@drawable/btn_bg_ge"
+            android:backgroundTint="@color/ge_accent"
+            android:foreground="@drawable/ripple_rounded_12dp_ge"
+            android:padding="12dp"
+            android:text="+ ATTACH SYLLABUS"
+            android:textColor="@color/ge_bg"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:letterSpacing="0.05"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true" />
 
     </LinearLayout>
 </ScrollView>

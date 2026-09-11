@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Custom-mode widget surface (dark backdrop): the same glass recipe as the outline
+     chips (VIEW FULL / LIST): a subtle translucent white fill plus a clearly visible
+     hairline border, so a panel reads as glass with an edge, not as a flat tinted slab
+     or a white film. Colors are BAKED IN and applied via plain setBackgroundResource:
+     RemoteViews background-tint flattens fill and stroke into one color, which is why
+     the previous tint-at-runtime approach could never show a border. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#29FFFFFF" />
+    <stroke android:width="1dp" android:color="#57FFFFFF" />
+    <corners android:radius="14dp" />
+</shape>

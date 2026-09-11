@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Week-table occupied-cell tile, today's column: same neutral family, one
+     clear but still quiet step stronger than the regular tile. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#17FFFFFF" />
+    <corners android:radius="5dp" />
+</shape>

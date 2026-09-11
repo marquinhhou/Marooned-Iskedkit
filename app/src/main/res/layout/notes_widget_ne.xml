@@ -47,21 +47,21 @@
 
             <ImageView
                 android:id="@+id/btn_settings"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:src="@drawable/ic_settings_ne" />
 
             <ImageView
                 android:id="@+id/btn_archive"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:layout_marginStart="16dp"
                 android:src="@drawable/ic_archive_ne" />
 
             <ImageView
                 android:id="@+id/btn_copy_all"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:layout_marginStart="16dp"
                 android:src="@drawable/ic_copy_ne" />
         </LinearLayout>
@@ -115,6 +115,7 @@
                 android:background="@drawable/chip_filled_bg_ne">
 
                 <TextView
+                    android:id="@+id/btn_add_note_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="+ NOTE"
@@ -152,6 +153,7 @@
                 android:visibility="gone">
 
                 <TextView
+                    android:id="@+id/notes_empty_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -162,6 +164,7 @@
                     android:fontFamily="@font/jetbrains_mono_bold" />
 
                 <TextView
+                    android:id="@+id/notes_empty_sub"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"

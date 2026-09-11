@@ -56,6 +56,15 @@
     <color name="adaptive_green">#1E8E4F</color>
     <color name="adaptive_error">#C4342A</color>
 
+    <!--
+        Custom theme (Photo mode): the neutral base the blurred photo is
+        composited onto. Follows the system light/dark setting via the
+        values-night override, deliberately NOT derived from the photo's
+        dominant color, so ink contrast is deterministic: dark text on the
+        light backdrop, light text on the dark one, always legible.
+    -->
+    <color name="custom_bg">#F4F3EF</color>
+
     <!-- Launcher icon: one fixed icon regardless of in-app theme choice. -->
     <color name="ic_background">#1B1114</color>
     <color name="ic_foreground">#F6F6F3</color>

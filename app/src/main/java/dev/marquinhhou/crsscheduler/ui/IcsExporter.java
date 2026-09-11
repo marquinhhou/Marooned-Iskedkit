@@ -28,7 +28,7 @@ public final class IcsExporter {
         StringBuilder sb = new StringBuilder();
         sb.append("BEGIN:VCALENDAR\r\n");
         sb.append("VERSION:2.0\r\n");
-        sb.append("PRODID:-//marquinhhou//CRS Scheduler//EN\r\n");
+        sb.append("PRODID:-//marquinhhou//Marooned IskedKit//EN\r\n");
         sb.append("CALSCALE:GREGORIAN\r\n");
 
         String dtstamp = nowUtcStamp();

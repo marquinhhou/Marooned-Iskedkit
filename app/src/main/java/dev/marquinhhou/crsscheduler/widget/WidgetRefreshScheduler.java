@@ -32,24 +32,38 @@ public final class WidgetRefreshScheduler {
 
         AppWidgetManager mgr = AppWidgetManager.getInstance(context);
 
+        // Every build is guarded: a throw in one widget's builder degrades to a minimal
+        // card instead of crashing whichever screen triggered the refresh (or leaving the
+        // launcher with a half-applied update and a blank widget).
         int[] todayIds = mgr.getAppWidgetIds(new ComponentName(context, TodayWidgetProvider.class));
         for (int id : todayIds) {
             Bundle options = mgr.getAppWidgetOptions(id);
-            mgr.updateAppWidget(id, WidgetRenderer.buildToday(context, options, id));
+            mgr.updateAppWidget(id, safely(context, "Today", () -> WidgetRenderer.buildToday(context, options, id)));
             mgr.notifyAppWidgetViewDataChanged(id, R.id.today_list_listview);
         }
 
         int[] weekIds = mgr.getAppWidgetIds(new ComponentName(context, WeekWidgetProvider.class));
         for (int id : weekIds) {
             Bundle options = mgr.getAppWidgetOptions(id);
-            mgr.updateAppWidget(id, WidgetRenderer.buildWeekSummary(context, options));
+            mgr.updateAppWidget(id, safely(context, "Weekly", () -> WidgetRenderer.buildWeekSummary(context, options)));
         }
 
         int[] notesIds = mgr.getAppWidgetIds(new ComponentName(context, NotesWidgetProvider.class));
         for (int id : notesIds) {
             Bundle options = mgr.getAppWidgetOptions(id);
-            mgr.updateAppWidget(id, WidgetRenderer.buildNotes(context, options, id));
+            mgr.updateAppWidget(id, safely(context, "Notes", () -> WidgetRenderer.buildNotes(context, options, id)));
             mgr.notifyAppWidgetViewDataChanged(id, R.id.notes_list_listview);
+        }
+    }
+
+    private static android.widget.RemoteViews safely(Context context, String which,
+            java.util.concurrent.Callable<android.widget.RemoteViews> build) {
+        try {
+            return build.call();
+        } catch (Throwable t) {
+            android.util.Log.e("WidgetRefresh", which + " widget build failed", t);
+            return WidgetRenderer.buildMinimalErrorWidget(context,
+                    which + " widget hit a snag. It'll recover on its next refresh.");
         }
     }
 

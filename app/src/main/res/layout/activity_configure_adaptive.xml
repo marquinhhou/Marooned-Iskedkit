@@ -16,7 +16,7 @@
                 <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="CRS SCHEDULER"
+            android:text="MAROONED ISKEDKIT"
             android:textColor="@color/adaptive_ink"
             android:textSize="17sp"
             android:letterSpacing="0.05"
@@ -44,7 +44,7 @@
                 android:id="@+id/wizard_step_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/adaptive_accent"
+                android:textColor="@color/adaptive_ink_dim"
                 android:textSize="10.5sp"
                 android:letterSpacing="0.15"
                 android:textStyle="bold" />
@@ -53,7 +53,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:id="@+id/wizard_progress_row">
 
                 <View
                     android:id="@+id/wizard_dot_1"
@@ -98,8 +99,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="LOAD YOUR CRS SCHEDULE"
-                android:textColor="@color/adaptive_accent"
+                android:id="@+id/import_card_title"
+android:text="LOAD YOUR CRS SCHEDULE"
+                android:textColor="@color/adaptive_ink_dim"
                 android:textSize="12sp"
                 android:letterSpacing="0.15"
                 android:textStyle="bold" />
@@ -109,7 +111,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:lineSpacingMultiplier="1.4"
-                android:text="1. Open your CRS Registration or Preenlistment page (the one showing your Enlisted or Desired Classes table \u2014 either the All or Enlisted schedule tab is fine).\n2. Save it: Ctrl+S -&gt; \u201cWebpage, HTML only\u201d -&gt; pick a file. Or view source with Ctrl+U, select all, copy.\n3. Either pick the saved .html file below, or paste the copied source into the box.\n\nHave a .ics calendar file instead (e.g. exported from here previously)? Pick it the same way below \u2014 it's imported automatically.\n\nNo CRS access or .ics file yet? Scroll down to add your classes by hand instead."
+                android:id="@+id/import_instructions"
+                android:text="@string/import_instructions_crs"
                 android:textColor="@color/adaptive_ink_dim"
                 android:textSize="12.5sp" />
 
@@ -183,13 +186,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:minHeight="44dp"
+                android:minHeight="48dp"
                 android:text="SAVED SCHEDULES"
-                android:textColor="@color/adaptive_ink_dim"
-                android:textSize="10.5sp"
+                android:textColor="@color/adaptive_ink"
+                android:textSize="11sp"
                 android:letterSpacing="0.1"
                 android:background="@drawable/row_bg_adaptive"
-                android:foreground="@drawable/ripple_rounded_14dp_adaptive" />
+                android:foreground="@drawable/ripple_rounded_14dp_adaptive"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/status_text"
@@ -233,7 +237,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="MAPS SEARCH CONTEXT"
-                        android:textColor="@color/adaptive_accent"
+                        android:textColor="@color/adaptive_ink_dim"
                         android:textSize="12sp"
                         android:letterSpacing="0.15"
                         android:textStyle="bold" />
@@ -326,7 +330,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Auto-fill this from your imported schedule"
+                            android:text="Include your campus/university in map searches"
                             android:textColor="@color/adaptive_ink_dim"
                             android:textSize="11sp" />
 
@@ -342,7 +346,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:text="@string/maps_room_disclaimer"
-                        android:textColor="@color/adaptive_accent"
+                        android:textColor="@color/adaptive_ink_dim"
                         android:textSize="10.5sp"
                         android:lineSpacingMultiplier="1.3" />
                 </LinearLayout>
@@ -379,7 +383,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="SEMESTER DATES"
-                        android:textColor="@color/adaptive_accent"
+                        android:textColor="@color/adaptive_ink_dim"
                         android:textSize="12sp"
                         android:letterSpacing="0.15"
                         android:textStyle="bold" />
@@ -548,7 +552,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="CLASS REMINDERS"
-                        android:textColor="@color/adaptive_accent"
+                        android:textColor="@color/adaptive_ink_dim"
                         android:textSize="12sp"
                         android:letterSpacing="0.15"
                         android:textStyle="bold" />
@@ -691,7 +695,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="APP THEME"
-                android:textColor="@color/adaptive_accent"
+                android:textColor="@color/adaptive_ink_dim"
                 android:textSize="12sp"
                 android:letterSpacing="0.15"
                 android:textStyle="bold" />
@@ -701,7 +705,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="14dp"
-                android:text="GE: maroon accent, follows your system light/dark setting. NE: fixed dark, Nothing-OS-inspired. Adaptive: matches your phone's wallpaper colors (Android 12+)."
+                android:text="Nothing: fixed dark, Nothing-OS-inspired. Adaptive: matches your phone's wallpaper colors (Android 12+). Custom: your own photo or color."
                 android:textColor="@color/adaptive_ink_dim"
                 android:textSize="11sp"
                 android:lineSpacingMultiplier="1.3" />
@@ -720,7 +724,7 @@
                     android:minHeight="44dp"
                     android:gravity="center"
                     android:padding="10dp"
-                    android:text="GE"
+                    android:text="CUSTOM"
                     android:textSize="10.5sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.05"
@@ -736,7 +740,7 @@
                     android:minHeight="44dp"
                     android:gravity="center"
                     android:padding="10dp"
-                    android:text="NE"
+                    android:text="NOTHING"
                     android:textSize="10.5sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.05"
@@ -773,7 +777,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="NOTES WIDGET"
-                android:textColor="@color/adaptive_accent"
+                android:textColor="@color/adaptive_ink_dim"
                 android:textSize="12sp"
                 android:letterSpacing="0.15"
                 android:textStyle="bold" />
@@ -831,7 +835,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="PROFILE"
-                        android:textColor="@color/adaptive_accent"
+                        android:textColor="@color/adaptive_ink_dim"
                         android:textSize="12sp"
                         android:letterSpacing="0.15"
                         android:textStyle="bold" />
@@ -989,6 +993,180 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp">
+
+                    <EditText
+                        android:id="@+id/input_profile_address"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="44dp"
+                        android:background="@drawable/row_bg_adaptive"
+                        android:hint="Dorm / address"
+                        android:textColorHint="@color/adaptive_ink_dim"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:padding="12dp"
+                        android:textColor="@color/adaptive_ink"
+                        android:textSize="12sp" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_export_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp">
+
+                    <EditText
+                        android:id="@+id/input_profile_facebook"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="44dp"
+                        android:background="@drawable/row_bg_adaptive"
+                        android:hint="Facebook"
+                        android:textColorHint="@color/adaptive_ink_dim"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:padding="12dp"
+                        android:textColor="@color/adaptive_ink"
+                        android:textSize="12sp" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_export_facebook"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp">
+
+                    <EditText
+                        android:id="@+id/input_profile_instagram"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="44dp"
+                        android:background="@drawable/row_bg_adaptive"
+                        android:hint="Instagram"
+                        android:textColorHint="@color/adaptive_ink_dim"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:padding="12dp"
+                        android:textColor="@color/adaptive_ink"
+                        android:textSize="12sp" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_export_instagram"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp">
+
+                    <EditText
+                        android:id="@+id/input_profile_twitter"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="44dp"
+                        android:background="@drawable/row_bg_adaptive"
+                        android:hint="Twitter / X"
+                        android:textColorHint="@color/adaptive_ink_dim"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:padding="12dp"
+                        android:textColor="@color/adaptive_ink"
+                        android:textSize="12sp" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_export_twitter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp">
+
+                    <EditText
+                        android:id="@+id/input_profile_linkedin"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="44dp"
+                        android:background="@drawable/row_bg_adaptive"
+                        android:hint="LinkedIn"
+                        android:textColorHint="@color/adaptive_ink_dim"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:padding="12dp"
+                        android:textColor="@color/adaptive_ink"
+                        android:textSize="12sp" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_export_linkedin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp">
+
+                    <EditText
+                        android:id="@+id/input_profile_website"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="44dp"
+                        android:background="@drawable/row_bg_adaptive"
+                        android:hint="Website / portfolio"
+                        android:textColorHint="@color/adaptive_ink_dim"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:padding="12dp"
+                        android:textColor="@color/adaptive_ink"
+                        android:textSize="12sp" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_export_website"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
@@ -1022,7 +1200,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="FORM 5"
-                        android:textColor="@color/adaptive_accent"
+                        android:textColor="@color/adaptive_ink_dim"
                         android:textSize="12sp"
                         android:letterSpacing="0.15"
                         android:textStyle="bold" />
@@ -1150,7 +1328,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="EDIT CLASS INFO"
-                    android:textColor="@color/adaptive_accent"
+                    android:textColor="@color/adaptive_ink_dim"
                     android:textSize="12sp"
                     android:letterSpacing="0.15"
                     android:textStyle="bold" />

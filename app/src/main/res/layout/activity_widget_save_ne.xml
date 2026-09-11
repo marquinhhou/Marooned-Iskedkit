@@ -6,6 +6,7 @@
     android:padding="32dp">
 
     <LinearLayout
+            android:id="@+id/dialog_card_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -15,7 +16,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="SAVE SCHEDULE"
+            android:id="@+id/dialog_save_eyebrow"
+        android:text="SAVE SCHEDULE"
             android:textColor="@color/ne_accent"
             android:textSize="10sp"
             android:letterSpacing="0.2"
@@ -26,7 +28,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Save this week's schedule as..."
+            android:id="@+id/dialog_save_title"
+        android:text="Save this week's schedule as..."
             android:textColor="@color/ne_ink"
             android:textStyle="bold"
             android:textSize="16sp"
@@ -58,7 +61,7 @@
             android:textColor="@color/ne_ink"
             android:textSize="11.5sp"
             android:letterSpacing="0.1"
-            android:background="@drawable/row_bg_ne"
+            android:background="@drawable/btn_secondary_ne"
             android:foreground="@drawable/ripple_rounded_14dp_ne"
             android:textStyle="bold"
             android:fontFamily="@font/jetbrains_mono_bold" />
@@ -68,9 +71,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:minHeight="32dp"
+            android:minHeight="44dp"
             android:gravity="center"
-            android:text="Cancel"
+            android:letterSpacing="0.08"
+            android:textStyle="bold"
+            android:text="CANCEL"
             android:textColor="@color/ne_ink_dim"
             android:textSize="11.5sp"
             android:clickable="true"

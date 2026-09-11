@@ -32,6 +32,23 @@ public class WidgetForm5PromptActivity extends AppCompatActivity {
         findViewById(R.id.btn_upload_form5).setOnClickListener(v -> form5Picker.launch(new String[]{"application/pdf"}));
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        CustomThemeBackground.applyToCard(this, findViewById(R.id.dialog_card_root));
+        CustomThemeBackground.styleControl(this, findViewById(R.id.btn_upload_form5), CustomThemeBackground.ControlTier.PRIMARY);
+        CustomThemeBackground.styleControl(this, findViewById(R.id.btn_cancel), CustomThemeBackground.ControlTier.QUIET);
+        // The card's text roles are colored explicitly: retintTree's value-matching has
+        // proven unreliable on these prompt cards, which left the accent eyebrow (and on
+        // light systems, every text) stuck on raw Adaptive colors.
+        ((android.widget.TextView) findViewById(R.id.dialog_form5_eyebrow)).setTextColor(
+                Theming.color(this, R.color.ge_accent, R.color.ne_accent, R.color.adaptive_accent));
+        ((android.widget.TextView) findViewById(R.id.dialog_form5_title)).setTextColor(
+                Theming.color(this, R.color.ge_ink, R.color.ne_ink, R.color.adaptive_ink));
+        ((android.widget.TextView) findViewById(R.id.dialog_form5_body)).setTextColor(
+                Theming.color(this, R.color.ge_ink_dim, R.color.ne_ink_dim, R.color.adaptive_ink_dim));
+    }
+
     private void onForm5Picked(Uri uri) {
         try {
             getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);

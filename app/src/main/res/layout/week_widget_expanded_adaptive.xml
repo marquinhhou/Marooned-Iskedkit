@@ -5,6 +5,13 @@
     android:background="@drawable/widget_bg_adaptive"
     android:clipToOutline="true">
 
+    <ImageView
+        android:id="@+id/widget_custom_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:visibility="gone" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,6 +29,7 @@
             android:layout_marginBottom="8dp">
 
             <ImageView
+                android:id="@+id/header_dot"
                 android:layout_width="7dp"
                 android:layout_height="7dp"
                 android:src="@drawable/dot_accent_adaptive" />
@@ -44,17 +52,26 @@
 
             <ImageView
                 android:id="@+id/btn_settings"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:layout_marginStart="8dp"
                 android:src="@drawable/ic_settings_adaptive" />
 
-            <ImageView
+            <LinearLayout
                 android:id="@+id/btn_view_full_schedule"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:src="@drawable/ic_calendar_adaptive" />
+                android:gravity="center"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp">
+
+                <ImageView
+                    android:id="@+id/view_full_schedule_icon"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_calendar_adaptive" />
+                </LinearLayout>
 
             <ImageView
                 android:id="@+id/btn_save"
@@ -63,16 +80,12 @@
                 android:layout_marginStart="8dp"
                 android:src="@drawable/ic_save_adaptive" />
 
-            <TextView
+            <ImageView
                 android:id="@+id/btn_form5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:layout_marginStart="8dp"
-                android:text="F5"
-                android:textColor="@color/adaptive_ink_dim"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.02" />
+                android:src="@drawable/ic_form5_adaptive" />
 
             <TextView
                 android:layout_width="0dp"

@@ -11,6 +11,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 
 import androidx.core.content.res.ResourcesCompat;
 
@@ -30,7 +33,6 @@ public final class ScheduleImageExporter {
     private static final int PADDING = 28;
     private static final int HEADER_BAR_HEIGHT = 60;
     private static final int HEADLINE_HEIGHT = 50;
-    private static final int PROFILE_LINE_HEIGHT = 30;
     private static final int GRID_ROW_HEIGHT = 50;
     private static final int TIME_COL_WIDTH = 130;
     private static final int DAY_COL_WIDTH = 130;
@@ -54,7 +56,6 @@ public final class ScheduleImageExporter {
         int noteHeight = noClassDays.isEmpty() ? 0 : NOTE_HEIGHT;
 
         String profileLine = buildProfileLine(context);
-        int profileLineHeight = profileLine.isEmpty() ? 0 : PROFILE_LINE_HEIGHT;
 
         int colorBg = Theming.color(context, R.color.ge_bg, R.color.ne_bg, R.color.adaptive_bg);
         int colorSurface = Theming.color(context, R.color.ge_surface, R.color.ne_surface, R.color.adaptive_surface);
@@ -68,6 +69,31 @@ public final class ScheduleImageExporter {
         Typeface bold = mono ? font(context, R.font.jetbrains_mono_bold) : Typeface.DEFAULT_BOLD;
 
         int width = PADDING * 2 + TIME_COL_WIDTH + DAY_COL_WIDTH * dayCols;
+
+        // profileLinePaint has to exist before we can measure/wrap profileLine against the
+        // table's own width, so it's built here rather than down with the other paints --
+        // profileLineHeight now comes from the line's REAL wrapped height instead of a fixed
+        // single-line constant. Previously this was one canvas.drawText call with no width
+        // constraint and no wrapping at all: switching on enough export fields (name, course,
+        // year, student no, address, any of the links...) produced a profileLine longer than
+        // the table, and everything past the table's own width was simply outside the bitmap
+        // and never rendered -- it didn't visibly "overflow", it just vanished off the edge.
+        TextPaint profileLineTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        profileLineTextPaint.setTextSize(15);
+        profileLineTextPaint.setColor(colorInkDim);
+        profileLineTextPaint.setTypeface(regular);
+        Layout profileLineLayout = null;
+        int profileLineHeight = 0;
+        if (!profileLine.isEmpty()) {
+            int availableWidth = width - 2 * PADDING;
+            profileLineLayout = StaticLayout.Builder.obtain(profileLine, 0, profileLine.length(),
+                            profileLineTextPaint, availableWidth)
+                    .setAlignment(Layout.Alignment.ALIGN_NORMAL)
+                    .setLineSpacing(0, 1.15f)
+                    .build();
+            profileLineHeight = profileLineLayout.getHeight() + 14;
+        }
+
         int height = PADDING * 2 + HEADER_BAR_HEIGHT + HEADLINE_HEIGHT + profileLineHeight
                 + GRID_ROW_HEIGHT * (rows + 1) + noteHeight + FOOTER_HEIGHT;
 
@@ -77,7 +103,6 @@ public final class ScheduleImageExporter {
 
         Paint brandPaint = textPaint(20, colorInkDim, Paint.Align.LEFT, regular);
         Paint headlinePaint = textPaint(26, colorInk, Paint.Align.LEFT, bold);
-        Paint profileLinePaint = textPaint(15, colorInkDim, Paint.Align.LEFT, regular);
         Paint dayLabelPaint = textPaint(20, colorInkDim, Paint.Align.CENTER, bold);
         Paint timeTextPaint = textPaint(16, colorInkDim, Paint.Align.CENTER, regular);
         Paint cellTextPaint = textPaint(17, colorInk, Paint.Align.CENTER, bold);
@@ -110,9 +135,12 @@ public final class ScheduleImageExporter {
         canvas.drawText(headline, PADDING, y + HEADLINE_HEIGHT / 2f + 9, headlinePaint);
         y += HEADLINE_HEIGHT;
 
-        if (!profileLine.isEmpty()) {
-            canvas.drawText(profileLine, PADDING, y + PROFILE_LINE_HEIGHT / 2f + 6, profileLinePaint);
-            y += PROFILE_LINE_HEIGHT;
+        if (profileLineLayout != null) {
+            canvas.save();
+            canvas.translate(PADDING, y + 8);
+            profileLineLayout.draw(canvas);
+            canvas.restore();
+            y += profileLineHeight;
         }
 
         int tableTop = y;
@@ -158,7 +186,7 @@ public final class ScheduleImageExporter {
         }
 
         int footerY = tableBottom + noteHeight + FOOTER_HEIGHT / 2 + 5;
-        canvas.drawText("CRS Scheduler by marquinhhou on GitHub", width / 2f, footerY, footerPaint);
+        canvas.drawText("Marooned IskedKit by marquinhhou on GitHub", width / 2f, footerY, footerPaint);
 
         return bitmap;
     }
@@ -170,6 +198,12 @@ public final class ScheduleImageExporter {
         if (SettingsStore.isExportShowCourseEnabled(context)) appendIfPresent(sb, SettingsStore.getProfileCourse(context));
         if (SettingsStore.isExportShowYearStandingEnabled(context)) appendIfPresent(sb, SettingsStore.getProfileYearStanding(context));
         if (SettingsStore.isExportShowStudentNoEnabled(context)) appendIfPresent(sb, SettingsStore.getProfileStudentNo(context));
+        if (SettingsStore.isExportShowAddressEnabled(context)) appendIfPresent(sb, SettingsStore.getProfileAddress(context));
+        if (SettingsStore.isExportShowFacebookEnabled(context)) appendIfPresent(sb, SettingsStore.getProfileFacebook(context));
+        if (SettingsStore.isExportShowInstagramEnabled(context)) appendIfPresent(sb, SettingsStore.getProfileInstagram(context));
+        if (SettingsStore.isExportShowTwitterEnabled(context)) appendIfPresent(sb, SettingsStore.getProfileTwitter(context));
+        if (SettingsStore.isExportShowLinkedinEnabled(context)) appendIfPresent(sb, SettingsStore.getProfileLinkedin(context));
+        if (SettingsStore.isExportShowWebsiteEnabled(context)) appendIfPresent(sb, SettingsStore.getProfileWebsite(context));
         return sb.toString();
     }
 

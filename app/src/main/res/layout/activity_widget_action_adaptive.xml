@@ -6,6 +6,7 @@
     android:padding="32dp">
 
     <LinearLayout
+            android:id="@+id/dialog_card_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -15,7 +16,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="LOCATE CLASS"
+            android:id="@+id/dialog_action_eyebrow"
+        android:text="LOCATE CLASS"
             android:textColor="@color/adaptive_accent"
             android:textSize="10sp"
             android:letterSpacing="0.2"
@@ -42,7 +44,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:text="Open this location in a maps app?"
+            android:id="@+id/dialog_maps_question"
+        android:text="Open this location in a maps app?"
             android:textColor="@color/adaptive_ink_dim"
             android:textSize="12sp" />
 
@@ -50,7 +53,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/maps_room_disclaimer_short"
+            android:id="@+id/dialog_maps_disclaimer"
+        android:text="@string/maps_room_disclaimer_short"
             android:textColor="@color/adaptive_accent"
             android:textSize="10.5sp"
             android:lineSpacingMultiplier="1.3" />

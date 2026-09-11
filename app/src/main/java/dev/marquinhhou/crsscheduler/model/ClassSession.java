@@ -38,7 +38,13 @@ public class ClassSession {
 
     /** Returns a copy with the room/instructor/units manually edited via Edit Class Info. */
     public ClassSession withEditedInfo(String newRoom, String newInstructor, double newCredits) {
-        return new ClassSession(code, name, newCredits, creditsExcluded, days, start, end,
+        return withEditedInfo(newRoom, newInstructor, newCredits, days, start, end);
+    }
+
+    /** Same as above, but also allows correcting the days and start/end time. */
+    public ClassSession withEditedInfo(String newRoom, String newInstructor, double newCredits,
+                                        List<Integer> newDays, int newStart, int newEnd) {
+        return new ClassSession(code, name, newCredits, creditsExcluded, newDays, newStart, newEnd,
                 type, newRoom, newInstructor);
     }
 

@@ -15,11 +15,22 @@ public class WeekWidgetProvider extends AppWidgetProvider {
     public static final String ACTION_TICK = "dev.marquinhhou.crsscheduler.WEEK_TICK";
     public static final String ACTION_TOGGLE_PREVIEW = "dev.marquinhhou.crsscheduler.WEEK_TOGGLE_PREVIEW";
 
+    /** A builder throw must degrade to a minimal card -- never leave the host mid-update. */
+    private android.widget.RemoteViews buildSafely(Context context, Bundle options) {
+        try {
+            return WidgetRenderer.buildWeekSummary(context, options);
+        } catch (Throwable t) {
+            android.util.Log.e("WeekWidget", "build failed", t);
+            return WidgetRenderer.buildMinimalErrorWidget(context,
+                    "Weekly widget hit a snag. It'll recover on its next refresh.");
+        }
+    }
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int id : appWidgetIds) {
             Bundle options = appWidgetManager.getAppWidgetOptions(id);
-            appWidgetManager.updateAppWidget(id, WidgetRenderer.buildWeekSummary(context, options));
+            appWidgetManager.updateAppWidget(id, buildSafely(context, options));
         }
     }
 
@@ -27,7 +38,7 @@ public class WeekWidgetProvider extends AppWidgetProvider {
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager,
                                            int appWidgetId, Bundle newOptions) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
-        appWidgetManager.updateAppWidget(appWidgetId, WidgetRenderer.buildWeekSummary(context, newOptions));
+        appWidgetManager.updateAppWidget(appWidgetId, buildSafely(context, newOptions));
     }
 
     @Override
@@ -39,7 +50,7 @@ public class WeekWidgetProvider extends AppWidgetProvider {
             int[] ids = mgr.getAppWidgetIds(new ComponentName(context, WeekWidgetProvider.class));
             for (int id : ids) {
                 Bundle options = mgr.getAppWidgetOptions(id);
-                mgr.updateAppWidget(id, WidgetRenderer.buildWeekSummary(context, options));
+                mgr.updateAppWidget(id, buildSafely(context, options));
             }
         } else if (ACTION_TOGGLE_PREVIEW.equals(action)) {
             SettingsStore.setPreviewBeforeStartEnabled(context, !SettingsStore.isPreviewBeforeStartEnabled(context));

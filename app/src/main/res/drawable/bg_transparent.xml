@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Transparent DRAWABLE placeholder for RemoteViews setBackgroundResource calls.
+     RemoteViews actions run inside the launcher process: handing them a COLOR
+     resource here works on some Android versions and throws NotFoundException on
+     others, and a thrown action aborts the rest of that widget's update (rows,
+     surfaces, backgrounds silently vanish). Always pass a drawable. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@android:color/transparent" />
+</shape>

@@ -5,6 +5,13 @@
     android:background="@drawable/widget_bg_adaptive"
     android:clipToOutline="true">
 
+    <ImageView
+        android:id="@+id/widget_custom_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:visibility="gone" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -21,6 +28,7 @@
             android:gravity="center_vertical">
 
             <ImageView
+                android:id="@+id/header_dot"
                 android:layout_width="7dp"
                 android:layout_height="7dp"
                 android:src="@drawable/dot_accent_adaptive" />
@@ -46,21 +54,21 @@
 
             <ImageView
                 android:id="@+id/btn_settings"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:src="@drawable/ic_settings_adaptive" />
 
             <ImageView
                 android:id="@+id/btn_archive"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:layout_marginStart="16dp"
                 android:src="@drawable/ic_archive_adaptive" />
 
             <ImageView
                 android:id="@+id/btn_copy_all"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:layout_marginStart="16dp"
                 android:src="@drawable/ic_copy_adaptive" />
         </LinearLayout>
@@ -112,6 +120,7 @@
                 android:background="@drawable/chip_filled_bg_adaptive">
 
                 <TextView
+                    android:id="@+id/btn_add_note_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="+ NOTE"
@@ -148,6 +157,7 @@
                 android:visibility="gone">
 
                 <TextView
+                    android:id="@+id/notes_empty_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -157,6 +167,7 @@
                     android:textSize="13.5sp" />
 
                 <TextView
+                    android:id="@+id/notes_empty_sub"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"

@@ -64,6 +64,8 @@ public class NoteEditActivity extends AppCompatActivity {
     private View btnDelete;
     private View subjectInfoContainer;
     private TextView subjectInfoName, subjectInfoCode, subjectInfoSchedule, subjectInfoLocation;
+    private LinearLayout attachmentsContainer;
+    private View attachmentsLabel, btnAttachFile;
 
     private final List<TextView> subjectChips = new ArrayList<>();
     private final List<String[]> subjectOptions = new ArrayList<>(); // [0]=code, [1]=name; index 0 is always MISC ("","")
@@ -83,6 +85,11 @@ public class NoteEditActivity extends AppCompatActivity {
                 if (!granted) {
                     Toast.makeText(this, "Notifications are off for this app, so the reminder won't show. You can allow them from system Settings any time.", Toast.LENGTH_LONG).show();
                 }
+            });
+
+    private final ActivityResultLauncher<String[]> attachmentPicker =
+            registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
+                if (uri != null) onAttachmentPicked(uri);
             });
 
     @Override
@@ -119,6 +126,10 @@ public class NoteEditActivity extends AppCompatActivity {
         subjectInfoCode = findViewById(R.id.subject_info_code);
         subjectInfoSchedule = findViewById(R.id.subject_info_schedule);
         subjectInfoLocation = findViewById(R.id.subject_info_location);
+        attachmentsContainer = findViewById(R.id.note_attachments_container);
+        attachmentsLabel = findViewById(R.id.note_attachments_label);
+        btnAttachFile = findViewById(R.id.btn_attach_file);
+        btnAttachFile.setOnClickListener(v -> attachmentPicker.launch(new String[]{"*/*"}));
 
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
         findViewById(R.id.btn_save).setOnClickListener(v -> onSaveTapped());
@@ -168,8 +179,16 @@ public class NoteEditActivity extends AppCompatActivity {
             selectedSubjectIndex = indexOfSubject(editing.subjectCode);
             btnDelete.setVisibility(View.VISIBLE);
             btnDelete.setOnClickListener(v -> confirmDelete());
+            attachmentsLabel.setVisibility(View.VISIBLE);
+            attachmentsContainer.setVisibility(View.VISIBLE);
+            btnAttachFile.setVisibility(View.VISIBLE);
+            renderAttachments();
         } else {
             btnDelete.setVisibility(View.GONE);
+            // A new note has no id yet to key attachments off -- save first, then attach.
+            attachmentsLabel.setVisibility(View.GONE);
+            attachmentsContainer.setVisibility(View.GONE);
+            btnAttachFile.setVisibility(View.GONE);
         }
 
         bindSubjectChipSelection();
@@ -178,6 +197,27 @@ public class NoteEditActivity extends AppCompatActivity {
         bindReminderChips();
         bindMarkDoneChip();
         bindUrgentChip();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        CustomThemeBackground.apply(this);
+        // Explicit Primary/Secondary/Quiet pass so the editor's buttons match every other
+        // screen instead of relying on retintTree's generic sampling (or showing stock
+        // system button chrome inside otherwise-frosted cards).
+        CustomThemeBackground.styleControl(this, findViewById(R.id.btn_save), CustomThemeBackground.ControlTier.PRIMARY);
+        CustomThemeBackground.styleControl(this, btnDelete, CustomThemeBackground.ControlTier.SECONDARY);
+        CustomThemeBackground.styleControl(this, btnAttachFile, CustomThemeBackground.ControlTier.SECONDARY);
+        CustomThemeBackground.styleControl(this, btnSetDeadline, CustomThemeBackground.ControlTier.SECONDARY);
+        // Clearing a deadline is a destructive/undo-able action, same family as CLEAR /
+        // CLEAR DATES elsewhere in the app -- QUIET (a neutral ink wash) didn't distinguish
+        // it from a normal secondary control at all, which is what read as "the X button
+        // is broken": nothing about it signaled "this removes something."
+        CustomThemeBackground.styleControl(this, btnClearDeadline, CustomThemeBackground.ControlTier.DESTRUCTIVE);
+        CustomThemeBackground.styleControl(this, btnSetTime, CustomThemeBackground.ControlTier.SECONDARY);
+        CustomThemeBackground.styleControl(this, btnClearTime, CustomThemeBackground.ControlTier.QUIET);
+        CustomThemeBackground.styleControl(this, findViewById(R.id.btn_copy), CustomThemeBackground.ControlTier.SECONDARY);
     }
 
     private void resolveThemeAssets() {
@@ -233,6 +273,7 @@ public class NoteEditActivity extends AppCompatActivity {
             boolean selected = i == selectedSubjectIndex;
             chip.setBackgroundResource(selected ? drawableChipFilledBg : drawableChipOutlineBg);
             chip.setTextColor(selected ? colorBg : colorInkDim);
+            CustomThemeBackground.tintChip(this, chip, selected);
         }
     }
 
@@ -317,6 +358,7 @@ public class NoteEditActivity extends AppCompatActivity {
             boolean active = REMINDER_LEAD_OPTIONS[i] == reminderLeadMinutes;
             reminderChips[i].setBackgroundResource(active ? drawableChipFilledBg : drawableChipOutlineBg);
             reminderChips[i].setTextColor(active ? colorBg : colorInkDim);
+            CustomThemeBackground.tintChip(this, reminderChips[i], active);
         }
     }
 
@@ -345,6 +387,7 @@ public class NoteEditActivity extends AppCompatActivity {
         chipMarkDone.setBackgroundResource(completed ? drawableChipFilledBg : drawableChipOutlineBg);
         chipMarkDone.setTextColor(completed ? colorBg : colorInkDim);
         chipMarkDone.setText(completed ? "\u2713 MARKED AS DONE" : "MARK AS DONE");
+        CustomThemeBackground.tintChip(this, chipMarkDone, completed);
     }
 
     /** Uses the error color -- urgency is a warning, not a selection. */
@@ -400,8 +443,102 @@ public class NoteEditActivity extends AppCompatActivity {
         Toast.makeText(this, "Copied to clipboard.", Toast.LENGTH_SHORT).show();
     }
 
+    /** Rebuilds the attachment rows for the note currently being edited. No-op in create mode. */
+    private void renderAttachments() {
+        if (editing == null) return;
+        attachmentsContainer.removeAllViews();
+        String key = String.valueOf(editing.id);
+        List<dev.marquinhhou.crsscheduler.model.Attachment> attachments =
+                dev.marquinhhou.crsscheduler.data.AttachmentStore.get(this,
+                        dev.marquinhhou.crsscheduler.data.AttachmentStore.NAMESPACE_NOTE, key);
+        for (dev.marquinhhou.crsscheduler.model.Attachment a : attachments) {
+            attachmentsContainer.addView(buildAttachmentRow(a, () -> openAttachment(a), () -> {
+                dev.marquinhhou.crsscheduler.data.AttachmentStore.remove(this,
+                        dev.marquinhhou.crsscheduler.data.AttachmentStore.NAMESPACE_NOTE, key, a.uri);
+                renderAttachments();
+            }));
+        }
+        // Rows added here can happen well after onResume()'s one-time apply() pass (e.g. from
+        // the attachment-picker callback), so they need their own retint rather than relying on
+        // that earlier pass to have already covered content that didn't exist yet.
+        CustomThemeBackground.applySubtree(this, attachmentsContainer);
+    }
+
+    /** One "filename ... ×" row -- same shape as ConfigureActivity's syllabus rows. */
+    private View buildAttachmentRow(dev.marquinhhou.crsscheduler.model.Attachment a, Runnable onOpen, Runnable onRemove) {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        int padPx = Math.round(8 * getResources().getDisplayMetrics().density);
+        row.setPadding(padPx, padPx, padPx, padPx);
+
+        TextView nameView = new TextView(this);
+        nameView.setText(a.name);
+        nameView.setTextColor(colorInkDim);
+        nameView.setTextSize(12f);
+        nameView.setSingleLine(true);
+        nameView.setEllipsize(android.text.TextUtils.TruncateAt.MIDDLE);
+        LinearLayout.LayoutParams nameParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+        nameView.setLayoutParams(nameParams);
+        nameView.setOnClickListener(v -> onOpen.run());
+        row.addView(nameView);
+
+        TextView removeView = new TextView(this);
+        removeView.setText("\u2715");
+        removeView.setTextColor(colorError);
+        removeView.setPadding(padPx, 0, 0, 0);
+        removeView.setOnClickListener(v -> onRemove.run());
+        row.addView(removeView);
+
+        return row;
+    }
+
+    private void openAttachment(dev.marquinhhou.crsscheduler.model.Attachment a) {
+        try {
+            Uri uri = Uri.parse(a.uri);
+            String type = getContentResolver().getType(uri);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(uri, type != null ? type : "*/*");
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } catch (SecurityException e) {
+            Toast.makeText(this, "Can't open that file anymore -- try attaching it again.", Toast.LENGTH_LONG).show();
+        } catch (android.content.ActivityNotFoundException e) {
+            Toast.makeText(this, "No app found to open that file with.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void onAttachmentPicked(Uri uri) {
+        if (editing == null) return; // shouldn't happen -- the button's hidden in create mode
+        try {
+            getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        } catch (SecurityException e) {
+            // Some providers don't support a persistable grant -- still usable this session.
+        }
+        String name = queryDisplayName(uri);
+        dev.marquinhhou.crsscheduler.data.AttachmentStore.add(this,
+                dev.marquinhhou.crsscheduler.data.AttachmentStore.NAMESPACE_NOTE, String.valueOf(editing.id),
+                new dev.marquinhhou.crsscheduler.model.Attachment(uri.toString(), name));
+        renderAttachments();
+        Toast.makeText(this, "File attached.", Toast.LENGTH_SHORT).show();
+    }
+
+    /** Best-effort filename lookup for a content:// Uri; falls back to the Uri's last segment. */
+    private String queryDisplayName(Uri uri) {
+        String name = null;
+        try (android.database.Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                int idx = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME);
+                if (idx >= 0) name = cursor.getString(idx);
+            }
+        } catch (Exception ignored) {
+            // Fall through to the Uri-based fallback below.
+        }
+        return name != null ? name : uri.getLastPathSegment();
+    }
+
     private void confirmDelete() {
-        new AlertDialog.Builder(this)
+        AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("Delete this note?")
                 .setMessage("This can't be undone.")
                 .setPositiveButton("Delete", (d, w) -> {
@@ -411,5 +548,7 @@ public class NoteEditActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
+        CustomThemeBackground.applyToDialog(dialog);
+        CustomThemeBackground.styleDialogButtons(this, dialog);
     }
 }

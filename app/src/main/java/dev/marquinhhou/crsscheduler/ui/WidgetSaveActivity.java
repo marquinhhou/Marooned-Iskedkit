@@ -51,6 +51,20 @@ public class WidgetSaveActivity extends AppCompatActivity {
         findViewById(R.id.btn_save_ics).setOnClickListener(v -> onSaveIcsTapped());
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        CustomThemeBackground.applyToCard(this, findViewById(R.id.dialog_card_root));
+        CustomThemeBackground.styleControl(this, findViewById(R.id.btn_save_image), CustomThemeBackground.ControlTier.PRIMARY);
+        CustomThemeBackground.styleControl(this, findViewById(R.id.btn_save_ics), CustomThemeBackground.ControlTier.SECONDARY);
+        CustomThemeBackground.styleControl(this, findViewById(R.id.btn_cancel), CustomThemeBackground.ControlTier.QUIET);
+        // Explicit text roles -- retintTree's value-matching is unreliable on these cards.
+        ((android.widget.TextView) findViewById(R.id.dialog_save_eyebrow)).setTextColor(
+                Theming.color(this, R.color.ge_accent, R.color.ne_accent, R.color.adaptive_accent));
+        ((android.widget.TextView) findViewById(R.id.dialog_save_title)).setTextColor(
+                Theming.color(this, R.color.ge_ink, R.color.ne_ink, R.color.adaptive_ink));
+    }
+
     private void onSaveImageTapped() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
                 || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)

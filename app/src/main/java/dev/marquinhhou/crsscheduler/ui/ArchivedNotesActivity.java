@@ -17,6 +17,7 @@ import java.util.List;
 
 import dev.marquinhhou.crsscheduler.R;
 import dev.marquinhhou.crsscheduler.data.NotesStore;
+import dev.marquinhhou.crsscheduler.data.SettingsStore.ThemeFamily;
 import dev.marquinhhou.crsscheduler.model.Note;
 import dev.marquinhhou.crsscheduler.widget.WidgetRefreshScheduler;
 import dev.marquinhhou.crsscheduler.widget.WidgetRenderer;
@@ -60,8 +61,8 @@ public class ArchivedNotesActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
         for (Note note : archived) {
             View row = inflater.inflate(layoutRowArchivedEntry, container, false);
-            ((TextView) row.findViewById(R.id.archived_row_subject))
-                    .setText(note.isMisc() ? "MISC" : WidgetRenderer.abbreviateName(note.subjectName));
+            TextView subjectView = row.findViewById(R.id.archived_row_subject);
+            subjectView.setText(note.isMisc() ? "MISC" : WidgetRenderer.abbreviateName(note.subjectName));
             ((TextView) row.findViewById(R.id.archived_row_title)).setText(note.title);
             TextView bodyView = row.findViewById(R.id.archived_row_body);
             if (note.body.trim().isEmpty()) {
@@ -70,11 +71,26 @@ public class ArchivedNotesActivity extends AppCompatActivity {
                 bodyView.setVisibility(View.VISIBLE);
                 bodyView.setText(note.body.trim());
             }
-            row.findViewById(R.id.archived_row_copy).setOnClickListener(v -> copyNote(note));
-            row.findViewById(R.id.archived_row_restore).setOnClickListener(v -> restore(note));
-            row.findViewById(R.id.archived_row_delete).setOnClickListener(v -> confirmDelete(note));
+            View restoreBtn = row.findViewById(R.id.archived_row_restore);
+            View copyBtn = row.findViewById(R.id.archived_row_copy);
+            View deleteBtn = row.findViewById(R.id.archived_row_delete);
+            copyBtn.setOnClickListener(v -> copyNote(note));
+            restoreBtn.setOnClickListener(v -> restore(note));
+            deleteBtn.setOnClickListener(v -> confirmDelete(note));
+            // copy/delete were sampling to the same SURFACE tone as the row they sit inside and
+            // visually disappearing into it -- same fix as everywhere else this showed up:
+            // Secondary steps to SURFACE_2. The subject badge matches the widget's "MISC" badge
+            // convention (inkDim, not the layout's static accent) for the same reason every other
+            // chip label in the app uses inkDim rather than a one-off accent color.
+            CustomThemeBackground.styleControl(this, restoreBtn, CustomThemeBackground.ControlTier.PRIMARY);
+            CustomThemeBackground.styleControl(this, copyBtn, CustomThemeBackground.ControlTier.SECONDARY);
+            CustomThemeBackground.styleControl(this, deleteBtn, CustomThemeBackground.ControlTier.SECONDARY);
+            if (Theming.family(this) == ThemeFamily.CUSTOM) {
+                subjectView.setTextColor(Theming.color(this, R.color.ge_ink_dim, R.color.ne_ink_dim, R.color.adaptive_ink_dim));
+            }
             container.addView(row);
         }
+        CustomThemeBackground.apply(this);
     }
 
     private void copyNote(Note note) {
@@ -91,7 +107,7 @@ public class ArchivedNotesActivity extends AppCompatActivity {
     }
 
     private void confirmDelete(Note note) {
-        new AlertDialog.Builder(this)
+        AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("Delete this note permanently?")
                 .setMessage("This can't be undone.")
                 .setPositiveButton("Delete", (d, w) -> {
@@ -102,5 +118,7 @@ public class ArchivedNotesActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
+        CustomThemeBackground.applyToDialog(dialog);
+        CustomThemeBackground.styleDialogButtons(this, dialog);
     }
 }

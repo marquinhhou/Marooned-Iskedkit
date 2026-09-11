@@ -81,9 +81,13 @@ public class TodayClassesRemoteViewsService extends RemoteViewsService {
             if (position < 0 || position >= todays.size()) {
                 return new RemoteViews(context.getPackageName(), WidgetRenderer.rowMoreIndicatorLayout(context));
             }
-            ClassSession c = todays.get(position);
-            boolean isLast = position == todays.size() - 1;
-            return WidgetRenderer.buildClassRowForAdapter(context, c, position == ongoingIndex, position, isLast);
+            try {
+                ClassSession c = todays.get(position);
+                boolean isLast = position == todays.size() - 1;
+                return WidgetRenderer.buildClassRowForAdapter(context, c, position == ongoingIndex, position, isLast);
+            } catch (Throwable t) {
+                return new RemoteViews(context.getPackageName(), WidgetRenderer.rowMoreIndicatorLayout(context));
+            }
         }
 
         @Override
@@ -93,7 +97,10 @@ public class TodayClassesRemoteViewsService extends RemoteViewsService {
 
         @Override
         public int getViewTypeCount() {
-            return 1;
+            // Class row, plus the out-of-bounds fallback row (see getViewAt) -- both are
+            // distinct layouts getViewAt can return. See NotesRemoteViewsService for why
+            // undercounting this is a real bug, not just a cosmetic mismatch.
+            return 2;
         }
 
         @Override

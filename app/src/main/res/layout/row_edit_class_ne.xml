@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="EDIT"
-        android:textColor="@color/ne_accent"
+        android:textColor="@color/ne_ink"
         android:textSize="10sp"
         android:letterSpacing="0.1"
         android:fontFamily="@font/jetbrains_mono_bold" />

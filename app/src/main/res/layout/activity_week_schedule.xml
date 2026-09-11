@@ -15,17 +15,17 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp">
 
-        <TextView
+        <ImageView
             android:id="@+id/btn_back"
             android:layout_width="44dp"
             android:layout_height="44dp"
-            android:gravity="center"
-            android:text="\u2190"
-            android:textColor="@color/ink"
-            android:textSize="20sp"
+            android:padding="11dp"
+            android:scaleType="fitCenter"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackgroundBorderless" />
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            android:src="@drawable/ic_arrow_back" />
 
         <TextView
             android:layout_width="0dp"

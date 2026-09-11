@@ -25,7 +25,7 @@
 
         <!-- Tier 1 smart-stack card: today's classes. No launcher activity on
              purpose — this app is added to the home screen only through the
-             widget picker (long-press home screen -> Widgets -> CRS Scheduler). -->
+             widget picker (long-press home screen -> Widgets -> Marooned IskedKit). -->
         <receiver
             android:name=".widget.TodayWidgetProvider"
             android:exported="true">
@@ -93,6 +93,23 @@
             android:exported="false"
             android:theme="@style/Theme.CRSScheduler.GE"
             android:label="@string/week_schedule_title" />
+
+        <!-- v3.0.0 one-time rebrand transition. Not exported: only ever launched by
+             ConfigureActivity (the app's real entry point) on the first entry after
+             updating. -->
+        <activity
+            android:name=".ui.WelcomeActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CRSScheduler.GE"
+            android:label="@string/app_name" />
+
+        <!-- v3.0.0 shareable identity card: live themed preview, inline editor, PNG export. -->
+        <activity
+            android:name=".ui.ProfileCardActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CRSScheduler.GE"
+            android:label="Profile Card"
+            android:windowSoftInputMode="adjustResize" />
 
         <!-- Browse/reactivate/delete previously-active schedules, reached from
              the "SAVED SCHEDULES" button on the config screen. -->

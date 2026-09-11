@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CRS Scheduler</string>
+    <string name="app_name">Marooned IskedKit</string>
+    <string name="app_tagline">Your semester in a kit!</string>
+    <string name="rebrand_welcome_title">Welcome to Marooned IskedKit</string>
+    <string name="rebrand_welcome_body">CRS Scheduler is now Marooned IskedKit \u2014 same app, same data, new look. Nothing you\u2019ve saved has changed.</string>
     <string name="widget_description_today">Today\'s classes at a glance.</string>
     <string name="widget_description_week">This week\'s summary -- tap for the full schedule. Stack it with the Today widget for a smart-stack-style pair.</string>
     <string name="widget_description_notes">Subject notes, deadlines, and to-dos -- plus a Miscellaneous spot for anything not tied to a class.</string>
@@ -17,4 +20,10 @@
 
     <string name="maps_room_disclaimer">CRS only lists the room (e.g. \u201cSE AUDI\u201d), not the building, so the map result may point to the wrong place. Correct it any time under Edit Class Info below.</string>
     <string name="maps_room_disclaimer_short">CRS only gives the room, not the building \u2014 if this opens the wrong spot, fix it under Edit Class Info in Settings.</string>
+
+    <string name="import_instructions_crs">1. Open your CRS Registration or Preenlistment page (the one showing your Enlisted or Desired Classes table \u2014 either the All or Enlisted schedule tab is fine).\n2. Save it: Ctrl+S -&gt; \u201cWebpage, HTML only\u201d -&gt; pick a file. Or view source with Ctrl+U, select all, copy.\n3. Either pick the saved .html file below, or paste the copied source into the box.\n\nHave a .ics calendar file instead (e.g. exported from here previously)? Pick it the same way below \u2014 it\'s imported automatically.\n\nNo CRS access or .ics file yet? Scroll down to add your classes by hand instead.</string>
+    <string name="import_instructions_generic">1. Open your student portal\'s schedule page in your mobile browser.\n2. Take a screenshot, or save/print the page as a PDF, so you have your schedule handy without needing to flip back to the portal for every class.\n3. Tap + ADD CLASS below and enter each class from that screenshot/PDF, one at a time.\n\nTip: keep the screenshot or PDF open in another window while you enter each class.</string>
+    <string name="import_title_crs">LOAD YOUR CRS SCHEDULE</string>
+    <string name="import_title_generic">ADD YOUR CLASSES</string>
+    <string name="import_pick_crs">CHOOSE .HTML / .ICS FILE</string>
 </resources>

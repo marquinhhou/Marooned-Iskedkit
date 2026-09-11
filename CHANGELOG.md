@@ -1,37 +1,41 @@
-# Changelog: CRS Scheduler v2.2.1
+# Changelog: Marooned IskedKit v3.0.0
+
+## Rebrand
+
+- **CRS Scheduler is now Marooned IskedKit.** In-place update: package ID (`dev.marquinhhou.crsscheduler`), signing key, and all existing schedules/notes/settings are unchanged, so current installs just update normally with no data loss. App display name, tagline ("Your semester in a kit!"), exported-image footer, `.ics` PRODID, and clipboard label are all updated to match. A one-time "Welcome to Marooned IskedKit" screen greets the first launch after updating (shown exactly once per install; existing data is untouched).
+
+## Added
+
+- **University affiliation** (Settings → University card): pick UP -- with a campus picker covering all nine constituent universities (Diliman, Los Baños, Manila, Visayas, Open University, Mindanao, Baguio, Cebu, Tacloban) -- or any other school by name. Switching after data already exists asks once ("Your data will be preserved") and re-gates the import tooling live.
+- **Onboarding wizard**, rebuilt to four steps -- University → Import → Review → Profile & Extras -- with uniform progress segments (completed / current / upcoming). Manual class entry is available from step 1 (Import), not just step 2.
+- **Profile Card**: a circular avatar button (top-right of the app) opens a shareable identity card -- name, school line derived from your affiliation, mail/phone/student no/course/year, social links, website, and dorm/address -- with a live themed preview, an inline editor, and **Save as Image** PNG export to the gallery.
+- **Custom theme**, alongside the existing Adaptive and Nothing options, with two modes:
+  - **Color** -- pick a solid background via hex input, with a live swatch preview.
+  - **Photo** -- pick a photo (via Android's Photo Picker, copied into the app's own storage so it never depends on an external URI staying valid), with opacity and blur controls and an accent swatch picker drawn from the photo's own colors.
+  Custom derives every color -- background, text, icons, chips, dialogs -- independently of the other themes, and is applied consistently across every screen and every widget; switching to or from Custom refreshes widgets immediately instead of waiting for their next periodic tick.
+- **Class syllabus attachments.** Edit Class Info can attach a PDF/Word/text/image file to any class, kept across re-imports since it's keyed by class code. A document icon on the class's Today-widget row opens the attachment directly, no in-app detour.
+- **Note attachments.** A saved note can attach any file type from its edit screen; the same document icon on its Notes-widget row opens the first attachment directly.
 
 ## Changed
 
-- **Campus auto-fill can be turned off separately from Maps.** Importing a CRS HTML file used to always auto-fill the campus hint the first time (if it was empty) from whatever campus it could detect in the page. A new switch in Settings → Maps Search Context, right under the campus field, controls just that auto-fill; turning it off means the campus field is only ever set by typing into it yourself. On by default, and only actionable while the main Maps switch is on.
-
-# Changelog: CRS Scheduler v2.2.0
-
-## Fixed
-
-- **Preenlistment schedule pages now import correctly.** UP CRS spreads a multi-component course (e.g. a lecture + discussion pair) across several table rows using `rowspan`, so the Rank/Status columns only appear once per group. The parser was reading columns by a flat header-index and silently misaligned on every row after the first in a group — on a real Preenlistment page this dropped 6 of 7 classes. The parser now rebuilds each table into its full logical grid (accounting for rowspan/colspan) before reading columns, so every row lines up correctly regardless of which rows carry the shared cells.
-- **Preenlistment's "My Desired Classes" table is now found reliably.** CRS sometimes inserts an unrelated "Notes" aside between that section's heading and its table; the previous heading search reset on any non-matching heading in between and missed it. Section detection is now sticky (latches on a match, ignores anything unrelated in between) and recognizes both "…Enlisted…" and "…Desired Classes…" headings.
-- **Only actually-enlisted rows are imported from Preenlistment.** A ranked class can be "Desired" or "With Conflict" rather than secured; those are now skipped so the imported schedule reflects classes you're actually in, not just ranked for.
-
-## Changed
-
-- **Registration and Preenlistment are both explicitly supported now** — the in-app import instructions, and the "couldn't find a table" error message, mention both page types (and either the All or Enlisted schedule tab works, whichever CRS happened to save).
-- **Maps prompts can be turned off.** A new switch in Settings → Maps Search Context disables the "Open Maps" prompt everywhere it appears (widget tap, full week view, campus-hint field dims along with it). On by default, so no change unless you turn it off.
-
-## Notes widget
-
-- **Each note card is one line shorter.** The relative due-badge ("DUE IN 7D") and the absolute date ("Aug 15, 8:30 AM") used to sit on their own stacked lines; they're now one line, so cards take noticeably less vertical space.
-- **Group headers ("MISCELLANEOUS", etc.) no longer look like note cards.** They previously used the same boxed pill as a note row, so sections and notes blended together at a glance. Headers are now a plain label with a thin rule underneath, clearly separate from the cards below them.
-
-# Changelog: CRS Scheduler v2.1.1
+- **CRS parser is Diliman-only.** Every other affiliation sees "ADD YOUR CLASSES" with manual entry (+ADD CLASS) as the only path in, with instructions pointing to the right portal (SAIS on other UP campuses; a screenshot/PDF picker stored as a reference attachment for other schools). `.ics` import and manual entry still work identically for everyone.
+- **GE is retired.** Any existing GE preference silently migrates to Adaptive (or Nothing, on pre-Android-12 devices) the next time settings are read; the theme picker now offers Adaptive / Nothing / Custom only.
+- **Edit Class Info reaches parity with Add Class**: it can now correct a class's days and start/end time, not just room/instructor/units, with the same validation (at least one day, end after start). It's now a collapsible dropdown (a settings-style header with a rotating chevron) rather than a switch, and its tools moved inside the import card, just below the parser zone.
+- **"ADD YOUR CLASSES" reordered**: instructions → + ADD CLASS → CLEAR → SAVED SCHEDULES → (Diliman-only: parser zone + status box) → hairline → EDIT CLASS INFO.
+- **Map auto-fill can be turned off independently of Maps itself** -- ON pre-fills room + campus context from your schedule into a maps search; OFF opens free-typing with no injected context, in both the widget flow and Full Schedule.
+- **New launcher icon**, regenerated across every density and every adaptive layer (background/foreground/monochrome), sized to stay clear of the round-icon safe zone.
+- **Uniform control sizing**: every Primary/Secondary/Quiet control (buttons, chips, dialog actions) now shares the same 48dp-floor height and consistent padding throughout the app.
+- **Week schedule table simplified**: occupied cells are now bare, appropriately-scaled labels instead of colored pill/tile backgrounds; today's column is still emphasized through bolder text.
+- **README and the Gradle project name caught up with the rebrand** -- both now say Marooned IskedKit; `applicationId`/`namespace` deliberately stay `dev.marquinhhou.crsscheduler` so existing installs keep updating in place.
 
 ## Fixed
 
-- **Importing a CRS schedule page no longer comes back empty.** The "My Enlisted Classes" table parser was reading the wrong columns — thrown off by a Status column CRS adds to that table — so every class row was silently dropped during import. All enlisted classes now import correctly.
-
-## Improved
-
-- **Schedule import is more resilient to CRS layout changes** — column positions are now detected from the table's own header labels instead of assumed fixed positions, so a future column reorder won't silently break import again.
-- **Cross-listed classes (two class codes sharing one CRS row) now import as two separate classes** instead of getting merged into one garbled entry.
+- **`assembleRelease` compiles again.** A dialog-button-spacing fix had used `android.R.id.buttonPanel`, an AOSP-internal id that was never part of the public SDK; it's now resolved via `getParent()` on the first available dialog button instead.
+- **Settings crash on Edit Class Info** ("child already has a parent") when the merge assumed those tools already lived inside the import card -- fixed by properly detaching views before re-attaching them.
+- **Widgets are crash-resistant now.** Every provider, the shared refresh scheduler, and both list services catch any rendering failure and fall back to a minimal card instead of crashing or blanking the home screen; Settings also now shows the real stack trace (with a Copy Trace button) if anything else ever fails.
+- **Widget-launched screens no longer leave stale screens behind on Back** -- widget taps now start a clean task (`NEW_TASK | CLEAR_TASK`) instead of resurfacing whatever was already open.
+- **Custom theme reaches every screen and widget correctly**, the result of a long series of fixes: colors bypassed by `android:backgroundTint`, cards that were never actually translucent, an alpha-multiplication bug that left widget rows/cards nearly invisible, a backwards frost-blend calculation, and several screens (WidgetSaveActivity, WidgetForm5PromptActivity, WidgetActionActivity, ArchivedNotesActivity, ScheduleHistoryActivity, WeekScheduleActivity, and dynamically-rebuilt lists on ConfigureActivity) that never applied Custom theming at all are all fixed at their source. Text/icon contrast is now resolved locally against each element's own background rather than by role alone, so labels stay legible regardless of the chosen color or photo.
+- **Custom Photo mode is reliable.** Photo picking moved to Android's built-in Photo Picker and copies the file into local storage immediately, removing the dependence on an external URI that caused earlier crashes and "photo reverted to blank" reports; decoding has a resilient fallback path and a properly downsampled preview so it no longer runs out of memory on large camera photos.
 
 # Changelog: CRS Scheduler v2.1
 

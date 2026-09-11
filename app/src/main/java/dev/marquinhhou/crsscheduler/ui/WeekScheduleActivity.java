@@ -143,7 +143,9 @@ public class WeekScheduleActivity extends AppCompatActivity {
             boolean isToday = dayIdx == today;
             ((ImageView) head.findViewById(R.id.day_dot))
                     .setImageResource(isToday ? drawableDotAccent : drawableDotDim);
-            dayLabel.setTextColor(isToday ? ink : inkDim);
+            // Today reads in the accent (matching the widget table's accent-highlighted
+            // today column); every other day stays dim so the week's structure recedes.
+            dayLabel.setTextColor(isToday ? accent : inkDim);
             container.addView(head);
 
             List<ClassSession> items = new ArrayList<>();
@@ -158,6 +160,7 @@ public class WeekScheduleActivity extends AppCompatActivity {
                 for (ClassSession c : items) container.addView(buildRow(inflater, container, c));
             }
         }
+        CustomThemeBackground.apply(this);
     }
 
     private View buildRow(LayoutInflater inflater, LinearLayout parent, ClassSession c) {
@@ -188,20 +191,29 @@ public class WeekScheduleActivity extends AppCompatActivity {
             return;
         }
         final String room = mapQuery;
-        new AlertDialog.Builder(this)
+        AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle(c.name)
                 .setMessage("Open " + room + " in a maps app?\n\n"
                         + getString(R.string.maps_room_disclaimer_short))
                 .setPositiveButton("Open Maps", (d, w) -> openMaps(room))
                 .setNegativeButton("Cancel", null)
                 .show();
+        CustomThemeBackground.applyToDialog(dialog);
+        CustomThemeBackground.styleDialogButtons(this, dialog);
     }
 
     private void openMaps(String room) {
-        String campus = SettingsStore.getCampusHint(this);
-        String query = campus != null && !campus.trim().isEmpty() ? room + " " + campus : room;
+        // v3.0.0 "Auto-fill from imported schedule": OFF = free typing, no context appended.
+        String campus = SettingsStore.isCampusAutoDetectEnabled(this) ? SettingsStore.getCampusHint(this) : "";
+        String query;
+        if (SettingsStore.isCampusAutoDetectEnabled(this)) {
+            query = campus != null && !campus.trim().isEmpty() ? room + " " + campus : room;
+        } else {
+            query = "";
+        }
         try {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + Uri.encode(query))));
+            Uri geoUri = query.isEmpty() ? Uri.parse("geo:0,0") : Uri.parse("geo:0,0?q=" + Uri.encode(query));
+            startActivity(new Intent(Intent.ACTION_VIEW, geoUri));
         } catch (ActivityNotFoundException e) {
             Toast.makeText(this, "No maps app found to handle this.", Toast.LENGTH_SHORT).show();
         }

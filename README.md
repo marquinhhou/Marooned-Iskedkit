@@ -1,6 +1,7 @@
-# CRS Scheduler
+# Marooned IskedKit
 
 An Android home screen widget set for your UP CRS class schedule.
+(Formerly CRS Scheduler -- same app, same data, new name.)
 
 **Author:** [marquinhhou](https://github.com/marquinhhou)
 
@@ -23,15 +24,25 @@ it better than I could personally do myself. Thank you!
 Switchable any time from the config screen ("APP THEME" card), no reinstall
 needed:
 
-- **GE** (default) -- UP-maroon accent, follows the device's light/dark
-  setting automatically.
-- **NE** -- fixed dark, red-on-black, Nothing-OS-inspired look. Doesn't
-  change with the system setting.
-- **Adaptive** -- matches the device's own Material You wallpaper colors.
-  Needs Android 12+; the chip is disabled on older versions.
+- **Adaptive** (default) -- matches the device's own Material You wallpaper
+  colors. Needs Android 12+; the chip is disabled on older versions, falling
+  back to Nothing.
+- **Nothing** -- fixed dark, red-on-black, Nothing-OS-inspired look. Doesn't
+  change with the system setting. (Formerly called "NE".)
+- **Custom** -- build your own theme instead of picking a preset:
+  - **Color** mode picks a solid background from a hex input, with a live
+    swatch preview.
+  - **Photo** mode picks a photo from your gallery (copied into the app's own
+    storage, so it never depends on that photo staying where you found it),
+    with opacity and blur sliders and an accent swatch drawn from the
+    photo's own colors.
+  Every color -- background, text, icons, chips, dialogs -- is derived from
+  your choice, independently of Adaptive or Nothing.
 
 Whichever is picked applies to all three widgets, the full schedule screen, and
-the exported schedule image alike.
+the exported schedule image alike. (The original "GE" UP-maroon theme was
+retired in v3.0.0; anyone who had it selected is migrated to Adaptive, or
+Nothing on pre-Android-12 devices, automatically.)
 
 ## What's in the box
 
@@ -57,21 +68,29 @@ open your phone's maps app for that room, if a room is set.
 
 ## Features
 
-- **CRS HTML parsing** -- paste the saved page source (or pick a saved
-  `.html` file) of your CRS Registration ("My Enlisted Classes") or
-  Preenlistment ("My Desired Classes") page in the config screen; the app
-  finds the right table and extracts code, name, credits, days, times, type,
-  room, and instructor. Either the All or Enlisted schedule tab works --
-  both are present in a saved page regardless of which was active. Column
-  positions are detected from the table's own header labels rather than
-  assumed, and rowspan-grouped rows (CRS splits a multi-component course,
-  e.g. lecture + discussion, across several rows sharing one Rank/Status)
-  are resolved to their full logical columns before reading, so those rows
-  import correctly instead of silently misaligning. On Preenlistment, only
-  rows actually marked Enlisted are imported -- merely Desired or
-  With-Conflict ranks are skipped. This is a Java/Jsoup port of the
-  original web widget's parser, so both stay in sync on what counts as a
-  valid row.
+- **University affiliation** -- the first-run wizard (and Settings ->
+  University, any time after) asks whether you're a UP student. Say yes and
+  you pick your campus (all nine constituent universities are covered);
+  say no and you just give your school's name. Switching later keeps your
+  existing data and re-gates the import tooling below to match.
+- **CRS HTML parsing (UP Diliman only)** -- paste the saved page source (or
+  pick a saved `.html` file) of your CRS Registration ("My Enlisted
+  Classes") or Preenlistment ("My Desired Classes") page in the config
+  screen; the app finds the right table and extracts code, name, credits,
+  days, times, type, room, and instructor. Either the All or Enlisted
+  schedule tab works -- both are present in a saved page regardless of
+  which was active. Column positions are detected from the table's own
+  header labels rather than assumed, and rowspan-grouped rows (CRS splits a
+  multi-component course, e.g. lecture + discussion, across several rows
+  sharing one Rank/Status) are resolved to their full logical columns before
+  reading, so those rows import correctly instead of silently misaligning.
+  On Preenlistment, only rows actually marked Enlisted are imported --
+  merely Desired or With-Conflict ranks are skipped. This is a Java/Jsoup
+  port of the original web widget's parser, so both stay in sync on what
+  counts as a valid row. Every other UP campus or school skips straight to
+  manual entry, with instructions pointing at their own portal (SAIS on
+  other UP campuses) -- a portal screenshot/PDF can still be attached as a
+  reference.
 - **.ics import** -- the same "choose a file" picker also accepts a
   `.ics` calendar file (one exported from here previously, or from another
   calendar/university system) as an alternate way to load a schedule,
@@ -79,11 +98,15 @@ open your phone's maps app for that room, if a room is set.
   credits, imported classes come in at 0 units, flagged as excluded from
   the unit total rather than silently faking a number -- correct them
   under Edit Class Info if you want them counted.
-- **Edit Class Info** -- toggle it on in the config screen to see every
-  loaded class, tap one, and manually set/correct its room, instructor,
-  or unit count at any time (not just for TBA rows or blank fields).
-  Also where classes get added (for anything CRS doesn't know about, like a
-  standalone lab session) or removed, each with its own confirmation.
+- **Edit Class Info** -- expand the dropdown in the config screen to see
+  every loaded class, tap one, and manually set/correct its days,
+  start/end time, room, instructor, or unit count at any time (not just for
+  TBA rows or blank fields). Also where classes get added (for anything CRS
+  doesn't know about, like a standalone lab session) or removed, each with
+  its own confirmation. From here you can also attach a PDF/Word/text/image
+  syllabus file to any class -- it's kept across re-imports (keyed by class
+  code) and openable straight from that class's row on the Today widget via
+  a small document icon.
 - **Semester dates** -- optionally set when the schedule actually starts
   and ends. Outside that range the widgets and full schedule show a
   "not in session" state instead of treating every day as a normal school
@@ -105,10 +128,13 @@ open your phone's maps app for that room, if a room is set.
   image to your gallery, or export it as a standard `.ics` calendar file to
   import into Google Calendar, Outlook, or any other calendar app. The image
   matches whichever app theme is currently active.
-- **Profile** -- optionally add your name, student number, course, and
-  year/standing in the config screen. None of it shows anywhere by default;
-  each field has its own switch for whether it's allowed onto the exported
-  schedule image.
+- **Profile Card** -- tap the circular avatar (top-right) to open your
+  profile: name, school line (from your university affiliation), mail,
+  phone, student no., course, year, social links, website, and
+  dorm/address, plus a photo or initials disc. Everything's editable inline
+  with a live themed preview, and **Save as Image** exports it as a PNG to
+  your gallery -- handy as a shareable digital ID card. Nothing shows up
+  anywhere else in the app; it only appears if you open the card yourself.
 - **Form 5** -- optionally attach a copy of your Form 5 (official study
   load) PDF for quick access from the config screen. Stored as a reference
   to the file you picked, never copied or uploaded anywhere.
@@ -139,7 +165,9 @@ open your phone's maps app for that room, if a room is set.
   notes to the clipboard as plain text. Once a note has a deadline, its
   editor offers an optional reminder (1/3 hours or 1/3 days ahead, off by
   default) -- set independently per note, same permission prompts as
-  class reminders.
+  class reminders. A saved note can also carry an attachment of any file
+  type, openable straight from its widget row via the same document icon
+  used for class syllabi.
 - **First-run Terms of Use** -- shown once before the widget can be added;
   covers where the data comes from (CRS page or .ics import), that
   room/instructor/unit edits aren't verified by the app, that class and
@@ -178,8 +206,8 @@ app/src/main/java/dev/marquinhhou/crsscheduler/
              WidgetRenderer.java        -- shared RemoteViews builder for all three; resolves the
                                            active theme family's layouts/drawables/colors on every build
              WidgetRefreshScheduler.java-- battery-friendly 15-min refresh alarm
-             RingBitmapFactory.java     -- draws the countdown ring -- NE's dot glyph or the
-                                           GE/Adaptive stroked arc
+             RingBitmapFactory.java     -- draws the countdown ring -- Nothing's dot glyph or the
+                                           Adaptive/Custom stroked arc
              TodayClassesRemoteViewsService.java -- ListView adapter for the Today widget
              NotesRemoteViewsService.java -- ListView adapter for the Notes widget
   ui/        Theming.java               -- resolves ThemeFamily into concrete resource ids/colors
@@ -195,10 +223,14 @@ app/src/main/java/dev/marquinhhou/crsscheduler/
              ArchivedNotesActivity.java -- browse/restore/permanently-delete archived notes
 ```
 
-Every themed layout/drawable exists as three resource variants (a
-`_ge`/`_ne`/`_adaptive` suffix) rather than being switched via `?attr/`,
-since RemoteViews (the widgets) can't apply a runtime Activity theme --
-`Theming.pick()` is the one place that decides which variant to use.
+Every themed layout/drawable exists as resource variants (a `_ge`/`_ne`/
+`_adaptive` suffix) rather than being switched via `?attr/`, since
+RemoteViews (the widgets) can't apply a runtime Activity theme --
+`Theming.pick()` is the one place that decides which variant to use. The
+`_ge` set is dead code kept for reference only (GE was retired as a
+selectable theme in v3.0.0); Custom reuses the `_adaptive` layouts as a
+positional skeleton and recolors them at runtime instead of shipping a
+fourth resource set.
 
 ## Setting it up in Android Studio
 
@@ -207,9 +239,10 @@ since RemoteViews (the widgets) can't apply a runtime Activity theme --
 2. Build & run once to install the app -- there's no launcher icon by
    design (it's a widget-only app), so you won't see it in the app drawer.
    That's expected.
-3. Long-press your home screen -> Widgets -> **CRS Scheduler** -> drag the
-   **Today** widget onto your home screen. This triggers the required setup
-   screen (Terms of Use, then paste/load your CRS schedule).
+3. Long-press your home screen -> Widgets -> **Marooned IskedKit** -> drag the
+   **Today** widget onto your home screen. This triggers the required Terms
+   of Use, then the four-step setup wizard (University -> Import ->
+   Review -> Profile & Extras).
 4. Optionally add the **This Week** widget too, and drag it onto the Today
    widget if your launcher supports stacking widgets together.
 5. Optionally add the **Notes** widget for subject notes, deadlines, and
@@ -217,6 +250,10 @@ since RemoteViews (the widgets) can't apply a runtime Activity theme --
    Miscellaneous spot).
 
 ### Getting your CRS schedule into the app
+
+This path only appears if you set your affiliation to UP Diliman during
+setup; everyone else adds classes manually (or imports a `.ics` file, which
+works the same for everyone).
 
 1. Open your CRS Registration or Preenlistment page (the one showing your
    Enlisted or Desired Classes table) in a desktop browser. Either the All
@@ -252,7 +289,7 @@ if you want them counted.
   verified campus room directory.
 - **Adaptive theme needs Android 12+** (`android.R.color.system_accent1_*`
   / `system_neutral*_*` didn't exist before then). The chip is disabled on
-  older devices; picking it programmatically falls back to GE.
+  older devices; picking it programmatically falls back to Nothing.
 - **Package/App ID:** `dev.marquinhhou.crsscheduler`. Change this in
   `app/build.gradle` (`namespace` / `applicationId`) if you want to publish
   under your own identifier.
@@ -268,7 +305,7 @@ if you want them counted.
 MIT -- see [LICENSE](LICENSE). Third-party assets keep their own original
 open-source licenses:
 
-- Bundled fonts (JetBrains Mono, DotGothic16), used by the NE theme -- SIL
-  OFL 1.1, see [licenses/fonts](licenses/fonts).
+- Bundled fonts (JetBrains Mono, DotGothic16), used by the Nothing theme --
+  SIL OFL 1.1, see [licenses/fonts](licenses/fonts).
 - A handful of toolbar/dialog icon drawables redrawn from Google Material
   Icons -- Apache License 2.0, see [licenses/icons](licenses/icons).

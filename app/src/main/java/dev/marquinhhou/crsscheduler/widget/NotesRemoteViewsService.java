@@ -52,7 +52,17 @@ public class NotesRemoteViewsService extends RemoteViewsService {
             List<Note> active = new ArrayList<>();
             for (Note n : NotesStore.load(context)) if (!n.archived) active.add(n);
 
-            items = NotesStore.isGroupedView(context) ? buildGrouped(active) : new ArrayList<>(sortForDisplay(active));
+            List<Object> built;
+            try {
+                built = NotesStore.isGroupedView(context) ? buildGrouped(active) : new ArrayList<>(sortForDisplay(active));
+            } catch (Throwable t) {
+                // Grouping is the one path exercised only in grouped mode -- if anything in it
+                // throws (bad data, an unexpected null), fall back to the flat list rather than
+                // leave the adapter with a stale/inconsistent item set, which is what a widget
+                // host surfaces as a failed bind ("Couldn't add widget.").
+                built = new ArrayList<>(sortForDisplay(active));
+            }
+            items = built;
         }
 
         private List<Object> buildGrouped(List<Note> active) {
@@ -121,13 +131,20 @@ public class NotesRemoteViewsService extends RemoteViewsService {
             if (position < 0 || position >= items.size()) {
                 return new RemoteViews(context.getPackageName(), WidgetRenderer.rowMoreIndicatorLayout(context));
             }
-            Object item = items.get(position);
-            if (item instanceof GroupHeader) {
-                GroupHeader h = (GroupHeader) item;
-                return WidgetRenderer.buildNoteGroupHeaderForAdapter(context, h.key, h.label, h.count, h.collapsed);
+            try {
+                Object item = items.get(position);
+                if (item instanceof GroupHeader) {
+                    GroupHeader h = (GroupHeader) item;
+                    return WidgetRenderer.buildNoteGroupHeaderForAdapter(context, h.key, h.label, h.count, h.collapsed);
+                }
+                boolean isLast = position == items.size() - 1;
+                return WidgetRenderer.buildNoteRowForAdapter(context, (Note) item, isLast);
+            } catch (Throwable t) {
+                // A single bad row (e.g. a group header built from unexpected data) must not
+                // take down the whole widget -- a widget host that gets an uncaught exception
+                // here shows the generic "Couldn't add widget." failure instead of any content.
+                return new RemoteViews(context.getPackageName(), WidgetRenderer.rowMoreIndicatorLayout(context));
             }
-            boolean isLast = position == items.size() - 1;
-            return WidgetRenderer.buildNoteRowForAdapter(context, (Note) item, isLast);
         }
 
         @Override
@@ -137,7 +154,11 @@ public class NotesRemoteViewsService extends RemoteViewsService {
 
         @Override
         public int getViewTypeCount() {
-            return 2; // note row, group header row
+            // Note row (also used for group headers now -- see buildNoteGroupHeaderForAdapter)
+            // and the out-of-bounds fallback row (see getViewAt). Both are distinct layouts
+            // getViewAt can return, and RemoteViewsAdapter sizes its internal view-type cache
+            // off this count, so it must match reality exactly.
+            return 2;
         }
 
         @Override
