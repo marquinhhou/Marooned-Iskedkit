@@ -71,7 +71,7 @@ android:text="LOAD YOUR CRS SCHEDULE"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:minHeight="48dp"
-                android:text="CHOOSE .HTML / .ICS FILE"
+                android:text="@string/pick_file_label_crs"
                 android:textColor="@color/ink"
                 android:textSize="11sp"
                 android:letterSpacing="0.1"
@@ -699,6 +699,19 @@ android:text="LOAD YOUR CRS SCHEDULE"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@string/footer_disclaimer"
+            android:textColor="@color/ink_dim"
+            android:textSize="8.5sp"
+            android:gravity="center"
+            android:fontFamily="@font/jetbrains_mono" />
+
+        <!-- Plain BuildConfig.VERSION_NAME readout (set in code), so a build
+             can be confirmed at a glance instead of needing adb/Settings->App info, since a
+             source change can otherwise look identical to a stale build from the outside. -->
+        <TextView
+            android:id="@+id/app_version_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:textColor="@color/ink_dim"
             android:textSize="8.5sp"
             android:gravity="center"

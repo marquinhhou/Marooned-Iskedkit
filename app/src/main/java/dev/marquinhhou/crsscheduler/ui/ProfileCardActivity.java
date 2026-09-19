@@ -65,6 +65,9 @@ public class ProfileCardActivity extends AppCompatActivity {
     private final java.util.List<SwitchCompat> linkToggles = new ArrayList<>();
     private static final int MAX_DETAIL_TOGGLES = 5;
     private final java.util.List<SwitchCompat> detailToggles = new ArrayList<>();
+    // Every field's current-value flush, re-run from onStop() as a redundant second save
+    // checkpoint alongside each field's own per-keystroke commit() -- see onStop()'s Javadoc.
+    private final java.util.List<Runnable> profileFieldFlushers = new ArrayList<>();
     private ScrollView rootScroll;
 
     private final ExecutorService ioExecutor = Executors.newSingleThreadExecutor();
@@ -226,6 +229,25 @@ public class ProfileCardActivity extends AppCompatActivity {
         super.onResume();
         CustomThemeBackground.apply(this);
         rebuildPreview();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Every field already commit()s itself on every keystroke (see addField's
+        // TextWatcher and SettingsStore's profile setters) -- this is a second, redundant
+        // checkpoint, not the only save path. Kept deliberately simple: it just re-reads
+        // whatever's currently in each EditText and writes it again, so it can't make things
+        // worse even if the per-keystroke path is somehow not the actual gap here.
+        persistAllProfileFieldsNow();
+    }
+
+    /** Re-runs every registered profile field's setter with whatever its EditText currently
+     *  holds. See {@link #profileFieldFlushers}. */
+    private void persistAllProfileFieldsNow() {
+        for (Runnable flusher : profileFieldFlushers) {
+            flusher.run();
+        }
     }
 
     @Override
@@ -761,6 +783,7 @@ public class ProfileCardActivity extends AppCompatActivity {
         // switch references here would both leak views and throw off the grey-out count.
         detailToggles.clear();
         linkToggles.clear();
+        profileFieldFlushers.clear();
 
 
         // University switcher -- post-setup home for changing affiliation/campus.
@@ -1047,6 +1070,7 @@ public class ProfileCardActivity extends AppCompatActivity {
                 setter.accept(s.toString());
             }
         });
+        profileFieldFlushers.add(() -> setter.accept(input.getText().toString()));
         editorHost.addView(input);
     }
 
@@ -1084,6 +1108,7 @@ public class ProfileCardActivity extends AppCompatActivity {
                 textSetter.accept(s.toString());
             }
         });
+        profileFieldFlushers.add(() -> textSetter.accept(input.getText().toString()));
         row.addView(input);
 
         SwitchCompat sw = new SwitchCompat(this);
@@ -1175,6 +1200,7 @@ public class ProfileCardActivity extends AppCompatActivity {
                 textSetter.accept(s.toString());
             }
         });
+        profileFieldFlushers.add(() -> textSetter.accept(input.getText().toString()));
         row.addView(input);
 
         SwitchCompat sw = new SwitchCompat(this);

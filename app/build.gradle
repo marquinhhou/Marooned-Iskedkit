@@ -28,8 +28,15 @@ android {
         applicationId "dev.marquinhhou.crsscheduler"
         minSdk 26
         targetSdk 34
-        versionCode 7
-        versionName "3.0.0"
+        versionCode 8
+        versionName "3.0.1"
+    }
+
+    // AGP 8+ stopped generating BuildConfig by default -- ConfigureActivity's version footer
+    // (added in 3.0.1, to make a build's actual version checkable at a glance on-screen)
+    // reads BuildConfig.VERSION_NAME/VERSION_CODE, so it needs to be explicitly opted back in.
+    buildFeatures {
+        buildConfig true
     }
 
     signingConfigs {

@@ -195,6 +195,7 @@ public final class ScheduleImageExporter {
     private static String buildProfileLine(Context context) {
         StringBuilder sb = new StringBuilder();
         if (SettingsStore.isExportShowNameEnabled(context)) appendIfPresent(sb, SettingsStore.getProfileName(context));
+        if (SettingsStore.isExportShowMailEnabled(context)) appendIfPresent(sb, SettingsStore.getProfileMail(context));
         if (SettingsStore.isExportShowCourseEnabled(context)) appendIfPresent(sb, SettingsStore.getProfileCourse(context));
         if (SettingsStore.isExportShowYearStandingEnabled(context)) appendIfPresent(sb, SettingsStore.getProfileYearStanding(context));
         if (SettingsStore.isExportShowStudentNoEnabled(context)) appendIfPresent(sb, SettingsStore.getProfileStudentNo(context));
@@ -239,15 +240,15 @@ public final class ScheduleImageExporter {
         return p;
     }
 
-    /** Saves to Pictures/CRSScheduler via MediaStore (no permission needed on Android 10+). */
+    /** Saves to Pictures/IskedKit via MediaStore (no permission needed on Android 10+). */
     public static Uri saveToGallery(Context context, Bitmap bitmap) throws IOException {
-        String displayName = "CRS_Schedule_" + System.currentTimeMillis() + ".png";
+        String displayName = "IskedKit_Schedule_" + System.currentTimeMillis() + ".png";
 
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.DISPLAY_NAME, displayName);
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/CRSScheduler");
+            values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/IskedKit");
             values.put(MediaStore.Images.Media.IS_PENDING, 1);
         }
 

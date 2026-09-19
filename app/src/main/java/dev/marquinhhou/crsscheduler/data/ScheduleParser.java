@@ -77,12 +77,19 @@ public final class ScheduleParser {
 
     /** Sniffs a campus name (e.g. "UP Diliman") from the page, for scoping the Maps search. */
     public static String detectCampusHint(String html) {
+        // A no-op for plain HTML/pasted text; unwraps a saved .mht/.mhtml page down to its
+        // actual markup first, same as parse() below, so campus detection works on either input.
+        html = MhtmlExtractor.extractHtml(html);
         Matcher m = CAMPUS_HINT.matcher(html);
         if (m.find()) return m.group(0).replaceAll("\\s+", " ").trim();
         return null;
     }
 
     public static Result parse(String html) throws ParseException {
+        // Same reasoning as detectCampusHint() above -- transparently handles a .mht/.mhtml
+        // file's MIME container so every existing table-detection/grid-building path below
+        // never has to know the difference between that and a plain saved .html page.
+        html = MhtmlExtractor.extractHtml(html);
         Document doc = Jsoup.parse(html);
         Element table = findEnlistedTable(doc);
         if (table == null) throw new ParseException(ParseException.Reason.NO_TABLE);

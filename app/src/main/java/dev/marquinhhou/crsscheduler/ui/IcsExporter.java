@@ -43,7 +43,7 @@ public final class IcsExporter {
     }
 
     public static String suggestedFileName() {
-        return "CRS_Schedule_" + LocalDate.now().format(DATE_FMT) + ".ics";
+        return "IskedKit_Schedule_" + LocalDate.now().format(DATE_FMT) + ".ics";
     }
 
     private static void appendEvent(StringBuilder sb, ClassSession c, int day, LocalDate anchor, LocalDate end, String dtstamp) {

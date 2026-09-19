@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -146,6 +148,24 @@ public class WeekScheduleActivity extends AppCompatActivity {
             // Today reads in the accent (matching the widget table's accent-highlighted
             // today column); every other day stays dim so the week's structure recedes.
             dayLabel.setTextColor(isToday ? accent : inkDim);
+            // Text (and the dot above) color alone was the only thing marking today, which
+            // reads as barely-there next to a full day's worth of class rows below it --
+            // especially in Custom Photo mode, where the accent can get lost against a busy
+            // background. A soft accent-tinted pill behind the whole header row gives today
+            // a shape to spot at a glance, not just a color to notice on close reading.
+            float d = getResources().getDisplayMetrics().density;
+            if (isToday) {
+                GradientDrawable bg = new GradientDrawable();
+                bg.setColor(ColorUtils.setAlphaComponent(accent, 40));
+                bg.setStroke(Math.round(d), ColorUtils.setAlphaComponent(accent, 110));
+                bg.setCornerRadius(10 * d);
+                head.setBackground(bg);
+                int hPad = Math.round(8 * d), vPad = Math.round(4 * d);
+                head.setPadding(hPad, vPad, hPad, vPad);
+            } else {
+                head.setBackground(null);
+                head.setPadding(0, 0, 0, 0);
+            }
             container.addView(head);
 
             List<ClassSession> items = new ArrayList<>();

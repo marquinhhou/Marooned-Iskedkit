@@ -38,7 +38,14 @@ public class NotesRemoteViewsService extends RemoteViewsService {
 
     private static final class Factory implements RemoteViewsFactory {
         private final Context context;
-        private List<Object> items = new ArrayList<>(); // Note or GroupHeader
+        // volatile (not just reassigned): onDataSetChanged() can run on a different Binder
+        // thread than a concurrent getCount()/getViewAt()/getItemId() call, same as
+        // TodayClassesRemoteViewsService's snapshot field -- see that class's Javadoc for the
+        // general hazard. A single List reference has no torn-pair risk the way todays+
+        // ongoingIndex did, but every method below still snapshots it into a local at the top
+        // rather than calling items.size()/.get() separately, so a refresh landing mid-call
+        // can't shrink the list between one read and the next within the same call.
+        private volatile List<Object> items = new ArrayList<>(); // Note or GroupHeader
 
         Factory(Context context) {
             this.context = context;
@@ -128,16 +135,17 @@ public class NotesRemoteViewsService extends RemoteViewsService {
 
         @Override
         public RemoteViews getViewAt(int position) {
-            if (position < 0 || position >= items.size()) {
+            List<Object> current = items; // One read for the whole call -- see field's Javadoc.
+            if (position < 0 || position >= current.size()) {
                 return new RemoteViews(context.getPackageName(), WidgetRenderer.rowMoreIndicatorLayout(context));
             }
             try {
-                Object item = items.get(position);
+                Object item = current.get(position);
                 if (item instanceof GroupHeader) {
                     GroupHeader h = (GroupHeader) item;
                     return WidgetRenderer.buildNoteGroupHeaderForAdapter(context, h.key, h.label, h.count, h.collapsed);
                 }
-                boolean isLast = position == items.size() - 1;
+                boolean isLast = position == current.size() - 1;
                 return WidgetRenderer.buildNoteRowForAdapter(context, (Note) item, isLast);
             } catch (Throwable t) {
                 // A single bad row (e.g. a group header built from unexpected data) must not
@@ -163,8 +171,9 @@ public class NotesRemoteViewsService extends RemoteViewsService {
 
         @Override
         public long getItemId(int position) {
-            if (position < 0 || position >= items.size()) return position;
-            Object item = items.get(position);
+            List<Object> current = items; // One read for the whole call -- see field's Javadoc.
+            if (position < 0 || position >= current.size()) return position;
+            Object item = current.get(position);
             if (item instanceof GroupHeader) {
                 // Offset from MIN_VALUE so it can't collide with a real note id.
                 return Long.MIN_VALUE + Math.abs((long) ((GroupHeader) item).key.hashCode());

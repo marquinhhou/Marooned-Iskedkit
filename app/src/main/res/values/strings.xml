@@ -25,5 +25,7 @@
     <string name="import_instructions_generic">1. Open your student portal\'s schedule page in your mobile browser.\n2. Take a screenshot, or save/print the page as a PDF, so you have your schedule handy without needing to flip back to the portal for every class.\n3. Tap + ADD CLASS below and enter each class from that screenshot/PDF, one at a time.\n\nTip: keep the screenshot or PDF open in another window while you enter each class.</string>
     <string name="import_title_crs">LOAD YOUR CRS SCHEDULE</string>
     <string name="import_title_generic">ADD YOUR CLASSES</string>
+    <string name="pick_file_label_crs">CHOOSE .HTML / .MHT / .ICS FILE</string>
+    <string name="pick_file_label_generic">CHOOSE .ICS FILE</string>
     <string name="import_pick_crs">CHOOSE .HTML / .ICS FILE</string>
 </resources>

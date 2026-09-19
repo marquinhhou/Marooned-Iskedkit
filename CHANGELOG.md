@@ -1,3 +1,27 @@
+# Changelog: Marooned IskedKit v3.0.1
+
+Patch release, on top of the v3.0.0 rebrand -- mostly bug fixes, plus one small addition below.
+
+## Added
+
+- **`.mht`/`.mhtml` saved pages ("Web Page, Single File") can be imported**, in addition to plain `.html`. A generic MIME-container unwrapper (RFC 2557) finds the page's own boundary and decodes whichever transfer encoding its HTML part declares -- base64, quoted-printable, or literal -- rather than assuming any one tool's export format. The system file picker now also requests the wildcard MIME type alongside the specific ones, since many file managers report `.mht` under a generic type that a strict filter would otherwise hide it behind.
+- **Email toggle for the exported schedule image.** Settings' "EXPORTED SCHEDULE IMAGE" card gets an EMAIL switch, right below Name -- same behavior as the other ten (Student Number, Degree Program, Year & Standing, Dorm/Address, Facebook, Instagram, Twitter/X, LinkedIn, Website/Portfolio): greyed out and forced off if no email is set in the Profile Card, otherwise included in the profile line under the schedule table when switched on.
+
+## Changed
+
+- **Version footer** (Settings screen) now shows just the version name (e.g. "v3.0.1"), not the build/version code alongside it.
+- **Saved schedule images and exported `.ics` files now use the current app name.** Exported images used to save to `Pictures/CRSScheduler` with filenames starting `CRS_Schedule_...`, and exported `.ics` files were named `CRS_Schedule_....ics` -- both leftover from before the rebrand. Images now save to `Pictures/IskedKit`, and both file types now start with `IskedKit_Schedule_...`.
+
+## Fixed
+
+- **Profile fields (name, student no, course, year standing, address, and every social link) could silently lose whatever was typed.** Root cause: the Settings screen kept a second, hidden copy of these fields left over from before editing moved entirely to the Profile Card screen, and that hidden copy had two separate paths that could write its own stale (usually empty) content back over the real data -- an `onPause()`-triggered save that fired every time Settings lost focus, including the everyday case of opening the Profile Card itself, and a per-keystroke watcher that Android's own automatic view-state restore could trigger after an Activity recreation. Both paths are removed entirely; the Profile Card is now the sole place these fields are ever written from. Every field there also now writes with `SharedPreferences.Editor.commit()` instead of `apply()`, so a save is confirmed on disk before the call returns rather than flushing asynchronously in the background.
+- **`.ics`/`.mht`/`.html` import could finish successfully with no visible confirmation.** The status box reset itself to an idle baseline message on every screen resume, including the resume that happens when control returns from the system file picker -- the same moment the real "X classes imported" result was being set. Depending on which of the two happened to run first, the idle reset could silently overwrite the real result. A one-shot flag now skips that one reset specifically for the resume following a file pick, so the actual result is always what's left on screen.
+- **Success feedback (a completed import) could render in red instead of green under Custom theme.** Custom theme resolves status colors through a role system where "error" had its own fixed, palette-independent color, but "success" didn't -- it fell through to the user's own accent color instead, which reads as an error for anyone with a red/pink accent. Success now has the same kind of fixed, deliberate color error already had.
+- **Widget icons/rows could render corrupted** (icons swapping between rows, a "now" indicator landing on the wrong class) under Custom Photo *and* Color mode, on some devices but not others. `WidgetRenderer` resolves each render's colors/drawables into shared fields once per call, but `RemoteViewsFactory` callbacks can arrive concurrently over Binder, so overlapping calls could read a mix of each other's writes. Every entry point now runs under a single lock so one resolve-then-render pass always finishes before another starts; the today's-class list and its "which one is ongoing" index are now published together as one atomic snapshot instead of as two separately-updated fields.
+- **The currently-ongoing class only changed text/dot color, not its background**, under Custom Photo *and* Color mode. The correct accent background was being set, then immediately overwritten by Custom theme's translucent glass row surface. Fixed by skipping that overwrite specifically for the current row/card.
+- **A fragment of the Custom Photo could appear inside small icons** (a note's checkbox, the "now" badge dot) instead of the intended glyph. Two causes: the unchecked note checkbox used a deliberately hollow ring drawable that let the raw photo backdrop show through its transparent center over Custom's glass surface -- now a solid dot like every other theme uses; and all icon tinting was hand-rendered into a small bitmap via Canvas, a bespoke compositing step now replaced with the OS's own native `ImageView` color filter for every theme.
+- **The active day in Full Schedule (VIEW FULL) was marked by text color alone.** Today's row header now also gets an accent-tinted pill background.
+
 # Changelog: Marooned IskedKit v3.0.0
 
 ## Rebrand

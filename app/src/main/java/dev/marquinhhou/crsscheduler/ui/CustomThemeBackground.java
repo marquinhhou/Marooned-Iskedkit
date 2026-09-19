@@ -367,7 +367,7 @@ public final class CustomThemeBackground {
 
     // ---- The independent color engine -------------------------------------------------------
 
-    private enum ColorRole { BACKGROUND, SURFACE, SURFACE_2, ACCENT, ACCENT_DIM, ERROR, INK, INK_DIM, LINE, LINE_STRONG, CONTROL_FILL }
+    private enum ColorRole { BACKGROUND, SURFACE, SURFACE_2, ACCENT, ACCENT_DIM, ERROR, SUCCESS, INK, INK_DIM, LINE, LINE_STRONG, CONTROL_FILL }
 
     /**
      * Computes a role's color purely from the user's Custom settings. This is the single
@@ -413,8 +413,10 @@ public final class CustomThemeBackground {
         // the base -- landed on almost the same gray as the raw Adaptive fills it
         // replaces, so no amount of alpha tuning could make it read as anything but a
         // flat slab.)
-        // ACCENT remains the ONLY genuinely-colored role; every passive surface below
-        // is this white film at differing strength.
+        // ACCENT is the only role driven by the user's own picked color; ERROR and SUCCESS
+        // below are the two deliberate exceptions -- both need to read as "wrong"/"correct"
+        // regardless of what that accent happens to be. Every other role is a plain white
+        // film over the backdrop at differing strength.
 
         switch (role) {
             case BACKGROUND: return base;
@@ -431,6 +433,16 @@ public final class CustomThemeBackground {
             // Deliberately NOT derived from the custom palette -- an error state needs to read
             // as "wrong" regardless of what color the user picked.
             case ERROR: return 0xFFE05555;
+            // Same reasoning as ERROR, mirrored: a success state needs to read as "correct"
+            // regardless of what color the user picked for their own accent -- which is
+            // exactly the bug this fixes. "adaptive_green" used to fall through to ACCENT
+            // above (nothing routed it anywhere else), so under Custom theme every "success"
+            // status message was silently painted in the user's own accent color instead of
+            // green -- invisible as a bug whenever that accent happened to be greenish, but
+            // read as "wrong color, looks like an error" whenever the accent was a red/pink/
+            // orange, which is exactly what was reported. Tuned to a similar brightness to
+            // ERROR's 0xFFE05555 so the two read as a matched pair over a photo backdrop.
+            case SUCCESS: return 0xFF3ECF6B;
             case INK: return withAlpha(nearBlackOrWhite, 1f);
             // Status/instruction text often sits directly on the composited backdrop rather
             // than inside a SURFACE-toned card; 0.78 keeps it clearly secondary while leaving
@@ -573,7 +585,7 @@ public final class CustomThemeBackground {
         ROLE_BY_NAME.put("adaptive_surface2", ColorRole.SURFACE_2);
         ROLE_BY_NAME.put("adaptive_accent", ColorRole.ACCENT);
         ROLE_BY_NAME.put("adaptive_accent_dim", ColorRole.ACCENT_DIM);
-        ROLE_BY_NAME.put("adaptive_green", ColorRole.ACCENT);
+        ROLE_BY_NAME.put("adaptive_green", ColorRole.SUCCESS);
         ROLE_BY_NAME.put("adaptive_error", ColorRole.ERROR);
         ROLE_BY_NAME.put("adaptive_ink", ColorRole.INK);
         ROLE_BY_NAME.put("adaptive_ink_dim", ColorRole.INK_DIM);

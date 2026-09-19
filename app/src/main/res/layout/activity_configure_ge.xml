@@ -122,7 +122,7 @@ android:text="LOAD YOUR CRS SCHEDULE"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:minHeight="48dp"
-                android:text="CHOOSE .HTML / .ICS FILE"
+                android:text="@string/pick_file_label_crs"
                 android:textColor="@color/ge_ink"
                 android:textSize="11sp"
                 android:letterSpacing="0.1"
@@ -914,6 +914,20 @@ android:text="LOAD YOUR CRS SCHEDULE"
                     android:gravity="center_vertical"
                     android:layout_marginTop="10dp">
 
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_export_mail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp">
+
                     <EditText
                         android:id="@+id/input_profile_student_no"
                         android:layout_width="0dp"
@@ -1452,6 +1466,17 @@ android:text="LOAD YOUR CRS SCHEDULE"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@string/footer_disclaimer"
+            android:textColor="@color/ge_ink_dim"
+            android:textSize="8.5sp"
+            android:gravity="center" />
+
+        <!-- Plain BuildConfig.VERSION_NAME readout (set in code); see activity_configure.xml one
+             copy of this view for why it exists. -->
+        <TextView
+            android:id="@+id/app_version_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:textColor="@color/ge_ink_dim"
             android:textSize="8.5sp"
             android:gravity="center" />

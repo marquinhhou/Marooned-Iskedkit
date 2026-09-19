@@ -47,6 +47,7 @@ public final class SettingsStore {
     private static final String KEY_EXPORT_SHOW_LINKEDIN = "export_show_linkedin";
     private static final String KEY_EXPORT_SHOW_WEBSITE = "export_show_website";
     private static final String KEY_EXPORT_SHOW_ADDRESS = "export_show_address";
+    private static final String KEY_EXPORT_SHOW_MAIL = "export_show_mail";
 
     // v3.0.0 -- university affiliation. All additive keys: existing installs read their
     // defaults until onboarding/migration writes them.
@@ -406,7 +407,7 @@ public final class SettingsStore {
     }
 
     public static void setProfileName(Context context, String name) {
-        prefs(context).edit().putString(KEY_PROFILE_NAME, name).apply();
+        prefs(context).edit().putString(KEY_PROFILE_NAME, name).commit();
     }
 
     public static String getProfileStudentNo(Context context) {
@@ -414,7 +415,7 @@ public final class SettingsStore {
     }
 
     public static void setProfileStudentNo(Context context, String studentNo) {
-        prefs(context).edit().putString(KEY_PROFILE_STUDENT_NO, studentNo).apply();
+        prefs(context).edit().putString(KEY_PROFILE_STUDENT_NO, studentNo).commit();
     }
 
     public static String getProfileCourse(Context context) {
@@ -422,7 +423,7 @@ public final class SettingsStore {
     }
 
     public static void setProfileCourse(Context context, String course) {
-        prefs(context).edit().putString(KEY_PROFILE_COURSE, course).apply();
+        prefs(context).edit().putString(KEY_PROFILE_COURSE, course).commit();
     }
 
     public static String getProfileYearStanding(Context context) {
@@ -430,7 +431,7 @@ public final class SettingsStore {
     }
 
     public static void setProfileYearStanding(Context context, String yearStanding) {
-        prefs(context).edit().putString(KEY_PROFILE_YEAR_STANDING, yearStanding).apply();
+        prefs(context).edit().putString(KEY_PROFILE_YEAR_STANDING, yearStanding).commit();
     }
 
     public static boolean isExportShowNameEnabled(Context context) {
@@ -439,6 +440,14 @@ public final class SettingsStore {
 
     public static void setExportShowNameEnabled(Context context, boolean enabled) {
         prefs(context).edit().putBoolean(KEY_EXPORT_SHOW_NAME, enabled).apply();
+    }
+
+    public static boolean isExportShowMailEnabled(Context context) {
+        return prefs(context).getBoolean(KEY_EXPORT_SHOW_MAIL, false);
+    }
+
+    public static void setExportShowMailEnabled(Context context, boolean enabled) {
+        prefs(context).edit().putBoolean(KEY_EXPORT_SHOW_MAIL, enabled).apply();
     }
 
     public static boolean isNotesTapEmptyToCreateEnabled(Context context) {
@@ -637,7 +646,7 @@ public final class SettingsStore {
     }
 
     public static void setProfileMail(Context context, String mail) {
-        prefs(context).edit().putString(KEY_PROFILE_MAIL, mail == null ? "" : mail.trim()).apply();
+        prefs(context).edit().putString(KEY_PROFILE_MAIL, mail == null ? "" : mail.trim()).commit();
     }
 
     public static String getProfilePhone(Context context) {
@@ -645,7 +654,7 @@ public final class SettingsStore {
     }
 
     public static void setProfilePhone(Context context, String phone) {
-        prefs(context).edit().putString(KEY_PROFILE_PHONE, phone == null ? "" : phone.trim()).apply();
+        prefs(context).edit().putString(KEY_PROFILE_PHONE, phone == null ? "" : phone.trim()).commit();
     }
 
     public static String getProfileFacebook(Context context) {
@@ -653,7 +662,7 @@ public final class SettingsStore {
     }
 
     public static void setProfileFacebook(Context context, String value) {
-        prefs(context).edit().putString(KEY_PROFILE_FACEBOOK, value == null ? "" : value.trim()).apply();
+        prefs(context).edit().putString(KEY_PROFILE_FACEBOOK, value == null ? "" : value.trim()).commit();
     }
 
     public static String getProfileInstagram(Context context) {
@@ -661,7 +670,7 @@ public final class SettingsStore {
     }
 
     public static void setProfileInstagram(Context context, String value) {
-        prefs(context).edit().putString(KEY_PROFILE_INSTAGRAM, value == null ? "" : value.trim()).apply();
+        prefs(context).edit().putString(KEY_PROFILE_INSTAGRAM, value == null ? "" : value.trim()).commit();
     }
 
     public static String getProfileTwitter(Context context) {
@@ -669,7 +678,7 @@ public final class SettingsStore {
     }
 
     public static void setProfileTwitter(Context context, String value) {
-        prefs(context).edit().putString(KEY_PROFILE_TWITTER, value == null ? "" : value.trim()).apply();
+        prefs(context).edit().putString(KEY_PROFILE_TWITTER, value == null ? "" : value.trim()).commit();
     }
 
     public static String getProfileLinkedin(Context context) {
@@ -677,7 +686,7 @@ public final class SettingsStore {
     }
 
     public static void setProfileLinkedin(Context context, String value) {
-        prefs(context).edit().putString(KEY_PROFILE_LINKEDIN, value == null ? "" : value.trim()).apply();
+        prefs(context).edit().putString(KEY_PROFILE_LINKEDIN, value == null ? "" : value.trim()).commit();
     }
 
     public static String getProfileWebsite(Context context) {
@@ -685,7 +694,7 @@ public final class SettingsStore {
     }
 
     public static void setProfileWebsite(Context context, String value) {
-        prefs(context).edit().putString(KEY_PROFILE_WEBSITE, value == null ? "" : value.trim()).apply();
+        prefs(context).edit().putString(KEY_PROFILE_WEBSITE, value == null ? "" : value.trim()).commit();
     }
 
     public static String getProfileAddress(Context context) {
@@ -693,7 +702,7 @@ public final class SettingsStore {
     }
 
     public static void setProfileAddress(Context context, String value) {
-        prefs(context).edit().putString(KEY_PROFILE_ADDRESS, value == null ? "" : value.trim()).apply();
+        prefs(context).edit().putString(KEY_PROFILE_ADDRESS, value == null ? "" : value.trim()).commit();
     }
 
     /** Whether each link shows on the exported profile card -- one toggle per field, beside

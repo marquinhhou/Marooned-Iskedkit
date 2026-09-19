@@ -56,7 +56,30 @@ public final class WidgetRenderer {
     public static final String[] DAY_LABELS = {"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
     public static final int[] WEEK_ORDER = {1, 2, 3, 4, 5, 6, 0}; // Mon..Sun
 
-    // Resolved once per build call by resolveThemeAssets() -- see class comment.
+    /**
+     * Every public entry point below that calls resolveThemeAssets() must run its ENTIRE body
+     * (from that call through to the RemoteViews it returns) while holding this lock.
+     *
+     * resolveThemeAssets() populates the fields just below into class-level statics rather than
+     * returning them, and every render method reads those statics by bare name for the rest of
+     * its body. That's only safe if exactly one thread is ever inside "resolveThemeAssets() ...
+     * read the fields it set" at a time. It isn't: RemoteViewsFactory callbacks (getViewAt() for
+     * every visible row) arrive over Binder, and the framework is free to service them from
+     * several pool threads at once, and separate widget instances/providers can refresh
+     * concurrently too. Two interleaved calls -- e.g. one for a GE-themed row and one for a
+     * Custom-themed row landing back to back -- can read a mix of each other's field writes:
+     * a drawable resolved for one theme tinted with a color resolved for another, or a stale
+     * layout id. The result isn't a clean wrong-but-consistent row; it's whatever partially-
+     * overwritten int happened to be sitting in the field at read time, which is exactly the
+     * "corrupted-looking" icon/row reports (seen under both Custom Photo and Custom Color, and
+     * only on some devices/thread-pool timings -- never reproducible on demand). Wrapping every
+     * entry point in this single lock serializes them, which is all resolveThemeAssets() ever
+     * actually assumed.
+     */
+    private static final Object RENDER_LOCK = new Object();
+
+    // Resolved once per build call by resolveThemeAssets() -- see class comment. Only ever
+    // read/written while holding RENDER_LOCK (see its Javadoc above).
     private static int accent, ink, inkDim, bg, lineStrong;
     private static boolean useDotRing;
     private static int layoutToday, layoutTodayCompact, layoutWeek, layoutWeekExpanded;
@@ -150,13 +173,22 @@ public final class WidgetRenderer {
 
     /** So TodayClassesRemoteViewsService's out-of-bounds fallback row picks the right theme too. */
     public static int rowMoreIndicatorLayout(Context context) {
-        resolveThemeAssets(context);
-        return layoutRowMoreIndicator;
+        synchronized (RENDER_LOCK) {
+            resolveThemeAssets(context);
+            return layoutRowMoreIndicator;
+        }
     }
 
     // Today widget
 
     public static RemoteViews buildToday(Context context, Bundle options, int appWidgetId) {
+        synchronized (RENDER_LOCK) {
+            return buildTodayLocked(context, options, appWidgetId);
+        }
+    }
+
+    /** Always invoked while holding {@link #RENDER_LOCK} -- see its Javadoc. */
+    private static RemoteViews buildTodayLocked(Context context, Bundle options, int appWidgetId) {
         resolveThemeAssets(context);
         List<ClassSession> schedule = ScheduleStore.load(context);
         SettingsStore.SemesterPhase rawPhase = SettingsStore.currentSemesterPhase(context);
@@ -371,7 +403,7 @@ public final class WidgetRenderer {
             rv.setInt(R.id.hero_countdown, "setTextColor", ink);
         }
         rv.setInt(R.id.hero_card, "setBackgroundResource", isNow ? drawableCardBgNow : drawableCardBg);
-        applyCustomRowSurface(context, rv, R.id.hero_card);
+        applyCustomRowSurface(context, rv, R.id.hero_card, isNow);
     }
 
     private static long todayMinuteToEpochMillis(int minuteOfDay) {
@@ -399,6 +431,13 @@ public final class WidgetRenderer {
     // Week widget
 
     public static RemoteViews buildWeekSummary(Context context, Bundle options) {
+        synchronized (RENDER_LOCK) {
+            return buildWeekSummaryLocked(context, options);
+        }
+    }
+
+    /** Always invoked while holding {@link #RENDER_LOCK} -- see its Javadoc. */
+    private static RemoteViews buildWeekSummaryLocked(Context context, Bundle options) {
         resolveThemeAssets(context);
         List<ClassSession> schedule = ScheduleStore.load(context);
         SettingsStore.SemesterPhase rawPhase = SettingsStore.currentSemesterPhase(context);
@@ -537,13 +576,11 @@ public final class WidgetRenderer {
                 dot.setTextViewText(R.id.week_dot_label, DAY_LABELS[dayIdx].substring(0, 1));
                 dot.setInt(R.id.week_dot_label, "setTextColor", dayIdx == today ? ink : inkDim);
                 if (dayIdx == today) {
-                    setIconMaybeCustom(context, dot, R.id.week_dot, drawableDotAccent, true);
+                    setIconMaybeCustom(context, dot, R.id.week_dot, drawableDotAccent, IconTint.ACCENT);
+                } else if (hasClasses) {
+                    setIconMaybeCustom(context, dot, R.id.week_dot, drawableDotHasClass, IconTint.INK_DIM);
                 } else {
-                    // "Has class" stays a neutral filled dot in every family -- passing
-                    // accent=true here used to repaint it as a full accent dot under Custom,
-                    // making six of seven days scream accent while the layout's own
-                    // dot_has_class asset (ink_dim-toned) says quiet emphasis everywhere else.
-                    setIconMaybeCustom(context, dot, R.id.week_dot, hasClasses ? drawableDotHasClass : drawableDotDim, false);
+                    setIconMaybeCustom(context, dot, R.id.week_dot, drawableDotDim, IconTint.LINE);
                 }
                 rv.addView(R.id.week_dots_row, dot);
             }
@@ -653,7 +690,7 @@ public final class WidgetRenderer {
                     classCell.setViewVisibility(R.id.cell_dot_image, View.VISIBLE);
                     // Previously never tinted at all -- stayed at its static @drawable/dot_dim_*
                     // asset color regardless of theme, unlike the day-header dots right above it.
-                    setIconMaybeCustom(context, classCell, R.id.cell_dot_image, drawableDotDim, false);
+                    setIconMaybeCustom(context, classCell, R.id.cell_dot_image, drawableDotDim, IconTint.LINE);
                 }
                 scaleClassCell(classCell, scale, density);
                 row.addView(R.id.table_row, classCell);
@@ -759,6 +796,13 @@ public final class WidgetRenderer {
 
     /** Called from TodayClassesRemoteViewsService.Factory.getViewAt(); public for that reason. */
     public static RemoteViews buildClassRowForAdapter(Context context, ClassSession c, boolean isNow, int index, boolean isLast) {
+        synchronized (RENDER_LOCK) {
+            return buildClassRowForAdapterLocked(context, c, isNow, index, isLast);
+        }
+    }
+
+    /** Always invoked while holding {@link #RENDER_LOCK} -- see its Javadoc. */
+    private static RemoteViews buildClassRowForAdapterLocked(Context context, ClassSession c, boolean isNow, int index, boolean isLast) {
         resolveThemeAssets(context);
         RemoteViews row = new RemoteViews(context.getPackageName(), layoutRowClass);
         // Always set explicitly -- recycled rows keep a stale padding otherwise (the squished-row bug).
@@ -772,9 +816,9 @@ public final class WidgetRenderer {
         row.setTextViewText(R.id.row_room, meta);
         row.setInt(R.id.row_room, "setTextColor", inkDim);
         row.setInt(R.id.row_root, "setBackgroundResource", isNow ? drawableRowBgNow : drawableRowBg);
-        applyCustomRowSurface(context, row, R.id.row_root);
+        applyCustomRowSurface(context, row, R.id.row_root, isNow);
         row.setInt(R.id.row_time, "setTextColor", isNow ? accent : inkDim);
-        setIconMaybeCustom(context, row, R.id.row_badge, isNow ? drawableDotAccent : drawableDotDim, isNow);
+        setIconMaybeCustom(context, row, R.id.row_badge, isNow ? drawableDotAccent : drawableDotDim, isNow ? IconTint.ACCENT : IconTint.LINE);
 
         String mapQuery = (c.room != null && !c.room.trim().isEmpty() && !c.room.equalsIgnoreCase("TBA"))
                 ? c.room
@@ -815,11 +859,11 @@ public final class WidgetRenderer {
     }
 
     private static void bindGear(Context context, RemoteViews rv) {
-        setIconMaybeCustom(context, rv, R.id.btn_settings, drawableIcSettings, false);
+        setIconMaybeCustom(context, rv, R.id.btn_settings, drawableIcSettings, IconTint.INK_DIM);
         // header_dot: the small bullet before "TODAY"/"WEEKLY"/"NOTES" -- previously had no id at
         // all so nothing could ever recolor it; every layout with a header dot also calls
         // bindGear, so this one call covers all of them.
-        setIconMaybeCustom(context, rv, R.id.header_dot, drawableDotAccent, true);
+        setIconMaybeCustom(context, rv, R.id.header_dot, drawableDotAccent, IconTint.ACCENT);
         Intent intent = new Intent(context, ConfigureActivity.class);
         // Widget taps always start a CLEAN task: without these flags the launcher routes
         // the new screen into whatever app task already exists, so e.g. tapping VIEW FULL
@@ -847,7 +891,7 @@ public final class WidgetRenderer {
             styleChip(context, rv, R.id.btn_view_full_schedule, 0, false);
             rv.setInt(R.id.view_full_schedule_label, "setTextColor", inkDim);
         }
-        setIconMaybeCustom(context, rv, R.id.view_full_schedule_icon, drawableIcCalendar, false);
+        setIconMaybeCustom(context, rv, R.id.view_full_schedule_icon, drawableIcCalendar, IconTint.INK_DIM);
         Intent intent = new Intent(context, WeekScheduleActivity.class);
         // Same clean-task rule as the gear: Back from the full schedule exits to home
         // instead of revealing whatever screen a previous widget tap left behind.
@@ -858,7 +902,7 @@ public final class WidgetRenderer {
     }
 
     private static void bindSaveButton(Context context, RemoteViews rv) {
-        setIconMaybeCustom(context, rv, R.id.btn_save, drawableIcSave, false);
+        setIconMaybeCustom(context, rv, R.id.btn_save, drawableIcSave, IconTint.INK_DIM);
         Intent intent = new Intent(context, WidgetSaveActivity.class);
         PendingIntent pi = PendingIntent.getActivity(
                 context, 8, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -870,7 +914,7 @@ public final class WidgetRenderer {
         // A bare document icon matching its neighbors -- same size, no pill. The layouts
         // were rebuilt around this (btn_form5 is an ImageView now), and the old outline-chip
         // styling is what made it read as a different species of header button.
-        setIconMaybeCustom(context, rv, R.id.btn_form5, drawableIcForm5, false);
+        setIconMaybeCustom(context, rv, R.id.btn_form5, drawableIcForm5, IconTint.INK_DIM);
         Uri form5Uri = SettingsStore.getForm5Uri(context);
         Intent intent;
         if (form5Uri != null) {
@@ -1014,21 +1058,103 @@ public final class WidgetRenderer {
      * baked into row_bg_custom_light/_dark and applied with a plain setBackgroundResource:
      * RemoteViews background-TINT composites SRC_IN over the whole drawable, flattening
      * fill and stroke into one color, so a tinted drawable can never show its border.
+     *
+     * Convenience overload for the (more common) case where the row/card has no "now"
+     * concept at all -- always applies the glass surface under Custom.
      */
     private static void applyCustomRowSurface(Context context, RemoteViews row, int rootViewId) {
+        applyCustomRowSurface(context, row, rootViewId, false);
+    }
+
+    /**
+     * This was the "current class only changes text/dot color, not its background" bug
+     * (reported under both Custom Photo AND Custom Color -- both are ThemeFamily.CUSTOM, so
+     * both hit the same code path here). The caller had already set rootViewId's background
+     * to drawableRowBgNow/drawableCardBgNow -- the family's own purpose-built accent "now"
+     * surface (which, per Theming.pick(), resolves to the Adaptive family's row_bg_now/
+     * card_bg_now under Custom) -- but this method used to unconditionally stamp the plain
+     * frosted-glass surface over it right afterward, silently discarding that accent
+     * background. Text color and the badge dot are set by the caller AFTER this call, so
+     * they were never affected -- only the background was ever being lost, which is exactly
+     * why those were the only two things that still looked "active."
+     * isNow=true now skips the override entirely, leaving the caller's own now/accent
+     * background in place; isNow=false (every other row/card) is unaffected and still gets
+     * the glass treatment exactly as before.
+     */
+    private static void applyCustomRowSurface(Context context, RemoteViews row, int rootViewId, boolean isNow) {
+        if (isNow) return;
         if (Theming.family(context) != SettingsStore.ThemeFamily.CUSTOM) return;
         boolean light = CustomThemeBackground.isCustomBackgroundLight(context);
         row.setInt(rootViewId, "setBackgroundResource",
                 light ? R.drawable.row_bg_custom_light : R.drawable.row_bg_custom_dark);
     }
 
-    private static void setIconMaybeCustom(Context context, RemoteViews rv, int viewId, int drawableResId, boolean accent) {
-        Bitmap tinted = CustomThemeBackground.renderTintedIcon(context, drawableResId, accent);
-        if (tinted != null) {
-            rv.setImageViewBitmap(viewId, tinted);
-        } else {
-            rv.setImageViewResource(viewId, drawableResId);
+    /**
+     * Which baked-in color a non-accent icon needs once it's re-derived for Custom theme.
+     * Introduced after a regression: collapsing every non-accent icon onto one "dim" color
+     * (LINE, a very faint ~10-20% wash meant only for tiny decorative dot markers) made
+     * ordinary UI icons -- settings, save, archive, copy, calendar, form5, the note-header
+     * chevron -- look "greyed out" under Custom theme, because their own non-Custom drawables
+     * (ic_settings_adaptive.xml etc.) actually bake in INK_DIM, a much more visible ~78%-alpha
+     * ink tone, not LINE. The two dim dot markers (drawableDotDim, used for "no class"/
+     * "unchecked") and one "has a class" dot (drawableDotHasClass) also don't agree with each
+     * other -- dot_dim_*.xml bakes LINE, dot_has_class_*.xml bakes INK_DIM. Rather than
+     * guessing again, this enum makes every call site say explicitly which of the two colors
+     * its own specific drawable actually uses, matching that drawable's real baked-in tint.
+     */
+    private enum IconTint { ACCENT, INK_DIM, LINE }
+
+    /**
+     * Sets an icon's own resource, then tints it to match tint. See {@link IconTint}'s
+     * Javadoc for why this takes an explicit tint rather than a plain accent/dim boolean.
+     * For a completed/checked glyph specifically, use {@link #setIconSuccessTinted} instead.
+     */
+    private static void setIconMaybeCustom(Context context, RemoteViews rv, int viewId, int drawableResId, IconTint tint) {
+        switch (tint) {
+            case ACCENT:
+                setIconTinted(context, rv, viewId, drawableResId, R.color.ge_accent, R.color.ne_accent, R.color.adaptive_accent);
+                break;
+            case LINE:
+                setIconTinted(context, rv, viewId, drawableResId, R.color.ge_line, R.color.ne_line, R.color.adaptive_line);
+                break;
+            case INK_DIM:
+            default:
+                setIconTinted(context, rv, viewId, drawableResId, R.color.ge_ink_dim, R.color.ne_ink_dim, R.color.adaptive_ink_dim);
+                break;
         }
+    }
+
+    /** Same idea as {@link #setIconMaybeCustom}, but for a "done/completed" glyph -- needs the
+     *  green success color specifically, under every theme, not the accent color. Custom theme
+     *  used to route this through ColorRole.ACCENT (see the fixed ROLE_BY_NAME entry for
+     *  "adaptive_green" in CustomThemeBackground) -- Theming.color() now resolves adaptive_green
+     *  to the real success color under Custom too, so this reuses that fix for free. */
+    private static void setIconSuccessTinted(Context context, RemoteViews rv, int viewId, int drawableResId) {
+        setIconTinted(context, rv, viewId, drawableResId, R.color.ge_green, R.color.ne_green, R.color.adaptive_green);
+    }
+
+    /**
+     * Sets the icon's own resource, then tints it via the OS's native ImageView.setColorFilter
+     * (through RemoteViews' generic setInt reflection) instead of hand-rendering a Bitmap via
+     * Canvas + Drawable.mutate()/draw() the way this used to work (CustomThemeBackground.
+     * renderTintedIcon, now unused -- left in place rather than deleted, in case anything else
+     * ever needs that exact recipe again). That custom per-icon bitmap pipeline was the prime
+     * suspect for a report that a couple of these small dot/checkbox icons intermittently
+     * rendered a fragment of the Custom Photo backdrop instead of their intended glyph on one
+     * specific device -- a device-specific graphics-pipeline hiccup allocating and drawing many
+     * small ARGB_8888 bitmaps during a widget refresh was the closest fit for a bug that didn't
+     * reproduce in an emulator. Routing through the OS's own, vastly more heavily-used
+     * ImageView color-filter path removes that whole class of risk regardless of the exact
+     * mechanism, rather than patching one specific theory about it. This also means every
+     * theme (not just Custom) now gets an explicit, freshly-set filter on every render instead
+     * of relying on "leave it alone, the XML's own baked-in color is still correct" -- which
+     * closes off any stale-filter-on-a-recycled-view risk as a side effect.
+     */
+    private static void setIconTinted(Context context, RemoteViews rv, int viewId, int drawableResId,
+                                       int geColorRes, int neColorRes, int adaptiveColorRes) {
+        rv.setImageViewResource(viewId, drawableResId);
+        int color = Theming.color(context, geColorRes, neColorRes, adaptiveColorRes);
+        rv.setInt(viewId, "setColorFilter", color);
     }
 
     public static int calendarDayToJs(int calendarDayOfWeek) {
@@ -1096,6 +1222,13 @@ public final class WidgetRenderer {
     // Notes widget
 
     public static RemoteViews buildNotes(Context context, Bundle options, int appWidgetId) {
+        synchronized (RENDER_LOCK) {
+            return buildNotesLocked(context, options, appWidgetId);
+        }
+    }
+
+    /** Always invoked while holding {@link #RENDER_LOCK} -- see its Javadoc. */
+    private static RemoteViews buildNotesLocked(Context context, Bundle options, int appWidgetId) {
         resolveThemeAssets(context);
         RemoteViews rv = new RemoteViews(context.getPackageName(), layoutNotesWidget);
         bindGear(context, rv);
@@ -1148,7 +1281,7 @@ public final class WidgetRenderer {
     }
 
     private static void bindArchiveButton(Context context, RemoteViews rv) {
-        setIconMaybeCustom(context, rv, R.id.btn_archive, drawableIcArchive, false);
+        setIconMaybeCustom(context, rv, R.id.btn_archive, drawableIcArchive, IconTint.INK_DIM);
         Intent intent = new Intent(context, ArchivedNotesActivity.class);
         PendingIntent pi = PendingIntent.getActivity(
                 context, 12, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -1156,7 +1289,7 @@ public final class WidgetRenderer {
     }
 
     private static void bindCopyAllButton(Context context, RemoteViews rv) {
-        setIconMaybeCustom(context, rv, R.id.btn_copy_all, drawableIcCopy, false);
+        setIconMaybeCustom(context, rv, R.id.btn_copy_all, drawableIcCopy, IconTint.INK_DIM);
         Intent intent = new Intent(context, NotesWidgetProvider.class);
         intent.setAction(NotesWidgetProvider.ACTION_COPY_ALL);
         PendingIntent pi = PendingIntent.getBroadcast(
@@ -1194,11 +1327,25 @@ public final class WidgetRenderer {
 
     /** Called from NotesRemoteViewsService. */
     public static RemoteViews buildNoteRowForAdapter(Context context, Note note, boolean isLast) {
+        synchronized (RENDER_LOCK) {
+            return buildNoteRowForAdapterLocked(context, note, isLast);
+        }
+    }
+
+    /** Always invoked while holding {@link #RENDER_LOCK} -- see its Javadoc. */
+    private static RemoteViews buildNoteRowForAdapterLocked(Context context, Note note, boolean isLast) {
         resolveThemeAssets(context);
         RemoteViews row = new RemoteViews(context.getPackageName(), layoutRowNote);
         int bottomPaddingDp = isLast ? 0 : 4;
         int bottomPaddingPx = Math.round(bottomPaddingDp * context.getResources().getDisplayMetrics().density);
         row.setViewPadding(R.id.row_note_root, 0, 0, 0, bottomPaddingPx);
+        // Explicit default background, same as buildClassRowForAdapterLocked's row_root --
+        // this layout (layoutRowNote) is deliberately shared with a group-header row (see
+        // buildNoteGroupHeaderForAdapterLocked), which sets row_root to bg_transparent
+        // unconditionally. Without re-asserting the real card background here, a row the host
+        // recycles from a header keeps that transparent background under every non-Custom
+        // theme, since applyCustomRowSurface() below only ever touches row_root for Custom.
+        row.setInt(R.id.row_root, "setBackgroundResource", drawableRowBg);
         applyCustomRowSurface(context, row, R.id.row_root);
 
         row.setTextViewText(R.id.row_note_subject_label, note.isMisc() ? "MISC" : abbreviateName(note.subjectName));
@@ -1240,13 +1387,19 @@ public final class WidgetRenderer {
         }
 
         bindDeadlineBadge(row, note);
-        // Unchecked state: an outline circle under Custom (reads as an empty checkbox over
-        // the frosted row) instead of the solid dim dot, which rendered as a glaring pale
-        // blob at this size. Other families keep their existing glyph untouched.
-        int uncheckedCheck = Theming.family(context) == SettingsStore.ThemeFamily.CUSTOM
-                ? R.drawable.dot_check_ring : drawableDotDim;
-        setIconMaybeCustom(context, row, R.id.row_note_check,
-                note.completed ? drawableDotCheckedNote : uncheckedCheck, note.completed);
+        // Previously substituted a hollow outline ring (dot_check_ring) for the unchecked
+        // state under Custom theme -- a transparent-centered shape sitting on Custom's
+        // translucent glass row surface, which lets the raw, unblurred photo backdrop show
+        // straight through its hollow middle. That's the other half of the "photo shows up
+        // as this element" report: not a rendering bug in the icon itself, but a genuinely
+        // see-through icon over a see-through surface. Using the same solid dim dot every
+        // other theme already uses removes the hollow region entirely rather than trying to
+        // back it with an opaque patch.
+        if (note.completed) {
+            setIconSuccessTinted(context, row, R.id.row_note_check, drawableDotCheckedNote);
+        } else {
+            setIconMaybeCustom(context, row, R.id.row_note_check, drawableDotDim, IconTint.LINE);
+        }
 
         Intent openFillIn = new Intent();
         openFillIn.putExtra(NotesWidgetProvider.EXTRA_NOTE_ID, note.id);
@@ -1263,7 +1416,7 @@ public final class WidgetRenderer {
         // Only shows once a note is done.
         if (note.completed) {
             row.setViewVisibility(R.id.row_note_archive, View.VISIBLE);
-            setIconMaybeCustom(context, row, R.id.row_note_archive, drawableIcArchive, false);
+            setIconMaybeCustom(context, row, R.id.row_note_archive, drawableIcArchive, IconTint.INK_DIM);
             Intent archiveFillIn = new Intent();
             archiveFillIn.putExtra(NotesWidgetProvider.EXTRA_NOTE_ID, note.id);
             archiveFillIn.putExtra(NotesWidgetProvider.EXTRA_SUB_ACTION, NotesWidgetProvider.SUB_ACTION_ARCHIVE);
@@ -1307,6 +1460,14 @@ public final class WidgetRenderer {
      */
     public static RemoteViews buildNoteGroupHeaderForAdapter(Context context, String groupKey, String label,
                                                                int count, boolean collapsed) {
+        synchronized (RENDER_LOCK) {
+            return buildNoteGroupHeaderForAdapterLocked(context, groupKey, label, count, collapsed);
+        }
+    }
+
+    /** Always invoked while holding {@link #RENDER_LOCK} -- see its Javadoc. */
+    private static RemoteViews buildNoteGroupHeaderForAdapterLocked(Context context, String groupKey, String label,
+                                                               int count, boolean collapsed) {
         resolveThemeAssets(context);
         RemoteViews header = new RemoteViews(context.getPackageName(), layoutRowNote);
         header.setViewPadding(R.id.row_note_root, 0, 0, 0, 0);
@@ -1318,7 +1479,7 @@ public final class WidgetRenderer {
         int hPad = dpToPx(context.getResources().getDisplayMetrics().density, 6f);
         header.setViewPadding(R.id.row_root, hPad, vPad, hPad, vPad);
 
-        setIconMaybeCustom(context, header, R.id.row_note_check, collapsed ? drawableIcChevronRight : drawableIcChevronDown, false);
+        setIconMaybeCustom(context, header, R.id.row_note_check, collapsed ? drawableIcChevronRight : drawableIcChevronDown, IconTint.INK_DIM);
 
         // "MISCELLANEOUS" in the header's usual bold/ink style, count trailing in a smaller,
         // dimmer span within the same TextView -- setTextViewText's span support (ForegroundColorSpan
